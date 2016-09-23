@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/colorBg"
+   >
+
+
+    <include
+        layout="@layout/layout_title" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="164dp"
+        android:background="@drawable/bg_logo">
+
+        <ImageView
+            android:visibility="gone"
+            android:layout_width="177dp"
+            android:layout_height="69dp"
+            android:layout_centerInParent="true"
+            android:background="@mipmap/image_logo" />
+
+    </RelativeLayout>
+
+    <com.tdr.familytreasure.ui.TitleIndicator
+        android:id="@+id/titleIndicator_choose"
+        android:layout_width="fill_parent"
+        android:layout_height="45dp"
+        android:background="@color/colorStatus"
+        app:footerColor="@color/white"
+        app:footerLineHeight="2dp"
+        app:footerTriangleHeight="3.0dp"
+        app:textColor="@drawable/indicator_change"
+        app:textSizeNormal="@dimen/common_text_size_middle"
+        app:textSizeSelected="@dimen/common_text_size_middle" />
+
+    <com.tdr.familytreasure.ui.ViewPagerCompat
+        android:id="@+id/pager_compat"
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:duplicateParentState="true" />
+
+</LinearLayout>
