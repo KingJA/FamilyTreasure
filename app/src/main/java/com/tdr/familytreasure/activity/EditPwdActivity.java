@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -48,6 +49,7 @@ public class EditPwdActivity extends Activity {
     private MaterialEditText mEtNewPwd;
     private MaterialEditText mEtRepeatPwd;
     private Button mBtnConfirm;
+    private ImageView fl_menu;
 
 
     @Override
@@ -60,6 +62,7 @@ public class EditPwdActivity extends Activity {
 
     private void initView() {
         mProgressHUD = new ZProgressHUD(this);
+        fl_menu = (ImageView) findViewById(R.id.fl_menu);
         mEtOldPwd = (MaterialEditText) findViewById(R.id.et_oldPwd);
         mEtNewPwd = (MaterialEditText) findViewById(R.id.et_newPwd);
         mEtRepeatPwd = (MaterialEditText) findViewById(R.id.et_repeatPwd);
@@ -68,6 +71,12 @@ public class EditPwdActivity extends Activity {
             @Override
             public void onClick(View v) {
                 checkData();
+            }
+        });
+        fl_menu.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
             }
         });
     }

@@ -282,14 +282,12 @@ public class Utils {
      * 身份证号码，隐藏中间的出身年月日
      */
     public static final String hideID(String id) {
-        String a = id.substring(2, 16);
         StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < a.length(); i++) {
-            String b = a.replace(a, "*");
-            sb.append(b);
+        for (int i = 0; i < id.length()-4; i++) {
+            sb.append("*");
         }
         String newId = id.substring(0, 2) + sb.toString()
-                + id.substring(16, id.length());
+                + id.substring(id.length()-3, id.length()-1);
         return newId;
     }
 

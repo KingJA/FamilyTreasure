@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/frame_banner"
+    android:layout_width="fill_parent"
+    android:layout_height="78dp"
+    android:layout_gravity="bottom"
+    android:orientation="vertical">
+
+    <com.tdr.familytreasure.ui.ViewFlow
+        android:id="@+id/view_pic"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent" />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:background="@color/transparent"
+        android:gravity="center"
+        >
+
+        <com.tdr.familytreasure.ui.CircleFlowIndicator
+            android:id="@+id/indicator_point"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal|bottom"
+            android:padding="2dip"
+            android:visibility="gone"
+            app:activeColor="@color/white"
+            app:activeType="fill"
+            app:circleSeparation="20dip"
+            app:inactiveColor="#ffffff"
+            app:inactiveType="fill"
+            app:radius="4dp" />
+    </FrameLayout>
+
+</FrameLayout>

@@ -3,6 +3,7 @@ package com.tdr.familytreasure.adapter;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -14,6 +15,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.tdr.familytreasure.R;
 import com.tdr.familytreasure.activity.UrlActivity;
+import com.tdr.familytreasure.util.Constants;
 
 import java.util.List;
 
@@ -105,8 +107,11 @@ public class ImagePagerAdapter extends BaseAdapter {
                         .getPosition(position));
 
                 Bundle bundle = new Bundle();
-                bundle.putString("url", url);
+                bundle.putString("url", getNewUrl(url));
                 bundle.putString("title", title);
+                Log.e("ImagePagerAdapter", "url: "+url );
+                Log.e("ImagePagerAdapter", "newUrl: "+getNewUrl(url) );
+                Log.e("ImagePagerAdapter", "title: "+title );
                 Intent intent = new Intent(context, UrlActivity.class);
                 intent.putExtras(bundle);
                 context.startActivity(intent);
@@ -134,6 +139,14 @@ public class ImagePagerAdapter extends BaseAdapter {
     public ImagePagerAdapter setInfiniteLoop(boolean isInfiniteLoop) {
         this.isInfiniteLoop = isInfiniteLoop;
         return this;
+    }
+
+    public String getNewUrl(String oldUrl) {
+        String result=oldUrl;
+        if (result.contains("#")) {
+            result=result.substring(0,result.indexOf("#"))+ Constants.getUserPhone();
+        }
+        return result;
     }
 
 }

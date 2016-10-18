@@ -250,6 +250,7 @@
                 android:background="@color/colorLine" />
 
             <RelativeLayout
+                android:visibility="gone"
                 android:id="@+id/rl_lovedMovementArea"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
@@ -313,6 +314,7 @@
                 android:background="@color/colorLine" />
 
             <RelativeLayout
+                android:visibility="gone"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:background="@color/white">

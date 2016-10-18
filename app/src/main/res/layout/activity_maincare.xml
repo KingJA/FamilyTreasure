@@ -1,154 +1,69 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
+    <include layout="@layout/layout_main_title" />
+
     <RelativeLayout
-        android:id="@+id/relative_title"
-        android:layout_width="match_parent"
-        android:layout_height="45dp"
-        android:background="@color/colorPrimaryDark">
-        <FrameLayout
-            android:id="@+id/fl_menu"
-            android:layout_width="45dp"
-            android:layout_height="45dp">
-            <ImageView
-                android:layout_gravity="center"
-                android:layout_width="25dp"
-                android:layout_height="18dp"
-                android:background="@drawable/menu_black"
-                android:scaleType="center" />
-
-        </FrameLayout>
-        <TextView
-            android:id="@+id/text_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:text="亲情关爱"
-            android:textColor="@color/black"
-            android:textSize="18sp" />
-
-        <TextView
-            android:id="@+id/text_deal"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:layout_marginRight="15dp"
-            android:clickable="true"
-            android:text="下一步"
-            android:textColor="@color/black"
-            android:textSize="15sp"
-            android:visibility="gone" />
-
-
-
-        <ImageView
-            android:id="@+id/image_scan"
-            android:layout_width="45dp"
-            android:layout_height="45dp"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:background="@drawable/image_scanchange"
-            android:clickable="true"
-            android:scaleType="center"
-             />
-
-    </RelativeLayout>
-    <LinearLayout
-        android:orientation="vertical"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-    <ListView
-        android:layout_weight="1"
-        android:id="@+id/list_care"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_alignParentTop="true"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="46dp"
-        android:cacheColorHint="@color/transparent"
-        android:divider="@drawable/list_divider"
-        android:dividerHeight="1px"
-        android:focusableInTouchMode="true"
-        android:listSelector="@color/transparent"
-        android:minHeight="80dp"
-        android:paddingLeft="5dp"
-        android:scrollbarFadeDuration="0"
-        android:scrollbars="none" />
+        android:layout_weight="1"
+        android:orientation="vertical">
 
-    <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="1px"
-        android:background="@color/colorLine" />
+        <ListView
+            android:id="@+id/list_care"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignParentTop="true"
+            android:layout_gravity="center_horizontal"
+            android:layout_weight="1"
+            android:cacheColorHint="@color/transparent"
+            android:divider="@drawable/list_divider"
+            android:dividerHeight="1px"
+            android:focusableInTouchMode="true"
+            android:listSelector="@color/transparent"
+            android:minHeight="80dp"
+            android:paddingLeft="5dp"
+            android:scrollbarFadeDuration="0"
+            android:scrollbars="none" />
 
-    <RelativeLayout
-        android:id="@+id/relative_noData"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="46dp"
-        android:background="@color/white"
-        android:visibility="gone">
+        <!--      <ImageView
+                  android:layout_width="match_parent"
+                  android:layout_height="1px"
+                  android:background="@color/colorLine" />-->
 
-        <ImageView
-            android:id="@+id/image_noData"
-            android:layout_width="115dp"
-            android:layout_height="115dp"
-            android:layout_marginTop="63dp"
-            android:background="@mipmap/image_nodata"
-            android:layout_centerHorizontal="true"/>
+        <RelativeLayout
+            android:id="@+id/relative_noData"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/white"
+            android:gravity="center">
 
-        <TextView
-            android:id="@+id/text_noData"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="15sp"
-            android:layout_centerInParent="true"
-            android:layout_below="@id/image_noData"
-            android:layout_marginTop="33dp"
-            android:textColor="#CCC"
-            android:text="没有数据"/>
+            <ImageView
+                android:id="@+id/image_noData"
+                android:layout_width="115dp"
+                android:layout_height="115dp"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="63dp"
+                android:background="@mipmap/image_nodata" />
+
+            <TextView
+                android:id="@+id/text_noData"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/image_noData"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="33dp"
+                android:text="没有数据"
+                android:textColor="#CCC"
+                android:textSize="15sp" />
+
+        </RelativeLayout>
+
 
     </RelativeLayout>
 
-    <FrameLayout
-        android:id="@+id/frame_banner"
-        android:layout_width="fill_parent"
-        android:layout_height="78dp"
-        android:layout_gravity="bottom"
-        android:orientation="vertical">
-
-        <com.tdr.familytreasure.ui.ViewFlow
-            android:id="@+id/view_pic"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent" />
-
-        <FrameLayout
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
-            android:background="@color/transparent"
-            android:gravity="center"
-            android:padding="3dip">
-
-            <com.tdr.familytreasure.ui.CircleFlowIndicator
-                android:id="@+id/indicator_point"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal|bottom"
-                android:padding="2dip"
-                android:visibility="gone"
-                app:activeColor="@color/white"
-                app:activeType="fill"
-                app:circleSeparation="20dip"
-                app:inactiveColor="#ffffff"
-                app:inactiveType="fill"
-                app:radius="4dp" />
-        </FrameLayout>
-    </FrameLayout>
-    </LinearLayout>
-</FrameLayout>
+    <include layout="@layout/layout_main_banner" />
+</LinearLayout>

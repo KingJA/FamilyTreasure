@@ -360,7 +360,7 @@ public class AddGuardianActivity extends Activity implements View.OnClickListene
                     }
                     jsonObject.put("CARENUMBER", mInfo.getCareNumber());
                     jsonObject.put("LRINFO", lrInfoObj);
-                    jsonObject.put("LRPARAM", lrParamObj);
+//                    jsonObject.put("LRPARAM", lrParamObj);
                     jsonObject.put("PHOTOINFO", photoObj);
                     jsonObject.put("CUSTMERHEALTHINFO", healthObj);
                     jsonObject.put("REGISTERINFO", registerInfoObj);

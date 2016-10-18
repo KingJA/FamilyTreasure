@@ -40,9 +40,10 @@
         <!--高德地图定位-->
         <meta-data
             android:name="com.amap.api.v2.apikey"
-            android:value="70aa8c6a4d9d08c473cc425b1be1971f" />
+            android:value="b8471c856f50ef9594c4e59afaf7d69a" />
         <!--高德地图定位结束-->
-       <!-- 测试bd26135ac6cb64cb49e70e34b128ec39-->
+       <!-- 测试 bd26135ac6cb64cb49e70e34b128ec39-->
+       <!-- 正式 b8471c856f50ef9594c4e59afaf7d69a--><!--70aa8c6a4d9d08c473cc425b1be1971f-->
 
         <activity android:name=".activity.ForgetPwdActivity" android:screenOrientation="portrait"/>
         <activity android:name=".activity.SetPwdActivity" android:screenOrientation="portrait"/>

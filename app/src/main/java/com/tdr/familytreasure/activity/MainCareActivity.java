@@ -19,6 +19,7 @@ import android.widget.Toast;
 
 
 import com.daimajia.swipe.util.Attributes;
+import com.google.gson.Gson;
 import com.kingja.ui.popupwindow.BottomListPop;
 import com.orhanobut.logger.Logger;
 import com.tdr.familytreasure.R;
@@ -48,6 +49,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 老人关爱主界面
@@ -148,6 +150,8 @@ public class MainCareActivity extends Activity implements View.OnClickListener, 
         map1.put("taskId", "");
         map1.put("DataTypeCode", "GetBannerInfo");
         map1.put("content", "");
+        Gson gson = new Gson();
+        Logger.json(gson.toJson(map1));
         WebServiceUtils.callWebService(Constants.WEBSERVER_URL, Constants.WEBSERVER_REREQUEST, map1, new WebServiceUtils.WebServiceCallBack() {
             @Override
             public void callBack(String result) {

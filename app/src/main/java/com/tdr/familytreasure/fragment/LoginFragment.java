@@ -136,6 +136,7 @@ public class LoginFragment extends BaseFragment implements View.OnClickListener,
                                 int resultCode = object.getInt("ResultCode");
                                 String resultText = Utils.initNullStr(object.getString("ResultText"));
                                 if (resultCode == 0) {
+
                                     String content = object.getString("Content");
                                     JSONObject obj = new JSONObject(content);
                                     Constants.setUserId(Utils.initNullStr(obj.getString("UserID")));
@@ -155,8 +156,8 @@ public class LoginFragment extends BaseFragment implements View.OnClickListener,
                                         Constants.setCityCode(Utils.initNullStr(json.getString("CityCode")));
                                     }
                                     mProgressHUD.dismiss();
-                                    goMainCareActivity();
-//                                    cardLogin();
+
+                                   sendCurrentCityCode("3303");
                                 } else {
                                     mProgressHUD.dismiss();
                                     Utils.myToast(mActivity, resultText);
@@ -185,38 +186,6 @@ public class LoginFragment extends BaseFragment implements View.OnClickListener,
 
     }
 
-    private void cardLogin() {
-        mProgressHUD.show();
-        LoginInfo mInfo = new LoginInfo();
-        PhoneInfo phoneInfo = new PhoneUtil(getActivity()).getInfo();
-        mInfo.setTaskID("1");
-        mInfo.setREALNAME("admin");
-        mInfo.setIDENTITYCARD("33030219890530401x");
-        mInfo.setPHONENUM(DataManager.getUserPhone());
-        mInfo.setSOFTVERSION(AppInfoUtil.getVersionName());
-        mInfo.setSOFTTYPE(1);
-        mInfo.setCARDTYPE("1005");
-        mInfo.setPHONEINFO(phoneInfo);
-        mInfo.setSOFTVERSION(AppInfoUtil.getVersionName());
-        mInfo.setTaskID("1");
-        new ThreadPoolTask.Builder()
-                .setGeneralParam(DataManager.getToken(), "1005", "User_LogInForKaBao", mInfo)
-                .setBeanType(User_LogInForKaBao.class)
-                .setCallBack(new WebServiceCallBack<User_LogInForKaBao>() {
-                    @Override
-                    public void onSuccess(User_LogInForKaBao bean) {
-                        mProgressHUD.dismiss();
-                       goMainCareActivity();
-                    }
-
-
-
-                    @Override
-                    public void onErrorResult(ErrorResult errorResult) {
-                        mProgressHUD.dismiss();
-                    }
-                }).build().execute();
-    }
 
     private void goMainCareActivity() {
         Intent intent = new Intent(mActivity, MainCareActivity.class);
@@ -227,5 +196,48 @@ public class LoginFragment extends BaseFragment implements View.OnClickListener,
     @Override
     public boolean handleMessage(Message message) {
         return false;
+    }
+
+    private void sendCurrentCityCode(final String cityCode) {
+        if (!Constants.getToken().equals("")) {
+            mProgressHUD.show();
+            //Token不为空则说明用户已经登录，发送设置当前城市指令
+            JSONObject json = new JSONObject();
+            try {
+                json.put("CityCode", cityCode);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            HashMap<String, String> map = new HashMap<>();
+            map.put("token", Constants.getToken());
+            map.put("cardType", "");
+            map.put("taskId", "");
+            map.put("DataTypeCode", "EditCurrentCity");
+            map.put("content", json.toString());
+            WebServiceUtils.callWebService(Constants.WEBSERVER_URL, Constants.WEBSERVER_REREQUEST, map, new WebServiceUtils.WebServiceCallBack() {
+                @Override
+                public void callBack(String result) {
+                    if (result != null) {
+                        mProgressHUD.dismiss();
+                        try {
+                            JSONObject jsonObject = new JSONObject(result);
+                            int resultCode = jsonObject.getInt("ResultCode");
+                            String resultText = Utils.initNullStr(jsonObject.getString("ResultText"));
+                            if (resultCode == 0) {
+                                goMainCareActivity();
+                                Log.e(TAG, "城市设置成功");
+                            } else {
+                                Log.e(TAG, resultText);
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                            Log.e(TAG, "设置当前城市JSON解析出错");
+                        }
+                    } else {
+                        Log.e(TAG, "获取数据错误，请稍后重试！");
+                    }
+                }
+            });
+        }
     }
 }

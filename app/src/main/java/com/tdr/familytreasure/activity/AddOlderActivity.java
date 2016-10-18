@@ -326,16 +326,16 @@ public class AddOlderActivity extends Activity implements View.OnClickListener {
                     break;
                 }
 
-                String lovedMovementArea = text_lovedMovementArea.getText().toString().trim();
-                if (lovedMovementArea.equals("")) {
-                    Utils.myToast(mContext, "请选择关爱人活动中心点");
-                    break;
-                }
-
-                if (alarmDistance.equals("")) {
-                    Utils.myToast(mContext, "请选择关爱人预警距离");
-                    break;
-                }
+//                String lovedMovementArea = text_lovedMovementArea.getText().toString().trim();
+//                if (lovedMovementArea.equals("")) {
+//                    Utils.myToast(mContext, "请选择关爱人活动中心点");
+//                    break;
+//                }
+//
+//                if (alarmDistance.equals("")) {
+//                    Utils.myToast(mContext, "请选择关爱人预警距离");
+//                    break;
+//                }
 
                 String bodyPhoto = Constants.getBodyPhoto();
                 if (bodyPhoto.equals("")) {

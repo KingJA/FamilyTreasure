@@ -8,8 +8,8 @@ android {
         applicationId "com.tdr.familytreasure"
         minSdkVersion 19
         targetSdkVersion 23
-        versionCode 1
-        versionName "1.0"
+        versionCode 20161013
+        versionName "1.1.6"
 
         ndk {
             abiFilters "armeabi", "armeabi-v7a", "x86", "mips"
