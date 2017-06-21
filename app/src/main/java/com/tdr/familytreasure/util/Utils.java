@@ -287,7 +287,7 @@ public class Utils {
             sb.append("*");
         }
         String newId = id.substring(0, 2) + sb.toString()
-                + id.substring(id.length()-3, id.length()-1);
+                + id.substring(id.length()-2);
         return newId;
     }
 

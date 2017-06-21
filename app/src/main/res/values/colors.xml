@@ -32,7 +32,7 @@
     <color name="transparent4">#33000000</color>
 
     <color name="colorSearch">#666666</color>
-    
+
     <color name="colorBattery">#FD584D</color>
 
     <!-- 按钮颜色 -->
@@ -66,5 +66,5 @@
     <color name="bg_age">#E3BEA9</color>
     <color name="bg_man">#AEC7F2</color>
     <color name="bg_woman">#FEB3C5</color>
-
+    <color name="gray">#d1d1d1</color>
 </resources>

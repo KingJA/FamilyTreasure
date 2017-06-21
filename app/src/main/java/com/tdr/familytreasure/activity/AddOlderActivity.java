@@ -15,6 +15,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -22,22 +23,27 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 
-import com.flyco.dialog.listener.OnBtnClickL;
 import com.flyco.dialog.widget.NormalDialog;
 import com.tdr.familytreasure.R;
 import com.tdr.familytreasure.amap.MapActivity;
+import com.tdr.familytreasure.dao.DbDaoXutils3;
+import com.tdr.familytreasure.entiy.Basic_PaiChuSuo_Kj;
+import com.tdr.familytreasure.entiy.Basic_XingZhengQuHua_Kj;
 import com.tdr.familytreasure.entiy.GuardianInfo;
 import com.tdr.familytreasure.entiy.OlderInfo;
+import com.tdr.familytreasure.ui.PaichusuoBottomWheelView;
 import com.tdr.familytreasure.ui.SelectPicPopupWindow;
 import com.tdr.familytreasure.ui.ZProgressHUD;
 import com.tdr.familytreasure.util.Constants;
 import com.tdr.familytreasure.util.DialogUtil;
+import com.tdr.familytreasure.util.ToastUtil;
 import com.tdr.familytreasure.util.Utils;
 import com.tdr.familytreasure.util.WebServiceUtils;
 
@@ -50,6 +56,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 添加老人
@@ -90,6 +97,14 @@ public class AddOlderActivity extends Activity implements View.OnClickListener {
     private ZProgressHUD mProgressHUD;
     private RelativeLayout rl_lovedMovementArea;
     private NormalDialog quitDialog;
+    private LinearLayout ll_select_area;
+    private LinearLayout ll_select_police;
+    private TextView tv_add_area;
+    private TextView tv_add_police;
+    private String mPaichusuoCDZM;
+    private PaichusuoBottomWheelView mPaichusuoBottomWheelView;
+    private List<Basic_PaiChuSuo_Kj> paichusuoDbList;
+    private TextView tv_add_watchType;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,7 +113,7 @@ public class AddOlderActivity extends Activity implements View.OnClickListener {
         setContentView(R.layout.activity_addoler);
 
         mContext = this;
-
+//        initAreaPop();
         initView();
         String code = getIntent().getStringExtra("code");
         SmartId = getIntent().getStringExtra("SmartId");
@@ -182,14 +197,22 @@ public class AddOlderActivity extends Activity implements View.OnClickListener {
     private RadioButton radio_oneKM, radio_twoKM, radio_threeKM;
     private ImageView image_loc, image_bodyphoto;
     private CheckBox check_hypertension, check_diabetes, check_heartdisease;
+    private Map<String, List<String>> paichusuoMap=new HashMap<>();
 
     private void initView() {
+        tv_add_watchType = (TextView) findViewById(R.id.tv_add_watchType);
+        tv_add_area = (TextView) findViewById(R.id.tv_add_area);
+        tv_add_police = (TextView) findViewById(R.id.tv_add_police);
+        ll_select_area = (LinearLayout) findViewById(R.id.ll_select_area);
+        ll_select_police = (LinearLayout) findViewById(R.id.ll_select_police);
         image_back = (ImageView) findViewById(R.id.fl_menu);
         image_back.setOnClickListener(this);
         text_title = (TextView) findViewById(R.id.text_title);
         text_title.setText("添加老人");
         text_deal = (TextView) findViewById(R.id.text_deal);
         text_deal.setOnClickListener(this);
+        ll_select_area.setOnClickListener(this);
+        ll_select_police.setOnClickListener(this);
         text_deal.setVisibility(View.VISIBLE);
 
         text_code = (TextView) findViewById(R.id.text_code);
@@ -398,9 +421,41 @@ public class AddOlderActivity extends Activity implements View.OnClickListener {
                 startActivityForResult(intentFromGallery, IMAGE_REQUEST_CODE);
                 mSelectPicPopupWindow.dismiss();
                 break;
+            case R.id.ll_select_police:
+//                if (TextUtils.isEmpty(mPaichusuoCDZM)) {
+//                    ToastUtil.showToast("请选择辖区");
+//                }else{
+//                    initPolicePop();
+//                }
+                break;
+            case R.id.ll_select_area:
+//                mPaichusuoBottomWheelView.showPopupWindow();
+                break;
         }
     }
 
+    private void initPolicePop() {
+        List<Basic_PaiChuSuo_Kj> selectPaichusuoList=new ArrayList<>();
+        for (Basic_PaiChuSuo_Kj bean : paichusuoDbList) {
+            if (bean.getDMZM().startsWith(mPaichusuoCDZM)) {
+                selectPaichusuoList.add(bean);
+            }
+        }
+    }
+
+    private void initAreaPop() {
+        List<Basic_XingZhengQuHua_Kj> xingZhengQuHuaDbList =  (List<Basic_XingZhengQuHua_Kj>) DbDaoXutils3.getInstance().sleectAllDb(Basic_XingZhengQuHua_Kj.class);
+        paichusuoDbList = (List<Basic_PaiChuSuo_Kj>) DbDaoXutils3.getInstance().sleectAllDb(Basic_PaiChuSuo_Kj.class);
+
+        mPaichusuoBottomWheelView = new PaichusuoBottomWheelView(ll_select_area, this, xingZhengQuHuaDbList);
+        mPaichusuoBottomWheelView.setOnPopItemClickListener(new PaichusuoBottomWheelView.OnPopItemClickListener() {
+            @Override
+            public void onPopItemClick(String id, String tag) {
+                mPaichusuoCDZM = id;
+                tv_add_area.setText(tag);
+            }
+        });
+    }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);

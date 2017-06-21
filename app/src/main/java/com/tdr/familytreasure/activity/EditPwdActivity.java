@@ -96,7 +96,7 @@ public class EditPwdActivity extends Activity {
                 oldPwd= MD5.getMD5(oldPwd);
                 newPwd= MD5.getMD5(newPwd);
                 upLoad(oldPwd,newPwd);
-            } catch (NoSuchAlgorithmException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
 

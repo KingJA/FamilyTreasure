@@ -54,4 +54,41 @@
         <item name="android:button">@drawable/image_checkchange</item>
         <item name="android:paddingLeft">10dp</item>
     </style>
+    <!--对话框样式-->
+    <style name="CustomAlertDialog" parent="@android:style/Theme.Dialog">
+        <item name="android:windowBackground">@drawable/shape_lnull_bwhite_r8</item>
+        <item name="android:windowNoTitle">true</item>
+    </style>
+
+    <style name="font_red_12">
+        <item name="android:textSize">12sp</item>
+        <item name="android:textColor">@color/bg_red</item>
+        <item name="android:singleLine">true</item>
+    </style>
+
+    <style name="font_9_12">
+        <item name="android:textSize">12sp</item>
+        <item name="android:textColor">@color/font_9</item>
+        <item name="android:singleLine">true</item>
+    </style>
+    <style name="font_blue_14">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/font_blue</item>
+    </style>
+    <style name="font_9_14">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/font_9</item>
+        <item name="android:singleLine">true</item>
+    </style>
+
+    <style name="met_nomal">
+        <item name="android:singleLine">true</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">14sp</item>
+        <item name="com.tdr.familytreasure:met_baseColor">@color/font_6</item>
+        <item name="com.tdr.familytreasure:met_clearButton">true</item>
+        <item name="com.tdr.familytreasure:met_floatingLabel">normal</item>
+        <item name="com.tdr.familytreasure:met_primaryColor">@color/bg_blue</item>
+    </style>
 </resources>

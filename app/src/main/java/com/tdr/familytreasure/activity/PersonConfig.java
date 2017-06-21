@@ -225,6 +225,7 @@ public class PersonConfig extends Activity implements View.OnClickListener {
         text_olderPhone.setText(bean.getLRINFO().getCUSTOMMOBILE());
         identity = bean.getLRINFO().getCUSTOMERIDCARD();
         hideIdentity = Utils.hideID(identity);
+        Log.e(TAG, "hideIdentity: "+hideIdentity );
         text_odlerIdentity.setText(hideIdentity);
         text_olderAddress.setText(bean.getLRINFO().getCUSTOMERADDRESS());
         text_olderHealth.setText(bean.getCUSTMERHEALTHINFO().getHEALTHCONDITION().replace(",", "  "));

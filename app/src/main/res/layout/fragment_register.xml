@@ -33,7 +33,7 @@
                 android:background="@color/colorHint" />
 
             <com.tdr.familytreasure.ui.MaterialEditText
-                android:id="@+id/material_registerPhoone"
+                android:id="@+id/met_phone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="11dp"
@@ -55,7 +55,7 @@
 
 
         <Button
-            android:id="@+id/btn_code"
+            android:id="@+id/btn_getCode"
             android:layout_width="match_parent"
             android:layout_height="37dp"
             android:layout_marginTop="35dp"

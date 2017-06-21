@@ -121,7 +121,7 @@ public class GuardianActivity extends Activity implements View.OnClickListener {
                         Utils.myToast(mContext, "验证码错误");
                         break;
                     }
-                } catch (NoSuchAlgorithmException e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
 

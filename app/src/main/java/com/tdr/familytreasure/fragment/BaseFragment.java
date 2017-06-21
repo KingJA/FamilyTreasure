@@ -1,57 +1,73 @@
 package com.tdr.familytreasure.fragment;
 
-import android.app.Activity;
-import android.content.Intent;
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 /**
- * Created by Linus_Xie on 2016/8/2.
+ * Description：TODO
+ * Create Time：2016/8/19 13:57
+ * Author:KingJA
+ * Email:kingjavip@gmail.com
  */
 public abstract class BaseFragment extends Fragment {
 
-    public Activity mActivity;
-    public final static int ERROR = 4001;
+    private ProgressDialog mProgressDialog;
 
-    // fragment创建
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        mActivity = getActivity();
+    public void onAttach(Context context) {
+        super.onAttach(context);
     }
 
-    // 处理fragment的布局
+    @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return initView();
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(getLayoutId(), container, false);
+        initFragmentView(view, savedInstanceState);
+        return view;
     }
 
-    // 依附的activity创建完成
     @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
-        initData();
+        initConmonView();
+        initFragmentVariables();
+        initFragmentNet();
+        initFragmentData();
+        setFragmentData();
     }
 
-    // 子类必须实现初始化布局的方法
-    public abstract View initView();
+    public abstract int getLayoutId();
+    public abstract void initFragmentView(View view, Bundle savedInstanceState);
+    public abstract void initFragmentVariables();
+    public abstract void initFragmentNet();
+    public abstract void initFragmentData();
+    public abstract void setFragmentData();
 
-    // 初始化数据, 可以不实现
-    public void initData() {
-
+    private void initConmonView() {
+        mProgressDialog = new ProgressDialog(getActivity());
     }
 
-    // 回调
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        // TODO Auto-generated method stub
-        super.onActivityResult(requestCode, resultCode, data);
+    protected void setProgressDialog(boolean show, String msg) {
+        if (show) {
+            mProgressDialog.setMessage(msg);
+            mProgressDialog.show();
+        } else {
+            mProgressDialog.dismiss();
+        }
     }
 
-
+    protected void setProgressDialog(boolean show) {
+        if (show) {
+            mProgressDialog.setMessage("加载中...");
+            mProgressDialog.show();
+        } else {
+            mProgressDialog.dismiss();
+        }
+    }
 }
-

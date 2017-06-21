@@ -13,6 +13,7 @@ public class Constants {
 
     public static final String SAVE_PATH = Environment.getExternalStorageDirectory() + "/Wisdom/com.tdr.wisdome/cardImage/";
 
+    public static final String DATABASE_NAME  = "FamilyTreasure.db";
     public static final int HANDLER_KEY_GETVERSION_SUCCESS = 0;
     public static final int HANDLER_KEY_GETVERSION_FAIL = HANDLER_KEY_GETVERSION_SUCCESS + 1;
     /**

@@ -10,6 +10,7 @@ import com.tdr.familytreasure.fragment.LoginFragment;
 import com.tdr.familytreasure.fragment.RegisterFragment;
 import com.tdr.familytreasure.update.GetVersionCodeAsynckTask;
 import com.tdr.familytreasure.update.UpdateManager;
+import com.tdr.familytreasure.util.ActivityManager;
 import com.tdr.familytreasure.util.Constants;
 import com.tdr.familytreasure.util.Utils;
 import com.tdr.familytreasure.util.WebServiceUtils;
@@ -38,6 +39,7 @@ public class LoginActivity extends IndicatorFragmentActivity implements Handler.
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        ActivityManager.getAppManager().addActivity(this);
         mHandler = new Handler(this);
         GetVersionCodeAsynckTask asynckTask = new GetVersionCodeAsynckTask(this, mHandler);
         asynckTask.execute("FamilyTreasure.apk");
@@ -68,4 +70,9 @@ public class LoginActivity extends IndicatorFragmentActivity implements Handler.
         return false;
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        ActivityManager.getAppManager().finishActivity(this);
+    }
 }

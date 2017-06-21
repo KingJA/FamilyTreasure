@@ -156,7 +156,7 @@
                 android:background="@color/colorLine" />
 
             <Button
-                android:id="@+id/btn_complete"
+                android:id="@+id/btn_register"
                 android:layout_width="match_parent"
                 android:layout_height="37dp"
                 android:layout_marginTop="35dp"

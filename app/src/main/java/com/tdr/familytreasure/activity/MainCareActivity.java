@@ -700,6 +700,7 @@ public class MainCareActivity extends Activity implements View.OnClickListener, 
             firstTime = secondTime;
         } else {
             finish();
+            System.exit(0);
         }
     }
 

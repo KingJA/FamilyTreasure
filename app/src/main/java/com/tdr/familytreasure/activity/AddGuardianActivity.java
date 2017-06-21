@@ -199,7 +199,7 @@ public class AddGuardianActivity extends Activity implements View.OnClickListene
                         Utils.myToast(mContext, "监护人1的验证码错误");
                         break;
                     }
-                } catch (NoSuchAlgorithmException e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
                 String guardianAddress1 = edit_guardianAddress1.getText().toString().trim();
@@ -245,7 +245,7 @@ public class AddGuardianActivity extends Activity implements View.OnClickListene
                             Utils.myToast(mContext, "监护人2的验证码错误");
                             break;
                         }
-                    } catch (NoSuchAlgorithmException e) {
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
 
@@ -293,7 +293,7 @@ public class AddGuardianActivity extends Activity implements View.OnClickListene
                             Utils.myToast(mContext, "监护人3的验证码错误");
                             break;
                         }
-                    } catch (NoSuchAlgorithmException e) {
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
 

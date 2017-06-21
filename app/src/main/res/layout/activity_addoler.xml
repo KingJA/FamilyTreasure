@@ -59,7 +59,46 @@
                 android:layout_width="match_parent"
                 android:layout_height="1px"
                 android:background="@color/colorLine" />
+            <LinearLayout
+                android:visibility="gone"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="@color/white"
+                android:orientation="horizontal">
 
+                <LinearLayout
+                    android:layout_width="85dp"
+                    android:layout_height="match_parent"
+                    android:gravity="right"
+                    android:orientation="horizontal">
+
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:text="腕表类型"
+                        android:textColor="@color/colorInput"
+                        android:textSize="15sp" />
+
+                </LinearLayout>
+
+                    <TextView
+                        android:hint="通过扫二维码获取"
+                        android:gravity="center_vertical"
+                        android:id="@+id/tv_add_watchType"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="15dp"
+                        android:textColor="@color/colorInput"
+                        android:textColorHint="@color/colorHint"
+                        android:textSize="15sp" />
+            </LinearLayout>
+<!--
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:background="@color/colorLine" />-->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
@@ -195,6 +234,110 @@
 
             </LinearLayout>
 
+        <!--    <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:background="@color/colorLine" />-->
+            <LinearLayout
+                android:visibility="gone"
+                android:id="@+id/ll_select_area"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="@color/white"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="85dp"
+                    android:layout_height="match_parent"
+                    android:gravity="right"
+                    android:orientation="horizontal">
+
+
+                    <com.kingja.ui.RequiredTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:text="辖区"
+                        android:textColor="@color/colorInput"
+                        android:textSize="15sp" />
+
+                </LinearLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                <TextView
+                    android:hint="请选择辖区"
+                    android:gravity="center_vertical"
+                    android:id="@+id/tv_add_area"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="15dp"
+                    android:textColor="@color/colorInput"
+                    android:textColorHint="@color/colorHint"
+                    android:textSize="15sp" />
+                    <ImageView
+                        android:layout_marginRight="16dp"
+                        android:layout_centerVertical="true"
+                        android:layout_alignParentRight="true"
+                        android:background="@drawable/arrow_right"
+                        android:layout_width="15dp"
+                        android:layout_height="15dp" />
+                </RelativeLayout>
+            </LinearLayout>
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:background="@color/colorLine" />
+            <LinearLayout
+                android:visibility="gone"
+                android:id="@+id/ll_select_police"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="@color/white"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="85dp"
+                    android:layout_height="match_parent"
+                    android:gravity="right"
+                    android:orientation="horizontal">
+
+                    <com.kingja.ui.RequiredTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:text="派出所"
+                        android:textColor="@color/colorInput"
+                        android:textSize="15sp" />
+
+                </LinearLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:hint="请选择派出所"
+                        android:gravity="center_vertical"
+                        android:id="@+id/tv_add_police"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="15dp"
+                        android:textColor="@color/colorInput"
+                        android:textColorHint="@color/colorHint"
+                        android:textSize="15sp" />
+                    <ImageView
+                        android:layout_marginRight="16dp"
+                        android:layout_centerVertical="true"
+                        android:layout_alignParentRight="true"
+                        android:background="@drawable/arrow_right"
+                        android:layout_width="15dp"
+                        android:layout_height="15dp" />
+                </RelativeLayout>
+
+            </LinearLayout>
+
             <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="1px"
@@ -244,10 +387,10 @@
 
             </LinearLayout>
 
-            <ImageView
+      <!--      <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="1px"
-                android:background="@color/colorLine" />
+                android:background="@color/colorLine" />-->
 
             <RelativeLayout
                 android:visibility="gone"

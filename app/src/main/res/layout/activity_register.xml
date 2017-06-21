@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:background="@color/colorBg"
+              android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="24dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <com.tdr.familytreasure.ui.MaterialEditText
+                android:id="@+id/met_code"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:hint="验证码"
+                android:inputType="number"
+                android:textSize="15sp"
+                app:met_baseColor="@color/colorInput"
+                app:met_clearButton="true"
+                app:met_floatingLabel="normal"
+                app:met_hideUnderline="false"
+                app:met_underlineColor="@color/colorLine"
+                app:met_primaryColor="@color/colorLine"
+                app:met_singleLineEllipsis="true"/>
+
+            <TextView
+                android:id="@+id/btn_getCode"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="等待60秒"
+                android:textColor="@drawable/textlogin_change"
+                android:textSize="15sp"/>
+
+        </LinearLayout>
+
+
+        <com.tdr.familytreasure.ui.MaterialEditText
+            android:id="@+id/met_password"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12.5dp"
+            android:hint="密码（长度6-16位）"
+            android:inputType="textPassword"
+            android:textSize="15sp"
+            app:met_baseColor="@color/colorInput"
+            app:met_clearButton="true"
+            app:met_floatingLabel="normal"
+            app:met_hideUnderline="false"
+            app:met_underlineColor="@color/colorLine"
+            app:met_primaryColor="@color/colorLine"
+            app:met_singleLineEllipsis="true"/>
+
+        <com.tdr.familytreasure.ui.MaterialEditText
+            android:id="@+id/met_passwordRepeat"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12.5dp"
+            android:hint="重复密码"
+            android:inputType="textPassword"
+            android:textSize="15sp"
+            app:met_baseColor="@color/colorInput"
+            app:met_clearButton="true"
+            app:met_floatingLabel="normal"
+            app:met_hideUnderline="false"
+            app:met_underlineColor="@color/colorLine"
+            app:met_primaryColor="@color/colorLine"
+            app:met_singleLineEllipsis="true"/>
+
+
+        <Button
+            android:id="@+id/btn_register"
+            android:layout_width="match_parent"
+            android:layout_height="37dp"
+            android:layout_marginTop="35dp"
+            android:background="@drawable/btnlogin_change"
+            android:text="完成"
+            android:textColor="@drawable/textlogin_change"
+            android:textSize="15sp"/>
+
+
+    </LinearLayout>
+
+
+</LinearLayout>

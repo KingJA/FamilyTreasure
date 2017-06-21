@@ -1,132 +1,91 @@
 package com.tdr.familytreasure.fragment;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
-
 import com.tdr.familytreasure.R;
-import com.tdr.familytreasure.activity.SetPwdActivity;
+import com.tdr.familytreasure.activity.RegisterActivity;
+import com.tdr.familytreasure.entiy.ErrorResult;
+import com.tdr.familytreasure.entiy.IsRegisterPhone;
+import com.tdr.familytreasure.net.ThreadPoolTask;
+import com.tdr.familytreasure.net.WebServiceCallBack;
 import com.tdr.familytreasure.ui.MaterialEditText;
-import com.tdr.familytreasure.util.Constants;
-import com.tdr.familytreasure.util.TimeCountUtil;
-import com.tdr.familytreasure.util.Utils;
-import com.tdr.familytreasure.util.WebServiceUtils;
-
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.tdr.familytreasure.util.CheckUtil;
+import com.tdr.familytreasure.util.ToastUtil;
 
 import java.util.HashMap;
+import java.util.Map;
 
-/**
- * 注册
- * Created by Linus_Xie on 2016/8/2.
- */
-public class RegisterFragment extends BaseFragment implements View.OnClickListener {
 
-    private static final String TAG = "LoginFragment";
+public class RegisterFragment extends BaseFragment {
+    private MaterialEditText met_phone;
+    private Button btn_getCode;
+    private String phone;
 
-    private MaterialEditText material_registerPhoone;
-    private Button btn_code;
-
-    private String phoneNum = "";
 
     @Override
-    public View initView() {
-        View view = View.inflate(mActivity, R.layout.fragment_register, null);
-        material_registerPhoone = (MaterialEditText) view.findViewById(R.id.material_registerPhoone);
-        btn_code = (Button) view.findViewById(R.id.btn_code);
-        btn_code.setOnClickListener(this);
-        return view;
+    public int getLayoutId() {
+        return R.layout.fragment_register;
     }
 
     @Override
-    public void initData() {
-        super.initData();
+    public void initFragmentView(View view, Bundle savedInstanceState) {
+        met_phone = (MaterialEditText) view.findViewById(R.id.met_phone);
+        btn_getCode = (Button) view.findViewById(R.id.btn_getCode);
     }
 
     @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.btn_code:
-                phoneNum = material_registerPhoone.getText().toString().trim();
-                if (phoneNum.equals("")) {
-                    Utils.myToast(mActivity, "请输入手机号码");
-                    break;
+    public void initFragmentVariables() {
+
+    }
+
+    @Override
+    public void initFragmentNet() {
+
+    }
+
+    @Override
+    public void initFragmentData() {
+        btn_getCode.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                phone = met_phone.getText().toString().trim();
+                if (CheckUtil.checkPhoneFormat(phone)) {
+                    checkIfRegistered();
                 }
+            }
+        });
+    }
 
-                if (!Utils.isPhone(phoneNum)) {
-                    Utils.myToast(mActivity, "请输入正确的手机号");
-                    break;
-                }
-
-                TimeCountUtil timeCountUtil = new TimeCountUtil(mActivity, 60000, 1000, btn_code);
-                timeCountUtil.start();
-
-                HashMap<String, String> map = new HashMap<>();
-                JSONObject obj = new JSONObject();
-                try {
-                    obj.put("phone", phoneNum);
-                    obj.put("CodeType", "1");
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-
-                map.put("token", "");
-                map.put("cardType", "");
-                map.put("taskId", "");
-                map.put("DataTypeCode", "SendCodeSms");
-                map.put("content", obj.toString());
-
-                WebServiceUtils.callWebService(Constants.WEBSERVER_URL, Constants.WEBSERVER_REREQUEST, map, new WebServiceUtils.WebServiceCallBack() {
+    private void checkIfRegistered() {
+        setProgressDialog(true);
+        Map<String, Object> param = new HashMap<>();
+        param.put("phone", phone);
+        new ThreadPoolTask.Builder()
+                .setGeneralParam("", "", "IsRegisterPhone", param)
+                .setBeanType(IsRegisterPhone.class)
+                .setCallBack(new WebServiceCallBack<IsRegisterPhone>() {
                     @Override
-                    public void callBack(String result) {
-                        if (result != null) {
-                            Log.e(TAG, result);
-                            try {
-                                JSONObject object = new JSONObject(result);
-                                int resultCode = object.getInt("ResultCode");
-                                String resultText = Utils.initNullStr(object.getString("ResultText"));
-                                if (resultCode == 0) {
-                                    String content = object.getString("Content");
-                                    JSONObject obj = new JSONObject(content);
-                                    String VerificationCodeID = obj.getString("VerificationCodeID");
-                                    String VerificationCode = obj.getString("VerificationCode");
-                                    Utils.myToast(mActivity, "获取验证码成功");
-                                    Intent intent = new Intent();
-                                    Bundle bundle = new Bundle();
-                                    bundle.putString("phoneNum", material_registerPhoone.getText().toString().trim());
-                                    bundle.putString("activity", "register");
-                                    bundle.putString("VerificationCodeID", VerificationCodeID);
-                                    bundle.putString("VerificationCode", VerificationCode);
-                                    intent.setClass(mActivity, SetPwdActivity.class);
-                                    intent.putExtras(bundle);
-                                    startActivity(intent);
-                                    mActivity.overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
-                                    // CloseActivityUtil.activityFinish(mActivity);
-                                } else {
-                                    Utils.myToast(mActivity, resultText);
-                                }
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                                Utils.myToast(mActivity, "JSON解析出错");
-                            }
-
+                    public void onSuccess(IsRegisterPhone bean) {
+                        setProgressDialog(false);
+                        if (bean.getContent().getCode() == 0) {//未注册过
+                            RegisterActivity.goAcivity(getActivity(), phone);
+                            getActivity().finish();
                         } else {
-                            Utils.myToast(mActivity, "获取数据错误，请稍后重试！");
+                            ToastUtil.showToast("该手机号码已注册过");
                         }
                     }
-                });
 
-                break;
-        }
+                    @Override
+                    public void onErrorResult(ErrorResult errorResult) {
+                        setProgressDialog(false);
+                    }
+                }).build().execute();
     }
 
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
+    public void setFragmentData() {
 
     }
 }

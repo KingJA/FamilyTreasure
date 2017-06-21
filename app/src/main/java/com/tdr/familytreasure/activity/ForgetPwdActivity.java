@@ -102,7 +102,7 @@ public class ForgetPwdActivity extends Activity implements View.OnClickListener 
                 JSONObject obj = new JSONObject();
                 try {
                     obj.put("phone", phoneNum);
-                    obj.put("CodeType", "2");
+                    obj.put("CodeType", "1");
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -134,7 +134,7 @@ public class ForgetPwdActivity extends Activity implements View.OnClickListener 
                                     bundle.putString("activity", "forgetPwd");
                                     bundle.putString("VerificationCodeID", VerificationCodeID);
                                     bundle.putString("VerificationCode", VerificationCode);
-                                    intent.setClass(mContext, SetPwdActivity.class);
+                                    intent.setClass(mContext, RegisterActivity.class);
                                     intent.putExtras(bundle);
                                     startActivity(intent);
                                     overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
