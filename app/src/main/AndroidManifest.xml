@@ -40,7 +40,7 @@
         <!--高德地图定位-->
         <meta-data
             android:name="com.amap.api.v2.apikey"
-            android:value="b8471c856f50ef9594c4e59afaf7d69a" />
+            android:value="70aa8c6a4d9d08c473cc425b1be1971f" />
         <!--高德地图定位结束-->
        <!-- 测试 bd26135ac6cb64cb49e70e34b128ec39-->
        <!-- 正式 b8471c856f50ef9594c4e59afaf7d69a--><!--70aa8c6a4d9d08c473cc425b1be1971f-->
@@ -61,10 +61,10 @@
         <activity android:name=".activity.UrlActivity" android:screenOrientation="portrait"/>
         <activity android:name=".zbar.CaptureActivity" android:screenOrientation="portrait"/>
         <activity android:name=".amap.MapActivity" android:screenOrientation="portrait"/>
-        <activity android:name=".activity.EditPwdActivity" android:screenOrientation="portrait"/>//密码修改
-        <activity android:name=".activity.ForgetActivityPassword" android:screenOrientation="portrait"/>//密码修改
-        <activity android:name=".activity.ForgetActivityCode" android:screenOrientation="portrait"/>//密码修改
-        <activity android:name=".activity.ForgetActivityPhone" android:screenOrientation="portrait"/>//密码修改
+        <activity android:name=".activity.EditPwdActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".activity.ForgetActivityPassword" android:screenOrientation="portrait"/>
+        <activity android:name=".activity.ForgetActivityCode" android:screenOrientation="portrait"/>
+        <activity android:name=".activity.ForgetActivityPhone" android:screenOrientation="portrait"/>
 
 
     </application>

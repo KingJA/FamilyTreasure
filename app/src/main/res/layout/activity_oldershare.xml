@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/linear_pop"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
-
-    <include layout="@layout/layout_title" />
+             android:id="@+id/fl_root"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+             android:orientation="vertical">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -37,15 +35,88 @@
                         android:layout_marginLeft="15dp"
                         android:text="被关爱人"
                         android:textColor="@color/colorHint"
-                        android:textSize="15dp" />
+                        android:textSize="15dp"/>
 
 
                 </RelativeLayout>
 
-                <ImageView
+                <View style="@style/divider_nomal_horizontal"/>
+
+                <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="1px"
-                    android:background="@color/colorLine" />
+                    android:layout_height="50dp"
+                    android:background="@color/white">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="15dp"
+                        android:text="设备编号"
+                        android:textColor="@color/colorInput"
+                        android:textSize="15sp"/>
+
+                    <TextView
+                        android:id="@+id/tv_deviceCode"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="27dp"
+                        android:text=""
+                        android:textColor="@color/colorHint"/>
+
+                    <ImageView
+                        android:layout_width="6dp"
+                        android:layout_height="15dp"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="15dp"
+                        android:background="@mipmap/image_more"
+                        android:visibility="gone"/>
+
+                </RelativeLayout>
+
+                <View style="@style/divider_nomal_horizontal"/>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:background="@color/white">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="15dp"
+                        android:text="设备类型"
+                        android:textColor="@color/colorInput"
+                        android:textSize="15sp"/>
+
+                    <TextView
+                        android:id="@+id/tv_deviceType"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="27dp"
+                        android:text=""
+                        android:textColor="@color/colorHint"/>
+
+                    <ImageView
+                        android:layout_width="6dp"
+                        android:layout_height="15dp"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="15dp"
+                        android:background="@mipmap/image_more"
+                        android:visibility="gone"/>
+
+                </RelativeLayout>
+
+                <View style="@style/divider_nomal_horizontal"/>
 
                 <RelativeLayout
                     android:id="@+id/relative_olderName"
@@ -60,7 +131,7 @@
                         android:layout_centerVertical="true"
                         android:layout_marginLeft="15dp"
                         android:text="姓名"
-                        android:textColor="@color/colorInput" />
+                        android:textColor="@color/colorInput"/>
 
                     <TextView
                         android:id="@+id/text_olderName"
@@ -71,7 +142,7 @@
                         android:layout_marginRight="27dp"
                         android:text=""
                         android:textColor="@color/colorHint"
-                        android:textSize="15sp" />
+                        android:textSize="15sp"/>
 
                     <ImageView
                         android:layout_width="6dp"
@@ -79,14 +150,11 @@
                         android:layout_alignParentRight="true"
                         android:layout_centerVertical="true"
                         android:layout_marginRight="15dp"
-                        android:background="@mipmap/image_more" />
+                        android:background="@mipmap/image_more"/>
 
                 </RelativeLayout>
 
-                <ImageView
-                    android:layout_width="match_parent"
-                    android:layout_height="1px"
-                    android:background="@color/colorLine" />
+                <View style="@style/divider_nomal_horizontal"/>
 
                 <!--Staffing_halfpic-->
                 <RelativeLayout
@@ -102,7 +170,7 @@
                         android:layout_centerVertical="true"
                         android:layout_marginLeft="15dp"
                         android:text="半身照"
-                        android:textColor="@color/colorInput" />
+                        android:textColor="@color/colorInput"/>
 
                     <ImageView
                         android:id="@+id/image_bodyPhoto"
@@ -111,7 +179,7 @@
                         android:layout_alignParentRight="true"
                         android:layout_centerVertical="true"
                         android:layout_marginRight="27dp"
-                        android:background="@mipmap/image_userphoto" />
+                        android:background="@mipmap/image_userphoto"/>
 
                     <ImageView
                         android:layout_width="8dp"
@@ -119,14 +187,11 @@
                         android:layout_alignParentRight="true"
                         android:layout_centerVertical="true"
                         android:layout_marginRight="15dp"
-                        android:background="@mipmap/image_more" />
+                        android:background="@mipmap/image_more"/>
 
                 </RelativeLayout>
 
-                <ImageView
-                    android:layout_width="match_parent"
-                    android:layout_height="1px"
-                    android:background="@color/colorLine" />
+                <View style="@style/divider_nomal_horizontal"/>
                 <!--Staffing_selfnum-->
                 <RelativeLayout
                     android:id="@+id/relative_olderPhone"
@@ -141,7 +206,7 @@
                         android:layout_centerVertical="true"
                         android:layout_marginLeft="15dp"
                         android:text="电话号码"
-                        android:textColor="@color/colorInput" />
+                        android:textColor="@color/colorInput"/>
 
                     <TextView
                         android:id="@+id/text_olderPhone"
@@ -152,7 +217,7 @@
                         android:layout_marginRight="27dp"
                         android:text=""
                         android:textColor="@color/colorHint"
-                        android:textSize="15sp" />
+                        android:textSize="15sp"/>
 
                     <ImageView
                         android:layout_width="8dp"
@@ -160,14 +225,11 @@
                         android:layout_alignParentRight="true"
                         android:layout_centerVertical="true"
                         android:layout_marginRight="15dp"
-                        android:background="@mipmap/image_more" />
+                        android:background="@mipmap/image_more"/>
 
                 </RelativeLayout>
 
-                <ImageView
-                    android:layout_width="match_parent"
-                    android:layout_height="1px"
-                    android:background="@color/colorLine" />
+                <View style="@style/divider_nomal_horizontal"/>
                 <!--Staffing_ID-->
                 <RelativeLayout
                     android:id="@+id/relative_olderIdentity"
@@ -183,7 +245,7 @@
                         android:layout_marginLeft="15dp"
                         android:text="身份证号"
                         android:textColor="@color/colorInput"
-                        android:textSize="15sp" />
+                        android:textSize="15sp"/>
 
                     <TextView
                         android:id="@+id/text_odlerIdentity"
@@ -193,23 +255,19 @@
                         android:layout_centerVertical="true"
                         android:layout_marginRight="27dp"
                         android:text=""
-                        android:textColor="@color/colorHint" />
+                        android:textColor="@color/colorHint"/>
 
                     <ImageView
-                        android:visibility="gone"
                         android:layout_width="6dp"
                         android:layout_height="15dp"
                         android:layout_alignParentRight="true"
                         android:layout_centerVertical="true"
                         android:layout_marginRight="15dp"
-                        android:background="@mipmap/image_more" />
+                        android:background="@mipmap/image_more"/>
 
                 </RelativeLayout>
 
-                <ImageView
-                    android:layout_width="match_parent"
-                    android:layout_height="1px"
-                    android:background="@color/colorLine" />
+                <View style="@style/divider_nomal_horizontal"/>
                 <!--Staffing_address-->
                 <RelativeLayout
                     android:id="@+id/relative_olderAddress"
@@ -225,7 +283,7 @@
                         android:layout_marginLeft="15dp"
                         android:text="联系地址"
                         android:textColor="@color/colorInput"
-                        android:textSize="15sp" />
+                        android:textSize="15sp"/>
 
                     <TextView
                         android:id="@+id/text_olderAddress"
@@ -237,7 +295,7 @@
                         android:gravity="right"
                         android:singleLine="true"
                         android:text=""
-                        android:textColor="@color/colorHint" />
+                        android:textColor="@color/colorHint"/>
 
                     <ImageView
                         android:layout_width="6dp"
@@ -245,14 +303,11 @@
                         android:layout_alignParentRight="true"
                         android:layout_centerVertical="true"
                         android:layout_marginRight="15dp"
-                        android:background="@mipmap/image_more" />
+                        android:background="@mipmap/image_more"/>
 
                 </RelativeLayout>
 
-                <ImageView
-                    android:layout_width="match_parent"
-                    android:layout_height="1px"
-                    android:background="@color/colorLine" />
+                <View style="@style/divider_nomal_horizontal"/>
                 <!--Staffing_sick-->
                 <RelativeLayout
                     android:id="@+id/relative_olderHealth"
@@ -268,7 +323,7 @@
                         android:layout_marginLeft="15dp"
                         android:text="病情描述"
                         android:textColor="@color/colorInput"
-                        android:textSize="15sp" />
+                        android:textSize="15sp"/>
 
                     <TextView
                         android:id="@+id/text_olderHealth"
@@ -279,7 +334,7 @@
                         android:layout_marginRight="27dp"
                         android:text=""
                         android:textColor="@color/colorHint"
-                        android:textSize="15sp" />
+                        android:textSize="15sp"/>
 
                     <ImageView
                         android:layout_width="6dp"
@@ -287,14 +342,11 @@
                         android:layout_alignParentRight="true"
                         android:layout_centerVertical="true"
                         android:layout_marginRight="15dp"
-                        android:background="@mipmap/image_more" />
+                        android:background="@mipmap/image_more"/>
 
                 </RelativeLayout>
 
-                <ImageView
-                    android:layout_width="match_parent"
-                    android:layout_height="1px"
-                    android:background="@color/colorLine" />
+                <View style="@style/divider_nomal_horizontal"/>
                 <!--Staffing_note-->
                 <RelativeLayout
                     android:id="@+id/relative_olderRemarks"
@@ -310,7 +362,7 @@
                         android:layout_marginLeft="15dp"
                         android:text="备注"
                         android:textColor="@color/colorInput"
-                        android:textSize="15sp" />
+                        android:textSize="15sp"/>
 
                     <TextView
                         android:id="@+id/text_olderRemarks"
@@ -322,7 +374,7 @@
                         android:gravity="right"
                         android:singleLine="true"
                         android:text=""
-                        android:textColor="@color/colorHint" />
+                        android:textColor="@color/colorHint"/>
 
                     <ImageView
                         android:layout_width="6dp"
@@ -330,7 +382,83 @@
                         android:layout_alignParentRight="true"
                         android:layout_centerVertical="true"
                         android:layout_marginRight="15dp"
-                        android:background="@mipmap/image_more" />
+                        android:background="@mipmap/image_more"/>
+
+                </RelativeLayout>
+
+                <View style="@style/divider_nomal_horizontal"/>
+                <RelativeLayout
+                    android:id="@+id/rl_activity_position"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:background="@color/white">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="15dp"
+                        android:text="活动中心点"
+                        android:textColor="@color/colorInput"
+                        android:textSize="15sp"/>
+
+                    <TextView
+                        android:id="@+id/tv_activity_position"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="27dp"
+                        android:gravity="right"
+                        android:singleLine="true"
+                        android:textColor="@color/colorHint"/>
+
+                    <ImageView
+                        android:layout_width="6dp"
+                        android:layout_height="15dp"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="15dp"
+                        android:background="@mipmap/image_more"/>
+
+                </RelativeLayout>
+
+                <View style="@style/divider_nomal_horizontal"/>
+                <RelativeLayout
+                    android:id="@+id/rl_alarm_distance"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:background="@color/white">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="15dp"
+                        android:text="预警距离"
+                        android:textColor="@color/colorInput"
+                        android:textSize="15sp"/>
+
+                    <TextView
+                        android:id="@+id/tv_alarm_distance"
+                        android:layout_width="150dp"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="27dp"
+                        android:gravity="right"
+                        android:singleLine="true"
+                        android:textColor="@color/colorHint"/>
+
+                    <ImageView
+                        android:layout_width="6dp"
+                        android:layout_height="15dp"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="15dp"
+                        android:background="@mipmap/image_more"/>
 
                 </RelativeLayout>
 
@@ -356,7 +484,7 @@
                         android:layout_marginLeft="15dp"
                         android:text="监护人1"
                         android:textColor="@color/colorHint"
-                        android:textSize="12dp" />
+                        android:textSize="12dp"/>
 
                     <TextView
                         android:id="@+id/text_delGuardian1"
@@ -367,14 +495,10 @@
                         android:layout_marginRight="15dp"
                         android:text="删除联系人"
                         android:textColor="@color/colorStatus"
-                        android:textSize="12sp" />
+                        android:textSize="12sp"/>
 
                 </RelativeLayout>
-
-                <ImageView
-                    android:layout_width="match_parent"
-                    android:layout_height="1px"
-                    android:background="@color/colorLine" />
+                <View style="@style/divider_nomal_horizontal"/>
                 <!--guardianinfo_name-->
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -389,7 +513,7 @@
                         android:layout_marginLeft="15dp"
                         android:text="姓名"
                         android:textColor="@color/colorInput"
-                        android:textSize="15sp" />
+                        android:textSize="15sp"/>
 
                     <TextView
                         android:id="@+id/text_guardianName1"
@@ -400,23 +524,19 @@
                         android:layout_marginRight="27dp"
                         android:text=""
                         android:textColor="@color/colorHint"
-                        android:textSize="15sp" />
+                        android:textSize="15sp"/>
 
                     <ImageView
-                        android:visibility="gone"
                         android:layout_width="6dp"
                         android:layout_height="15dp"
                         android:layout_alignParentRight="true"
                         android:layout_centerVertical="true"
                         android:layout_marginRight="15dp"
-                        android:background="@mipmap/image_more" />
+                        android:background="@mipmap/image_more"
+                        android:visibility="gone"/>
 
                 </RelativeLayout>
-
-                <ImageView
-                    android:layout_width="match_parent"
-                    android:layout_height="1px"
-                    android:background="@color/colorLine" />
+                <View style="@style/divider_nomal_horizontal"/>
                 <!--guardianinfo_selfnum-->
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -431,7 +551,7 @@
                         android:layout_marginLeft="15dp"
                         android:text="手机号码"
                         android:textColor="@color/colorInput"
-                        android:textSize="15sp" />
+                        android:textSize="15sp"/>
 
                     <TextView
                         android:id="@+id/text_guardianPhone1"
@@ -440,23 +560,19 @@
                         android:layout_alignParentRight="true"
                         android:layout_centerVertical="true"
                         android:layout_marginRight="27dp"
-                        android:text="" />
+                        android:text=""/>
 
                     <ImageView
-                        android:visibility="gone"
                         android:layout_width="6dp"
                         android:layout_height="15dp"
                         android:layout_alignParentRight="true"
                         android:layout_centerVertical="true"
                         android:layout_marginRight="15dp"
-                        android:background="@mipmap/image_more" />
+                        android:background="@mipmap/image_more"
+                        android:visibility="gone"/>
 
                 </RelativeLayout>
-
-                <ImageView
-                    android:layout_width="match_parent"
-                    android:layout_height="1px"
-                    android:background="@color/colorLine" />
+                <View style="@style/divider_nomal_horizontal"/>
                 <!--guardianinfo_address-->
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -470,7 +586,7 @@
                         android:layout_centerVertical="true"
                         android:layout_marginLeft="15dp"
                         android:text="联系地址"
-                        android:textColor="@color/colorInput" />
+                        android:textColor="@color/colorInput"/>
 
                     <TextView
                         android:id="@+id/text_guardianAddress1"
@@ -483,26 +599,23 @@
                         android:singleLine="true"
                         android:text=""
                         android:textColor="@color/colorHint"
-                        android:textSize="15sp" />
+                        android:textSize="15sp"/>
 
                     <ImageView
-                        android:visibility="gone"
                         android:layout_width="6dp"
                         android:layout_height="15dp"
                         android:layout_alignParentRight="true"
                         android:layout_centerVertical="true"
                         android:layout_marginRight="15dp"
-                        android:background="@mipmap/image_more" />
+                        android:background="@mipmap/image_more"
+                        android:visibility="gone"/>
 
                 </RelativeLayout>
 
 
             </LinearLayout>
 
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="1px"
-                android:background="@color/colorLine" />
+            <View style="@style/divider_nomal_horizontal"/>
 
             <LinearLayout
                 android:id="@+id/linear_guardian2"
@@ -525,7 +638,7 @@
                         android:layout_marginLeft="15dp"
                         android:text="监护人2"
                         android:textColor="@color/colorHint"
-                        android:textSize="12dp" />
+                        android:textSize="12dp"/>
 
                     <TextView
                         android:id="@+id/text_delGuardian2"
@@ -536,14 +649,10 @@
                         android:layout_marginRight="15dp"
                         android:text="删除联系人"
                         android:textColor="@color/colorStatus"
-                        android:textSize="12sp" />
+                        android:textSize="12sp"/>
 
                 </RelativeLayout>
-                <!--guardianinfo_name-->
-                <ImageView
-                    android:layout_width="match_parent"
-                    android:layout_height="1px"
-                    android:background="@color/colorLine" />
+                <View style="@style/divider_nomal_horizontal"/>
 
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -558,7 +667,7 @@
                         android:layout_marginLeft="15dp"
                         android:text="姓名"
                         android:textColor="@color/colorInput"
-                        android:textSize="15sp" />
+                        android:textSize="15sp"/>
 
                     <TextView
                         android:id="@+id/text_guardianName2"
@@ -569,23 +678,19 @@
                         android:layout_marginRight="27dp"
                         android:text=""
                         android:textColor="@color/colorHint"
-                        android:textSize="15sp" />
+                        android:textSize="15sp"/>
 
                     <ImageView
-                        android:visibility="gone"
                         android:layout_width="6dp"
                         android:layout_height="15dp"
                         android:layout_alignParentRight="true"
                         android:layout_centerVertical="true"
                         android:layout_marginRight="15dp"
-                        android:background="@mipmap/image_more" />
+                        android:background="@mipmap/image_more"
+                        android:visibility="gone"/>
 
                 </RelativeLayout>
-
-                <ImageView
-                    android:layout_width="match_parent"
-                    android:layout_height="1px"
-                    android:background="@color/colorLine" />
+                <View style="@style/divider_nomal_horizontal"/>
                 <!--guardianinfo_selfnum-->
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -600,7 +705,7 @@
                         android:layout_marginLeft="15dp"
                         android:text="手机号码"
                         android:textColor="@color/colorInput"
-                        android:textSize="15sp" />
+                        android:textSize="15sp"/>
 
                     <TextView
                         android:id="@+id/text_guardianPhone2"
@@ -609,23 +714,20 @@
                         android:layout_alignParentRight="true"
                         android:layout_centerVertical="true"
                         android:layout_marginRight="27dp"
-                        android:text="" />
+                        android:text=""/>
 
                     <ImageView
-                        android:visibility="gone"
                         android:layout_width="6dp"
                         android:layout_height="15dp"
                         android:layout_alignParentRight="true"
                         android:layout_centerVertical="true"
                         android:layout_marginRight="15dp"
-                        android:background="@mipmap/image_more" />
+                        android:background="@mipmap/image_more"
+                        android:visibility="gone"/>
 
                 </RelativeLayout>
                 <!--guardianinfo_address-->
-                <ImageView
-                    android:layout_width="match_parent"
-                    android:layout_height="1px"
-                    android:background="@color/colorLine" />
+                <View style="@style/divider_nomal_horizontal"/>
 
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -639,7 +741,7 @@
                         android:layout_centerVertical="true"
                         android:layout_marginLeft="15dp"
                         android:text="联系地址"
-                        android:textColor="@color/colorInput" />
+                        android:textColor="@color/colorInput"/>
 
                     <TextView
                         android:id="@+id/text_guardianAddress2"
@@ -652,26 +754,23 @@
                         android:singleLine="true"
                         android:text=""
                         android:textColor="@color/colorHint"
-                        android:textSize="15sp" />
+                        android:textSize="15sp"/>
 
                     <ImageView
-                        android:visibility="gone"
                         android:layout_width="6dp"
                         android:layout_height="15dp"
                         android:layout_alignParentRight="true"
                         android:layout_centerVertical="true"
                         android:layout_marginRight="15dp"
-                        android:background="@mipmap/image_more" />
+                        android:background="@mipmap/image_more"
+                        android:visibility="gone"/>
 
                 </RelativeLayout>
 
 
             </LinearLayout>
 
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="1px"
-                android:background="@color/colorLine" />
+            <View style="@style/divider_nomal_horizontal"/>
 
             <LinearLayout
                 android:id="@+id/linear_guardian3"
@@ -694,7 +793,7 @@
                         android:layout_marginLeft="15dp"
                         android:text="监护人3"
                         android:textColor="@color/colorHint"
-                        android:textSize="12dp" />
+                        android:textSize="12dp"/>
 
                     <TextView
                         android:id="@+id/text_delGuardian3"
@@ -705,14 +804,11 @@
                         android:layout_marginRight="15dp"
                         android:text="删除联系人"
                         android:textColor="@color/colorStatus"
-                        android:textSize="12sp" />
+                        android:textSize="12sp"/>
 
                 </RelativeLayout>
                 <!--guardianinfo_name-->
-                <ImageView
-                    android:layout_width="match_parent"
-                    android:layout_height="1px"
-                    android:background="@color/colorLine" />
+                <View style="@style/divider_nomal_horizontal"/>
 
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -727,7 +823,7 @@
                         android:layout_marginLeft="15dp"
                         android:text="姓名"
                         android:textColor="@color/colorInput"
-                        android:textSize="15sp" />
+                        android:textSize="15sp"/>
 
                     <TextView
                         android:id="@+id/text_guardianName3"
@@ -738,23 +834,19 @@
                         android:layout_marginRight="27dp"
                         android:text=""
                         android:textColor="@color/colorHint"
-                        android:textSize="15sp" />
+                        android:textSize="15sp"/>
 
                     <ImageView
-                        android:visibility="gone"
                         android:layout_width="6dp"
                         android:layout_height="15dp"
                         android:layout_alignParentRight="true"
                         android:layout_centerVertical="true"
                         android:layout_marginRight="15dp"
-                        android:background="@mipmap/image_more" />
+                        android:background="@mipmap/image_more"
+                        android:visibility="gone"/>
 
                 </RelativeLayout>
-
-                <ImageView
-                    android:layout_width="match_parent"
-                    android:layout_height="1px"
-                    android:background="@color/colorLine" />
+                <View style="@style/divider_nomal_horizontal"/>
                 <!--guardianinfo_selfnum-->
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -769,7 +861,7 @@
                         android:layout_marginLeft="15dp"
                         android:text="手机号码"
                         android:textColor="@color/colorInput"
-                        android:textSize="15sp" />
+                        android:textSize="15sp"/>
 
                     <TextView
                         android:id="@+id/text_guardianPhone3"
@@ -778,23 +870,20 @@
                         android:layout_alignParentRight="true"
                         android:layout_centerVertical="true"
                         android:layout_marginRight="27dp"
-                        android:text="" />
+                        android:text=""/>
 
                     <ImageView
-                        android:visibility="gone"
                         android:layout_width="6dp"
                         android:layout_height="15dp"
                         android:layout_alignParentRight="true"
                         android:layout_centerVertical="true"
                         android:layout_marginRight="15dp"
-                        android:background="@mipmap/image_more" />
+                        android:background="@mipmap/image_more"
+                        android:visibility="gone"/>
 
                 </RelativeLayout>
                 <!--guardianinfo_address-->
-                <ImageView
-                    android:layout_width="match_parent"
-                    android:layout_height="1px"
-                    android:background="@color/colorLine" />
+                <View style="@style/divider_nomal_horizontal"/>
 
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -808,7 +897,7 @@
                         android:layout_centerVertical="true"
                         android:layout_marginLeft="15dp"
                         android:text="联系地址"
-                        android:textColor="@color/colorInput" />
+                        android:textColor="@color/colorInput"/>
 
                     <TextView
                         android:id="@+id/text_guardianAddress3"
@@ -821,16 +910,16 @@
                         android:singleLine="true"
                         android:text=""
                         android:textColor="@color/colorHint"
-                        android:textSize="15sp" />
+                        android:textSize="15sp"/>
 
                     <ImageView
-                        android:visibility="gone"
                         android:layout_width="6dp"
                         android:layout_height="15dp"
                         android:layout_alignParentRight="true"
                         android:layout_centerVertical="true"
                         android:layout_marginRight="15dp"
-                        android:background="@mipmap/image_more" />
+                        android:background="@mipmap/image_more"
+                        android:visibility="gone"/>
 
                 </RelativeLayout>
 
@@ -855,12 +944,14 @@
                     android:layout_marginTop="10dp"
                     android:text="添加更多监护人...."
                     android:textColor="@color/colorStatus"
-                    android:textSize="12sp" />
+                    android:textSize="12sp"/>
             </RelativeLayout>
 
         </LinearLayout>
 
     </ScrollView>
+
+    <include layout="@layout/layout_edit_title"/>
 
 
 </FrameLayout>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/linear_pop"
+    android:id="@+id/fl_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorBg"
@@ -54,6 +54,44 @@
                     android:textSize="15sp" />
 
             </RelativeLayout>
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:background="@color/colorLine" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="@color/white"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="85dp"
+                    android:layout_height="match_parent"
+                    android:gravity="right"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:text="腕表类型"
+                        android:textColor="@color/colorInput"
+                        android:textSize="15sp" />
+
+                </LinearLayout>
+
+                <TextView
+                    android:gravity="center_vertical"
+                    android:id="@+id/tv_deviceType"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="15dp"
+                    android:background="@null"
+                    android:textColor="@color/colorInput"
+                    android:textSize="15sp" />
+
+            </LinearLayout>
 
             <ImageView
                 android:layout_width="match_parent"
@@ -230,14 +268,17 @@
                     android:maxLength="11"
                     android:textColor="@color/colorInput"
                     android:textColorHint="@color/colorHint"
+                    android:inputType="number"
                     android:textSize="15sp" />
 
             </LinearLayout>
 
-        <!--    <ImageView
+            <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="1px"
-                android:background="@color/colorLine" />-->
+                android:background="@color/colorLine" />
+
+
             <LinearLayout
                 android:visibility="gone"
                 android:id="@+id/ll_select_area"
@@ -286,10 +327,10 @@
                 </RelativeLayout>
             </LinearLayout>
 
-            <ImageView
+          <!--  <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="1px"
-                android:background="@color/colorLine" />
+                android:background="@color/colorLine" />-->
             <LinearLayout
                 android:visibility="gone"
                 android:id="@+id/ll_select_police"
@@ -338,10 +379,10 @@
 
             </LinearLayout>
 
-            <ImageView
+           <!-- <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="1px"
-                android:background="@color/colorLine" />
+                android:background="@color/colorLine" />-->
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -393,7 +434,6 @@
                 android:background="@color/colorLine" />-->
 
             <RelativeLayout
-                android:visibility="gone"
                 android:id="@+id/rl_lovedMovementArea"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
@@ -457,7 +497,6 @@
                 android:background="@color/colorLine" />
 
             <RelativeLayout
-                android:visibility="gone"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:background="@color/white">

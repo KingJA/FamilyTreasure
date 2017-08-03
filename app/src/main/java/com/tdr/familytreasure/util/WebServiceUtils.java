@@ -2,6 +2,7 @@ package com.tdr.familytreasure.util;
 
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 
 import com.google.gson.Gson;
 import com.orhanobut.logger.Logger;
@@ -39,6 +40,7 @@ public class WebServiceUtils {
 	 */
 	public static void callWebService(String url, final String methodName, final HashMap<String, String> properties,
 									  final WebServiceCallBack webServiceCallBack) {
+		Log.e("WebSerice Param", new Gson().toJson(properties));
 		Logger.json(new Gson().toJson(properties));
 		// 创建MyHttpTransportSE对象，传递WebService服务器地址
 		final HttpTransportSE ht = new HttpTransportSE(url);
@@ -68,6 +70,7 @@ public class WebServiceUtils {
 				super.handleMessage(msg);
 				// 将返回值回调到callBack的参数中
 				webServiceCallBack.callBack((String) msg.obj);
+				Logger.json((String) msg.obj);
 			}
 		};
 

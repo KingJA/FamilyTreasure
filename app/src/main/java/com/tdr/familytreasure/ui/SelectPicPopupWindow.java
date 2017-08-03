@@ -60,7 +60,7 @@ public class SelectPicPopupWindow extends PopupWindow {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
 
-                int height = mMenuView.findViewById(R.id.linear_pop).getTop();
+                int height = mMenuView.findViewById(R.id.fl_root).getTop();
                 int y = (int) event.getY();
                 if (event.getAction() == MotionEvent.ACTION_UP) {
                     if (y < height) {

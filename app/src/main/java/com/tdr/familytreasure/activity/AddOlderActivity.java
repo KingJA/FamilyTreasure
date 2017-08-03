@@ -15,7 +15,6 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -36,6 +35,7 @@ import com.tdr.familytreasure.amap.MapActivity;
 import com.tdr.familytreasure.dao.DbDaoXutils3;
 import com.tdr.familytreasure.entiy.Basic_PaiChuSuo_Kj;
 import com.tdr.familytreasure.entiy.Basic_XingZhengQuHua_Kj;
+import com.tdr.familytreasure.entiy.BindInfo;
 import com.tdr.familytreasure.entiy.GuardianInfo;
 import com.tdr.familytreasure.entiy.OlderInfo;
 import com.tdr.familytreasure.ui.PaichusuoBottomWheelView;
@@ -43,7 +43,6 @@ import com.tdr.familytreasure.ui.SelectPicPopupWindow;
 import com.tdr.familytreasure.ui.ZProgressHUD;
 import com.tdr.familytreasure.util.Constants;
 import com.tdr.familytreasure.util.DialogUtil;
-import com.tdr.familytreasure.util.ToastUtil;
 import com.tdr.familytreasure.util.Utils;
 import com.tdr.familytreasure.util.WebServiceUtils;
 
@@ -90,6 +89,7 @@ public class AddOlderActivity extends Activity implements View.OnClickListener {
 
     private OlderInfo mInfo = new OlderInfo();
     private GuardianInfo mGuardianInfo = new GuardianInfo();
+    private BindInfo mBindInfo = new BindInfo();
 
     private List<String> disease = new ArrayList<>();
 
@@ -105,6 +105,9 @@ public class AddOlderActivity extends Activity implements View.OnClickListener {
     private PaichusuoBottomWheelView mPaichusuoBottomWheelView;
     private List<Basic_PaiChuSuo_Kj> paichusuoDbList;
     private TextView tv_add_watchType;
+    private TextView tv_deviceType;
+    private String deviceType;
+    private String deviceName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -115,9 +118,15 @@ public class AddOlderActivity extends Activity implements View.OnClickListener {
         mContext = this;
 //        initAreaPop();
         initView();
-        String code = getIntent().getStringExtra("code");
+        String deviceCode = getIntent().getStringExtra("deviceCode");
+        deviceType = getIntent().getStringExtra("deviceType");
+        deviceName = getIntent().getStringExtra("deviceName");
         SmartId = getIntent().getStringExtra("SmartId");
-        text_code.setText(code);
+        text_code.setText(deviceCode);
+        tv_deviceType.setText(deviceName);
+
+        mBindInfo.setDEVICEID(deviceCode);
+        mBindInfo.setDEVTYPE(deviceType);
         initData();
     }
 
@@ -139,7 +148,8 @@ public class AddOlderActivity extends Activity implements View.OnClickListener {
             map.put("DataTypeCode", "CheckElderUnregedit");
             map.put("content", jsonObject.toString());
 
-            WebServiceUtils.callWebService(Constants.WEBSERVER_URL, Constants.WEBSERVER_REREQUEST, map, new WebServiceUtils.WebServiceCallBack() {
+            WebServiceUtils.callWebService(Constants.WEBSERVER_URL, Constants.WEBSERVER_REREQUEST, map, new
+                    WebServiceUtils.WebServiceCallBack() {
                 @Override
                 public void callBack(String result) {
                     if (result != null) {
@@ -163,10 +173,14 @@ public class AddOlderActivity extends Activity implements View.OnClickListener {
                                 for (int i = 0; i < array.length(); i++) {
                                     JSONObject object = array.getJSONObject(0);
                                     mGuardianInfo.setGuardianName(Utils.initNullStr(object.getString("GUARDIANNAME")));
-                                    mGuardianInfo.setGuardianIdCard(Utils.initNullStr(object.getString("GUARDIANIDCARD")));
-                                    mGuardianInfo.setGuardianMobile(Utils.initNullStr(object.getString("GUARDIANMOBILE")));
-                                    mGuardianInfo.setGuardianAddress(Utils.initNullStr(object.getString("GUARDIANADDRESS")));
-                                    mGuardianInfo.setEnmergencyCall(Utils.initNullStr(object.getString("ENMERGENCYCALL")));
+                                    mGuardianInfo.setGuardianIdCard(Utils.initNullStr(object.getString
+                                            ("GUARDIANIDCARD")));
+                                    mGuardianInfo.setGuardianMobile(Utils.initNullStr(object.getString
+                                            ("GUARDIANMOBILE")));
+                                    mGuardianInfo.setGuardianAddress(Utils.initNullStr(object.getString
+                                            ("GUARDIANADDRESS")));
+                                    mGuardianInfo.setEnmergencyCall(Utils.initNullStr(object.getString
+                                            ("ENMERGENCYCALL")));
                                 }
                                 mProgressHUD.dismiss();
                             } else {
@@ -197,12 +211,13 @@ public class AddOlderActivity extends Activity implements View.OnClickListener {
     private RadioButton radio_oneKM, radio_twoKM, radio_threeKM;
     private ImageView image_loc, image_bodyphoto;
     private CheckBox check_hypertension, check_diabetes, check_heartdisease;
-    private Map<String, List<String>> paichusuoMap=new HashMap<>();
+    private Map<String, List<String>> paichusuoMap = new HashMap<>();
 
     private void initView() {
         tv_add_watchType = (TextView) findViewById(R.id.tv_add_watchType);
         tv_add_area = (TextView) findViewById(R.id.tv_add_area);
         tv_add_police = (TextView) findViewById(R.id.tv_add_police);
+        tv_deviceType = (TextView) findViewById(R.id.tv_deviceType);
         ll_select_area = (LinearLayout) findViewById(R.id.ll_select_area);
         ll_select_police = (LinearLayout) findViewById(R.id.ll_select_police);
         image_back = (ImageView) findViewById(R.id.fl_menu);
@@ -349,16 +364,16 @@ public class AddOlderActivity extends Activity implements View.OnClickListener {
                     break;
                 }
 
-//                String lovedMovementArea = text_lovedMovementArea.getText().toString().trim();
-//                if (lovedMovementArea.equals("")) {
-//                    Utils.myToast(mContext, "请选择关爱人活动中心点");
-//                    break;
-//                }
-//
-//                if (alarmDistance.equals("")) {
-//                    Utils.myToast(mContext, "请选择关爱人预警距离");
-//                    break;
-//                }
+                String lovedMovementArea = text_lovedMovementArea.getText().toString().trim();
+                if (lovedMovementArea.equals("")) {
+                    Utils.myToast(mContext, "请选择关爱人活动中心点");
+                    break;
+                }
+
+                if (alarmDistance.equals("")) {
+                    Utils.myToast(mContext, "请选择关爱人预警距离");
+                    break;
+                }
 
                 String bodyPhoto = Constants.getBodyPhoto();
                 if (bodyPhoto.equals("")) {
@@ -382,6 +397,7 @@ public class AddOlderActivity extends Activity implements View.OnClickListener {
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("olderInfo", (Serializable) mInfo);
                 bundle.putSerializable("guardianInfo", (Serializable) mGuardianInfo);
+                bundle.putSerializable("bindInfo", (Serializable) mBindInfo);
                 intent1.putExtra("bundle", bundle);
                 startActivity(intent1);
                 overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
@@ -398,7 +414,7 @@ public class AddOlderActivity extends Activity implements View.OnClickListener {
                 // 实例化SelectPicPopupWindow
                 mSelectPicPopupWindow = new SelectPicPopupWindow(AddOlderActivity.this, this);
                 // 显示窗口
-                mSelectPicPopupWindow.showAtLocation(AddOlderActivity.this.findViewById(R.id.linear_pop),
+                mSelectPicPopupWindow.showAtLocation(AddOlderActivity.this.findViewById(R.id.fl_root),
                         Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 0); // 设置layout在PopupWindow中显示的位置
                 break;
 
@@ -435,7 +451,7 @@ public class AddOlderActivity extends Activity implements View.OnClickListener {
     }
 
     private void initPolicePop() {
-        List<Basic_PaiChuSuo_Kj> selectPaichusuoList=new ArrayList<>();
+        List<Basic_PaiChuSuo_Kj> selectPaichusuoList = new ArrayList<>();
         for (Basic_PaiChuSuo_Kj bean : paichusuoDbList) {
             if (bean.getDMZM().startsWith(mPaichusuoCDZM)) {
                 selectPaichusuoList.add(bean);
@@ -444,7 +460,8 @@ public class AddOlderActivity extends Activity implements View.OnClickListener {
     }
 
     private void initAreaPop() {
-        List<Basic_XingZhengQuHua_Kj> xingZhengQuHuaDbList =  (List<Basic_XingZhengQuHua_Kj>) DbDaoXutils3.getInstance().sleectAllDb(Basic_XingZhengQuHua_Kj.class);
+        List<Basic_XingZhengQuHua_Kj> xingZhengQuHuaDbList = (List<Basic_XingZhengQuHua_Kj>) DbDaoXutils3.getInstance
+                ().sleectAllDb(Basic_XingZhengQuHua_Kj.class);
         paichusuoDbList = (List<Basic_PaiChuSuo_Kj>) DbDaoXutils3.getInstance().sleectAllDb(Basic_PaiChuSuo_Kj.class);
 
         mPaichusuoBottomWheelView = new PaichusuoBottomWheelView(ll_select_area, this, xingZhengQuHuaDbList);
@@ -456,6 +473,7 @@ public class AddOlderActivity extends Activity implements View.OnClickListener {
             }
         });
     }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -656,4 +674,16 @@ public class AddOlderActivity extends Activity implements View.OnClickListener {
     public void onBackPressed() {
         DialogUtil.showQuitDialog(this);
     }
+
+
+    public static void goActivity(Context context, String deviceCode, String deviceType, String deviceName, String
+            SmartId) {
+        Intent intent = new Intent(context, AddOlderActivity.class);
+        intent.putExtra("deviceCode", deviceCode);
+        intent.putExtra("deviceType", deviceType);
+        intent.putExtra("deviceName", deviceName);
+        intent.putExtra("SmartId", SmartId);
+        context.startActivity(intent);
+    }
+
 }

@@ -5,7 +5,7 @@
     android:gravity="center_horizontal">
 
     <LinearLayout
-        android:id="@+id/linear_pop"
+        android:id="@+id/fl_root"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"

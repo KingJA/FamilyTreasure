@@ -47,6 +47,16 @@
         <item name="android:textColor">@color/font_3</item>
     </style>
 
+    <style name="font_3_12">
+        <item name="android:textSize">12sp</item>
+        <item name="android:textColor">@color/font_3</item>
+    </style>
+
+    <style name="font_9_15">
+        <item name="android:textSize">15sp</item>
+        <item name="android:textColor">@color/font_9</item>
+    </style>
+
 
     <!--右上角出来Popupwindow样式-->
     <style name="PopupTopRightAnimation" parent="android:Animation">

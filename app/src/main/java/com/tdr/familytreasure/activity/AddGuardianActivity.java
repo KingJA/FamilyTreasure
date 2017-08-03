@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 
 import com.tdr.familytreasure.R;
+import com.tdr.familytreasure.entiy.BindInfo;
 import com.tdr.familytreasure.entiy.GuardianInfo;
 import com.tdr.familytreasure.entiy.MessageEvent;
 import com.tdr.familytreasure.entiy.OlderInfo;
@@ -60,6 +61,7 @@ public class AddGuardianActivity extends Activity implements View.OnClickListene
     private String checkedPhone3;
     private String checkedPhone2;
     private String checkedPhone1;
+    private BindInfo mBindInfo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,6 +76,7 @@ public class AddGuardianActivity extends Activity implements View.OnClickListene
         if (bundle != null) {
             mInfo = (OlderInfo) bundle.getSerializable("olderInfo");
             mGuardianInfo = (GuardianInfo) bundle.getSerializable("guardianInfo");
+            mBindInfo = (BindInfo) bundle.getSerializable("bindInfo");
         }
         initData();
     }
@@ -358,13 +361,22 @@ public class AddGuardianActivity extends Activity implements View.OnClickListene
                         guarderListObj3.put("ENMERGENCYCALL", edit_guardianAlternatePhone3.getText().toString().trim());
                         guarderListArray.put(guarderListObj3);
                     }
+
+                    JSONObject bindInfoObj = new JSONObject();
+                    bindInfoObj.put("BINDXQCODE","");
+                    bindInfoObj.put("BINDUNITNAME", "");
+                    bindInfoObj.put("DEVTYPE", mBindInfo.getDEVTYPE());
+                    bindInfoObj.put("DEVICEID", mBindInfo.getDEVICEID());
+
+
                     jsonObject.put("CARENUMBER", mInfo.getCareNumber());
                     jsonObject.put("LRINFO", lrInfoObj);
-//                    jsonObject.put("LRPARAM", lrParamObj);
+                    jsonObject.put("LRPARAM", lrParamObj);
                     jsonObject.put("PHOTOINFO", photoObj);
                     jsonObject.put("CUSTMERHEALTHINFO", healthObj);
                     jsonObject.put("REGISTERINFO", registerInfoObj);
                     jsonObject.put("GUARDERLIST", guarderListArray);
+                    jsonObject.put("BINDINFO", bindInfoObj);
 
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -443,7 +455,6 @@ public class AddGuardianActivity extends Activity implements View.OnClickListene
                                     int resultCode = object.getInt("ResultCode");
                                     String resultText = Utils.initNullStr(object.getString("ResultText"));
                                     if (resultCode == 0) {
-                                        Utils.myToast(mContext, "获取验证码成功");
                                         String content = object.getString("Content");
                                         JSONObject json = new JSONObject(content);
                                         SMSVerify1 = json.getString("SMSVERIFY");

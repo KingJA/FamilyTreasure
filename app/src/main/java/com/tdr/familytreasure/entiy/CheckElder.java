@@ -120,6 +120,56 @@ public class CheckElder {
         private String H5PAGEURL;
         private String PERSONTYPE;
         private String CARENUMBER;
+
+        public BINDINFOBean getBINDINFO() {
+            return BINDINFO;
+        }
+
+        public void setBINDINFO(BINDINFOBean BINDINFO) {
+            this.BINDINFO = BINDINFO;
+        }
+
+        private BINDINFOBean BINDINFO;
+        public static class BINDINFOBean{
+            private String DEVICEID;
+            private String BINDUNITNAME;
+            private String BINDXQCODE;
+            private String DEVTYPE;
+
+            public String getDEVICEID() {
+                return DEVICEID;
+            }
+
+            public void setDEVICEID(String DEVICEID) {
+                this.DEVICEID = DEVICEID;
+            }
+
+            public String getBINDUNITNAME() {
+                return BINDUNITNAME;
+            }
+
+            public void setBINDUNITNAME(String BINDUNITNAME) {
+                this.BINDUNITNAME = BINDUNITNAME;
+            }
+
+            public String getBINDXQCODE() {
+                return BINDXQCODE;
+            }
+
+            public void setBINDXQCODE(String BINDXQCODE) {
+                this.BINDXQCODE = BINDXQCODE;
+            }
+
+            public String getDEVTYPE() {
+                return DEVTYPE;
+            }
+
+            public void setDEVTYPE(String DEVTYPE) {
+                this.DEVTYPE = DEVTYPE;
+            }
+        }
+
+
         /**
          * GUARDIANID : d15a513178844fc5be4f2f5c3e8ebeb7
          * GUARDIANNAME : 啊啊啊

@@ -26,10 +26,9 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal|bottom"
             android:padding="2dip"
-            android:visibility="gone"
-            app:activeColor="@color/white"
+            app:activeColor="@color/bg_blue"
             app:activeType="fill"
-            app:circleSeparation="20dip"
+            app:circleSeparation="16dp"
             app:inactiveColor="#ffffff"
             app:inactiveType="fill"
             app:radius="4dp" />

@@ -25,8 +25,11 @@ import com.orhanobut.logger.Logger;
 import com.tdr.familytreasure.R;
 import com.tdr.familytreasure.adapter.ImagePagerAdapter;
 import com.tdr.familytreasure.adapter.MainCareAdapter;
+import com.tdr.familytreasure.entiy.ErrorResult;
 import com.tdr.familytreasure.entiy.MessageEvent;
 import com.tdr.familytreasure.entiy.OlderInfo;
+import com.tdr.familytreasure.net.ThreadPoolTask;
+import com.tdr.familytreasure.net.WebServiceCallBack;
 import com.tdr.familytreasure.ui.CircleFlowIndicator;
 import com.tdr.familytreasure.ui.ViewFlow;
 import com.tdr.familytreasure.ui.ZProgressHUD;
@@ -55,7 +58,8 @@ import java.util.Map;
  * 老人关爱主界面
  * Created by Linus_Xie on 2016/8/15.
  */
-public class MainCareActivity extends Activity implements View.OnClickListener, AdapterView.OnItemClickListener, ZeusManager.OnPermissionCallback, BottomListPop.OnPopItemClickListener {
+public class MainCareActivity extends Activity implements View.OnClickListener, AdapterView.OnItemClickListener,
+        ZeusManager.OnPermissionCallback, BottomListPop.OnPopItemClickListener {
     private static final String TAG = "MainCareActivity";
 
     private final static int SCANNIN_GREQUEST_CODE = 2002;
@@ -91,7 +95,7 @@ public class MainCareActivity extends Activity implements View.OnClickListener, 
         EventBus.getDefault().register(this);
         checkAppPermission();
         mContext = this;
-
+        Log.e(TAG, "onCreate: " );
         initView();
         initData();//请求关爱对象列表
     }
@@ -144,50 +148,51 @@ public class MainCareActivity extends Activity implements View.OnClickListener, 
 
     private void initData() {
         getOlderList();
+//        getBannerInfo();
         HashMap<String, String> map1 = new HashMap<>();
         map1.put("token", Constants.getToken());
         map1.put("cardType", "1005");
-        map1.put("taskId", "");
+        map1.put("taskId", "1");
         map1.put("DataTypeCode", "GetBannerInfo");
         map1.put("content", "");
         Gson gson = new Gson();
         Logger.json(gson.toJson(map1));
-        WebServiceUtils.callWebService(Constants.WEBSERVER_URL, Constants.WEBSERVER_REREQUEST, map1, new WebServiceUtils.WebServiceCallBack() {
-            @Override
-            public void callBack(String result) {
-                if (result != null) {
-                    Log.e(TAG + "图片信息：", result);
-                    try {
-                        JSONObject jsonObject = new JSONObject(result);
-                        int resultCode = jsonObject.getInt("ResultCode");
-                        String resultText = Utils.initNullStr(jsonObject.getString("ResultText"));
-                        if (resultCode == 0) {
-                            String content = jsonObject.getString("Content");
-                            JSONObject json = new JSONObject(content);
-                            String bannerList = json.getString("BANNERLIST");
-                            JSONArray array = new JSONArray(bannerList);
-                            for (int i = 0; i < array.length(); i++) {
-                                JSONObject object = array.getJSONObject(i);
-                                String pictureUrl = object.getString("PICTUREURL");
-                                String urlAdd = object.getString("URLADD");
-                                String titleAdd = object.getString("TITLE");
-                                imageUrlList.add(pictureUrl);
-                                linkUrlArray.add(urlAdd);
-                                titleList.add(titleAdd);
+        WebServiceUtils.callWebService(Constants.WEBSERVER_URL, Constants.WEBSERVER_REREQUEST, map1, new
+                WebServiceUtils.WebServiceCallBack() {
+                    @Override
+                    public void callBack(String result) {
+                        if (result != null) {
+                            try {
+                                JSONObject jsonObject = new JSONObject(result);
+                                int resultCode = jsonObject.getInt("ResultCode");
+                                String resultText = Utils.initNullStr(jsonObject.getString("ResultText"));
+                                if (resultCode == 0) {
+                                    String content = jsonObject.getString("Content");
+                                    JSONObject json = new JSONObject(content);
+                                    String bannerList = json.getString("BANNERLIST");
+                                    JSONArray array = new JSONArray(bannerList);
+                                    for (int i = 0; i < array.length(); i++) {
+                                        JSONObject object = array.getJSONObject(i);
+                                        String pictureUrl = object.getString("PICTUREURL");
+                                        String urlAdd = object.getString("URLADD");
+                                        String titleAdd = object.getString("TITLE");
+                                        imageUrlList.add(pictureUrl);
+                                        linkUrlArray.add(urlAdd);
+                                        titleList.add(titleAdd);
+                                    }
+                                    initBanner(imageUrlList);//初始化banner
+                                } else {
+                                    Log.e(TAG + "获取图片信息", resultText);
+                                }
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                                Log.e(TAG + "获取图片信息", "JSON解析出错");
                             }
-                            initBanner(imageUrlList);//初始化banner
                         } else {
-                            Log.e(TAG + "获取图片信息", resultText);
+                            Log.e("获取banner", "获取数据错误，请稍后重试！");
                         }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                        Log.e(TAG + "获取图片信息", "JSON解析出错");
                     }
-                } else {
-                    Log.e("获取banner", "获取数据错误，请稍后重试！");
-                }
-            }
-        });
+                });
     }
 
     private void getOlderList() {
@@ -204,90 +209,90 @@ public class MainCareActivity extends Activity implements View.OnClickListener, 
 
         HashMap<String, String> map = new HashMap<>();
         map.put("token", Constants.getToken());
-        Log.e(TAG, "Token: " + Constants.getToken());
         map.put("cardType", "1005");
-        map.put("taskId", "");
+        map.put("taskId", "1");
+        map.put("encryption", "0");
         map.put("DataTypeCode", "CheckConcernList");
         map.put("content", jsonObject.toString());
 
-        WebServiceUtils.callWebService(Constants.WEBSERVER_URL, Constants.WEBSERVER_REREQUEST, map, new WebServiceUtils.WebServiceCallBack() {
-            @Override
-            public void callBack(String result) {
-                if (result != null) {
-                    Log.e(TAG + "对象列表：", result);
-                    Logger.json(result);
-                    try {
-                        JSONObject jsonObject = new JSONObject(result);
-                        int resultCode = jsonObject.getInt("ResultCode");
-                        String resultText = Utils.initNullStr(jsonObject.getString("ResultText"));
-                        if (resultCode == 0) {
-                            listOlder.clear();
-                            data.clear();
-                            data1.clear();
-                            data2.clear();
+        WebServiceUtils.callWebService(Constants.WEBSERVER_URL, Constants.WEBSERVER_REREQUEST, map, new
+                WebServiceUtils.WebServiceCallBack() {
+                    @Override
+                    public void callBack(String result) {
+                        if (result != null) {
+                            try {
+                                JSONObject jsonObject = new JSONObject(result);
+                                int resultCode = jsonObject.getInt("ResultCode");
+                                String resultText = Utils.initNullStr(jsonObject.getString("ResultText"));
+                                if (resultCode == 0) {
+                                    listOlder.clear();
+                                    data.clear();
+                                    data1.clear();
+                                    data2.clear();
 
 
-                            String content = jsonObject.getString("Content");
-                            JSONObject json = new JSONObject(content);
-                            String concernList = json.getString("CONCERNLIST");
-                            JSONArray array = new JSONArray(concernList);
-                            if (array.length() > 0) {
-                                for (int i = 0; i < array.length(); i++) {
-                                    JSONObject obj = array.getJSONObject(i);
-                                    OlderInfo mInfo = new OlderInfo();
-                                    mInfo.setAGE(Utils.initNullStr(obj.getString("AGE")));
-                                    mInfo.setSEX(Utils.initNullStr(obj.getString("SEX")));
-                                    mInfo.setCustomerPhoto(Utils.initNullStr(obj.getString("CUSTOMERPHOTO")));
-                                    mInfo.setCareNumber(Utils.initNullStr(obj.getString("SMARTCAREID")));
-                                    mInfo.setCustomerName(Utils.initNullStr(obj.getString("CUSTOMERNAME")));
-                                    mInfo.setTargetType(Utils.initNullStr(obj.getString("TARGETTYPES")));
-                                    mInfo.setIsRegedit(Utils.initNullStr(obj.getString("ISREGEDIT")));
-                                    mInfo.setPersonType(Utils.initNullStr(obj.getString("PERSONTYPE")));//0是登记人有编辑权，1是关联人无编辑权
-                                    listOlder.add(mInfo);
-                                }
+                                    String content = jsonObject.getString("Content");
+                                    JSONObject json = new JSONObject(content);
+                                    String concernList = json.getString("CONCERNLIST");
+                                    JSONArray array = new JSONArray(concernList);
+                                    if (array.length() > 0) {
+                                        for (int i = 0; i < array.length(); i++) {
+                                            JSONObject obj = array.getJSONObject(i);
+                                            OlderInfo mInfo = new OlderInfo();
+                                            mInfo.setAGE(Utils.initNullStr(obj.getString("AGE")));
+                                            mInfo.setSEX(Utils.initNullStr(obj.getString("SEX")));
+                                            mInfo.setCustomerPhoto(Utils.initNullStr(obj.getString("CUSTOMERPHOTO")));
+                                            mInfo.setCareNumber(Utils.initNullStr(obj.getString("SMARTCAREID")));
+                                            mInfo.setCustomerName(Utils.initNullStr(obj.getString("CUSTOMERNAME")));
+                                            mInfo.setTargetType(Utils.initNullStr(obj.getString("TARGETTYPES")));
+                                            mInfo.setIsRegedit(Utils.initNullStr(obj.getString("ISREGEDIT")));
+                                            mInfo.setPersonType(Utils.initNullStr(obj.getString("PERSONTYPE")));
+                                            //0是登记人有编辑权，1是关联人无编辑权
+                                            listOlder.add(mInfo);
+                                        }
 
-                                for (int i = 0; i < listOlder.size(); i++) {
-                                    if (listOlder.get(i).getIsRegedit().equals("0")) {
-                                        data1.add(listOlder.get(i));
+                                        for (int i = 0; i < listOlder.size(); i++) {
+                                            if (listOlder.get(i).getIsRegedit().equals("0")) {
+                                                data1.add(listOlder.get(i));
+                                            } else {
+                                                data2.add(listOlder.get(i));
+                                            }
+                                        }
+
+                                        for (int i = 0; i < data1.size(); i++) {
+                                            data.add(data1.get(i));
+                                        }
+                                        for (int i = 0; i < data2.size(); i++) {
+                                            data.add(data2.get(i));
+                                        }
+
+
+                                        relative_noData.setVisibility(View.GONE);
+                                        list_care.setVisibility(View.VISIBLE);
+                                        mainCareAdapter.notifyDataSetChanged();
                                     } else {
-                                        data2.add(listOlder.get(i));
+                                        //没有了老人列表做处理
+                                        relative_noData.setVisibility(View.VISIBLE);
+                                        list_care.setVisibility(View.GONE);
+
                                     }
+
+                                    mProgressHUD.dismiss();
+                                } else {
+                                    mProgressHUD.dismiss();
+                                    Utils.myToast(mContext, resultText);
                                 }
-
-                                for (int i = 0; i < data1.size(); i++) {
-                                    data.add(data1.get(i));
-                                }
-                                for (int i = 0; i < data2.size(); i++) {
-                                    data.add(data2.get(i));
-                                }
-
-
-                                relative_noData.setVisibility(View.GONE);
-                                list_care.setVisibility(View.VISIBLE);
-                                mainCareAdapter.notifyDataSetChanged();
-                            } else {
-                                //没有了老人列表做处理
-                                relative_noData.setVisibility(View.VISIBLE);
-                                list_care.setVisibility(View.GONE);
-
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                                mProgressHUD.dismiss();
+                                Utils.myToast(mContext, "JSON解析出错");
                             }
-
-                            mProgressHUD.dismiss();
                         } else {
                             mProgressHUD.dismiss();
-                            Utils.myToast(mContext, resultText);
+                            Utils.myToast(mContext, "获取数据错误，请稍后重试！");
                         }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                        mProgressHUD.dismiss();
-                        Utils.myToast(mContext, "JSON解析出错");
                     }
-                } else {
-                    mProgressHUD.dismiss();
-                    Utils.myToast(mContext, "获取数据错误，请稍后重试！");
-                }
-            }
-        });
+                });
     }
 
     private void initBanner(ArrayList<String> imageUrlList) {
@@ -304,7 +309,6 @@ public class MainCareActivity extends Activity implements View.OnClickListener, 
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.fl_menu:
-                Log.e(TAG, "fl_menu onClick: ");
                 mBottomListPop.showPopupWindow();
                 break;
             case R.id.image_scan:
@@ -315,18 +319,10 @@ public class MainCareActivity extends Activity implements View.OnClickListener, 
                 intent.putExtras(bundle);
                 intent.setClass(this, CaptureActivity.class);
                 startActivityForResult(intent, SCANNIN_GREQUEST_CODE);
-                //Intent intent = new Intent(MainCareActivity.this, AddOlderActivity.class);
-                //intent.putExtra("code", "10086");
-                // startActivity(intent);
-                //overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
                 break;
         }
     }
 
-    public void Toast(View view, String reSting) {
-        Snackbar.make(view, reSting, Snackbar.LENGTH_LONG)
-                .setAction("Action", null).show();
-    }
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -373,49 +369,46 @@ public class MainCareActivity extends Activity implements View.OnClickListener, 
                         map.put("taskId", "");
                         map.put("DataTypeCode", "ParseQRcode");
                         map.put("content", object.toString());
-                        WebServiceUtils.callWebService(Constants.WEBSERVER_URL, Constants.WEBSERVER_REREQUEST, map, new WebServiceUtils.WebServiceCallBack() {
-                            @Override
-                            public void callBack(String result) {
-                                if (result != null) {
-                                    try {
-                                        JSONObject jsonObject = new JSONObject(result);
-                                        int resultCode = jsonObject.getInt("ResultCode");
-                                        String resultText = jsonObject.getString("ResultText");
-                                        if (resultCode == 0) {
-                                            String content = jsonObject.getString("Content");
-                                            JSONObject obj = new JSONObject(content);
-                                            String QRType = obj.getString("QRType");
-                                            String type = obj.getString("Type");
-                                            String Id = obj.getString("ID");
-                                            if (QRType.equals("Q1")) {
+                        WebServiceUtils.callWebService(Constants.WEBSERVER_URL, Constants.WEBSERVER_REREQUEST, map,
+                                new WebServiceUtils.WebServiceCallBack() {
+                                    @Override
+                                    public void callBack(String result) {
+                                        if (result != null) {
+                                            try {
+                                                JSONObject jsonObject = new JSONObject(result);
+                                                int resultCode = jsonObject.getInt("ResultCode");
+                                                String resultText = jsonObject.getString("ResultText");
+                                                if (resultCode == 0) {
+                                                    String content = jsonObject.getString("Content");
+                                                    JSONObject obj = new JSONObject(content);
+                                                    String QRType = obj.getString("QRType");
+                                                    String type = obj.getString("Type");
+                                                    String Id = obj.getString("ID");
+                                                    if (QRType.equals("Q1")) {
+                                                        mProgressHUD.dismiss();
+                                                        checkDevice(Id);
+                                                    } else if (QRType.equals("Q2")) {
+                                                        mProgressHUD.dismiss();
+                                                        Utils.myToast(mContext, "此设备为网关设备，请到关爱对象的设备配置页面进行添加");
+                                                    } else if (QRType.equals("Q3")) {
+                                                        mProgressHUD.dismiss();
+                                                        getShare(Id);
+                                                    }
+                                                } else {
+                                                    mProgressHUD.dismiss();
+                                                    Utils.myToast(mContext, resultText);
+                                                }
+                                            } catch (JSONException e) {
                                                 mProgressHUD.dismiss();
-                                                checkDevice(Id);
-                                                /*Intent intent = new Intent(MainCareActivity.this, AddOlderActivity.class);
-                                                intent.putExtra("code", Id);
-                                                startActivity(intent);
-                                                overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);*/
-                                            } else if (QRType.equals("Q2")) {
-                                                mProgressHUD.dismiss();
-                                                Utils.myToast(mContext, "此设备为网关设备，请到关爱对象的设备配置页面进行添加");
-                                            } else if (QRType.equals("Q3")) {
-                                                mProgressHUD.dismiss();
-                                                getShare(Id);
+                                                e.printStackTrace();
+                                                Utils.myToast(mContext, "JSON解析出错");
                                             }
                                         } else {
                                             mProgressHUD.dismiss();
-                                            Utils.myToast(mContext, resultText);
+                                            Utils.myToast(mContext, "请确认设备是否为关爱设备");
                                         }
-                                    } catch (JSONException e) {
-                                        mProgressHUD.dismiss();
-                                        e.printStackTrace();
-                                        Utils.myToast(mContext, "JSON解析出错");
                                     }
-                                } else {
-                                    mProgressHUD.dismiss();
-                                    Utils.myToast(mContext, "请确认设备是否为关爱设备");
-                                }
-                            }
-                        });
+                                });
 
                     } else if (scanResult.contains("?U=")) {
                         final int i = scanResult.indexOf("?U=");
@@ -431,46 +424,42 @@ public class MainCareActivity extends Activity implements View.OnClickListener, 
                         HashMap<String, String> map = new HashMap<String, String>();
                         map.put("token", Constants.getToken());
                         map.put("cardType", "1005");
-                        map.put("taskId", "");
+                        map.put("taskId", "1");
                         map.put("DataTypeCode", "AESDecrypt");
                         map.put("content", jsonObject.toString());
 
-                        WebServiceUtils.callWebService(Constants.WEBSERVER_URL, Constants.WEBSERVER_REREQUEST, map, new WebServiceUtils.WebServiceCallBack() {
-                            @Override
-                            public void callBack(String result) {
-                                if (result != null) {
-                                    JSONObject object = null;
-                                    try {
-                                        object = new JSONObject(result);
-                                        int resultCode = object.getInt("ResultCode");
-                                        String resultText = object.getString("ResultText");
-                                        if (resultCode == 0) {
-                                            mProgressHUD.dismiss();
-                                            String content = object.getString("Content");
-                                            JSONObject obj = new JSONObject(content);
-                                            String code = obj.getString("StrString");
-                                            //edit_code.setText(content);
-                                            checkDevice(code);
-                                           /* Intent intent = new Intent(MainCareActivity.this, AddOlderActivity.class);
-                                            intent.putExtra("code", code);
-                                            startActivity(intent);
-                                            overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);*/
+                        WebServiceUtils.callWebService(Constants.WEBSERVER_URL, Constants.WEBSERVER_REREQUEST, map,
+                                new WebServiceUtils.WebServiceCallBack() {
+                                    @Override
+                                    public void callBack(String result) {
+                                        if (result != null) {
+                                            JSONObject object = null;
+                                            try {
+                                                object = new JSONObject(result);
+                                                int resultCode = object.getInt("ResultCode");
+                                                String resultText = object.getString("ResultText");
+                                                if (resultCode == 0) {
+                                                    mProgressHUD.dismiss();
+                                                    String content = object.getString("Content");
+                                                    JSONObject obj = new JSONObject(content);
+                                                    String code = obj.getString("StrString");
+                                                    checkDevice(code);
+                                                } else {
+                                                    mProgressHUD.dismiss();
+                                                    Utils.myToast(mContext, resultText);
+                                                }
+                                            } catch (JSONException e) {
+                                                e.printStackTrace();
+                                                mProgressHUD.dismiss();
+                                                Utils.myToast(mContext, "JSON解析出错");
+                                            }
+
                                         } else {
                                             mProgressHUD.dismiss();
-                                            Utils.myToast(mContext, resultText);
+                                            Utils.myToast(mContext, "获取数据错误，请稍后重试！");
                                         }
-                                    } catch (JSONException e) {
-                                        e.printStackTrace();
-                                        mProgressHUD.dismiss();
-                                        Utils.myToast(mContext, "JSON解析出错");
                                     }
-
-                                } else {
-                                    mProgressHUD.dismiss();
-                                    Utils.myToast(mContext, "获取数据错误，请稍后重试！");
-                                }
-                            }
-                        });
+                                });
                     } else {
                         mProgressHUD.dismiss();
                         Utils.myToast(mContext, "非指定亲情关爱设备");
@@ -490,52 +479,51 @@ public class MainCareActivity extends Activity implements View.OnClickListener, 
         JSONObject jsonObject = new JSONObject();
         try {
             jsonObject.put("DEVICEID", id);
+            jsonObject.put("devicetype", "8010");
         } catch (JSONException e) {
             e.printStackTrace();
         }
         HashMap<String, String> map = new HashMap<>();
         map.put("token", Constants.getToken());
         map.put("cardType", "1005");
-        map.put("taskId", "");
+        map.put("taskId", "1");
         map.put("DataTypeCode", "CheckDeviceNumber");
         map.put("content", jsonObject.toString());
 
-        WebServiceUtils.callWebService(Constants.WEBSERVER_URL, Constants.WEBSERVER_REREQUEST, map, new WebServiceUtils.WebServiceCallBack() {
-            @Override
-            public void callBack(String result) {
-                if (result != null) {
-                    try {
-                        JSONObject json = new JSONObject(result);
-                        int resultCode = json.getInt("ResultCode");
-                        String resultText = json.getString("ResultText");
-                        if (resultCode == 0) {
-                            String content = json.getString("Content");
-                            JSONObject object = new JSONObject(content);
-                            String isMultiuse = object.getString("ISMULTIUSE");
-                            String isOccupied = object.getString("ISOCCUPIED");
-                            if (isMultiuse.equals("0")) {
-                                if (isOccupied.equals("1")) {
-                                    Utils.myToast(mContext, "该设备已被使用");
+        WebServiceUtils.callWebService(Constants.WEBSERVER_URL, Constants.WEBSERVER_REREQUEST, map, new
+                WebServiceUtils.WebServiceCallBack() {
+                    @Override
+                    public void callBack(String result) {
+                        if (result != null) {
+                            try {
+                                JSONObject json = new JSONObject(result);
+                                int resultCode = json.getInt("ResultCode");
+                                String resultText = json.getString("ResultText");
+                                if (resultCode == 0) {
+                                    String content = json.getString("Content");
+                                    JSONObject object = new JSONObject(content);
+                                    String isMultiuse = object.getString("ISMULTIUSE");
+                                    String isOccupied = object.getString("ISOCCUPIED");
+                                    String deviceType = object.getString("DEVICETYPE");
+                                    String deviceName = object.getString("DEVICETYPENAME");
+                                    if (isOccupied.equals("1")) {
+                                        Utils.myToast(mContext, "该设备已被使用");
+                                    } else {
+                                        AddOlderActivity.goActivity(MainCareActivity.this, id, deviceType,
+                                                deviceName, SmartId);
+                                    }
                                 } else {
-                                    Intent intent = new Intent(MainCareActivity.this, AddOlderActivity.class);
-                                    intent.putExtra("code", id);
-                                    intent.putExtra("SmartId", SmartId);
-                                    startActivity(intent);
-                                    overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
+                                    Utils.myToast(mContext, resultText);
                                 }
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                                Utils.myToast(mContext, "JSON解析出错");
                             }
                         } else {
-                            Utils.myToast(mContext, resultText);
+                            Utils.myToast(mContext, "获取数据错误，请稍后重试！");
                         }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                        Utils.myToast(mContext, "JSON解析出错");
                     }
-                } else {
-                    Utils.myToast(mContext, "获取数据错误，请稍后重试！");
-                }
-            }
-        });
+                });
     }
 
     private void getShare(final String shareGuid) {
@@ -555,47 +543,51 @@ public class MainCareActivity extends Activity implements View.OnClickListener, 
         map.put("taskId", "");
         map.put("DataTypeCode", "GetShare_Target");
         map.put("content", jsonObject.toString());
-        WebServiceUtils.callWebService(Constants.WEBSERVER_URL, Constants.WEBSERVER_REREQUEST, map, new WebServiceUtils.WebServiceCallBack() {
-            @Override
-            public void callBack(String result) {
-                if (result != null) {
-                    try {
-                        JSONObject json = new JSONObject(result);
-                        int resultCode = json.getInt("ResultCode");
-                        String resultText = json.getString("ResultText");
-                        if (resultCode == 0) {
-                            String content = json.getString("Content");
-                            JSONObject obj = new JSONObject(content);
-                            String smartCardId = obj.getString("SMARTCAREID");
-                            String targetType = obj.getString("TARGETTYPE");
-                            String operatorName = obj.getString("OPERATORNAME");
-                            String customerIdCard = obj.getString("CUSTOMERIDCARD");
-                            String photo = obj.getString("PHOTO");
-                            String customerName = obj.getString("CUSTOMERNAME");
-                            String customerAddress = obj.getString("CUSTOMERADDRESS");
-                            mProgressHUD.dismiss();
-                            dialogShow(smartCardId, targetType, operatorName, customerIdCard, photo, customerName, customerAddress);
+        WebServiceUtils.callWebService(Constants.WEBSERVER_URL, Constants.WEBSERVER_REREQUEST, map, new
+                WebServiceUtils.WebServiceCallBack() {
+                    @Override
+                    public void callBack(String result) {
+                        if (result != null) {
+                            try {
+                                JSONObject json = new JSONObject(result);
+                                int resultCode = json.getInt("ResultCode");
+                                String resultText = json.getString("ResultText");
+                                if (resultCode == 0) {
+                                    String content = json.getString("Content");
+                                    JSONObject obj = new JSONObject(content);
+                                    String smartCardId = obj.getString("SMARTCAREID");
+                                    String targetType = obj.getString("TARGETTYPE");
+                                    String operatorName = obj.getString("OPERATORNAME");
+                                    String customerIdCard = obj.getString("CUSTOMERIDCARD");
+                                    String photo = obj.getString("PHOTO");
+                                    String customerName = obj.getString("CUSTOMERNAME");
+                                    String customerAddress = obj.getString("CUSTOMERADDRESS");
+                                    mProgressHUD.dismiss();
+                                    dialogShow(smartCardId, targetType, operatorName, customerIdCard, photo,
+                                            customerName,
+                                            customerAddress);
+                                } else {
+                                    Utils.myToast(mContext, resultText);
+                                    mProgressHUD.dismiss();
+                                }
+                            } catch (JSONException e) {
+                                mProgressHUD.dismiss();
+                                e.printStackTrace();
+                                Utils.myToast(mContext, "JSON解析出错");
+                            }
                         } else {
-                            Utils.myToast(mContext, resultText);
                             mProgressHUD.dismiss();
+                            Utils.myToast(mContext, "获取数据错误，请稍后重试！");
                         }
-                    } catch (JSONException e) {
-                        mProgressHUD.dismiss();
-                        e.printStackTrace();
-                        Utils.myToast(mContext, "JSON解析出错");
                     }
-                } else {
-                    mProgressHUD.dismiss();
-                    Utils.myToast(mContext, "获取数据错误，请稍后重试！");
-                }
-            }
-        });
+                });
     }
 
     private NiftyDialogBuilder dialogBuilder;
     private NiftyDialogBuilder.Effectstype effectstype;
 
-    private void dialogShow(final String smartCardId, final String targetTypes, final String operatorName, final String customerIdCard, final String photo, final String customerName, final String customerAddress) {
+    private void dialogShow(final String smartCardId, final String targetTypes, final String operatorName, final
+    String customerIdCard, final String photo, final String customerName, final String customerAddress) {
         if (dialogBuilder != null && dialogBuilder.isShowing())
             return;
 
@@ -616,7 +608,8 @@ public class MainCareActivity extends Activity implements View.OnClickListener, 
         text_olderAddress.setText(customerAddress);
         dialogBuilder.withTitle("关联老人").withTitleColor("#333333").withMessage(null)
                 .isCancelableOnTouchOutside(false).withEffect(effectstype).withButton1Text("取消")
-                .setCustomView(relatedEdler, mContext).withButton2Text("关联").setButton1Click(new View.OnClickListener() {
+                .setCustomView(relatedEdler, mContext).withButton2Text("关联").setButton1Click(new View.OnClickListener
+                () {
             @Override
             public void onClick(View v) {
                 dialogBuilder.dismiss();
@@ -625,7 +618,8 @@ public class MainCareActivity extends Activity implements View.OnClickListener, 
             @Override
             public void onClick(View v) {
                 dialogBuilder.dismiss();
-                addConcerned(smartCardId, targetTypes, operatorName, customerIdCard, photo, customerName, customerAddress);
+                addConcerned(smartCardId, targetTypes, operatorName, customerIdCard, photo, customerName,
+                        customerAddress);
 
             }
         }).show();
@@ -636,7 +630,8 @@ public class MainCareActivity extends Activity implements View.OnClickListener, 
      *
      * @param smartCardId
      */
-    private void addConcerned(final String smartCardId, final String targetTypes, final String operatorName, final String customerIdCard, final String photo, final String customerName, final String customerAddress) {
+    private void addConcerned(final String smartCardId, final String targetTypes, final String operatorName, final
+    String customerIdCard, final String photo, final String customerName, final String customerAddress) {
         mProgressHUD.setMessage("关联关爱对象...");
         mProgressHUD.setSpinnerType(ZProgressHUD.SIMPLE_ROUND_SPINNER);
         mProgressHUD.show();
@@ -651,43 +646,37 @@ public class MainCareActivity extends Activity implements View.OnClickListener, 
         HashMap<String, String> map = new HashMap<>();
         map.put("token", Constants.getToken());
         map.put("cardType", "1005");
-        map.put("taskId", "");
+        map.put("taskId", "1");
         map.put("DataTypeCode", "AddConcerned");
         map.put("content", jsonObject.toString());
-        WebServiceUtils.callWebService(Constants.WEBSERVER_URL, Constants.WEBSERVER_REREQUEST, map, new WebServiceUtils.WebServiceCallBack() {
-            @Override
-            public void callBack(String result) {
-                if (result != null) {
-                    try {
-                        JSONObject json = new JSONObject(result);
-                        int resultCode = json.getInt("ResultCode");
-                        String resultText = json.getString("ResultText");
-                        if (resultCode == 0) {
-                            mProgressHUD.dismiss();
-                            Utils.myToast(mContext, "关联对象成功");
-                            getOlderList();
-                           /* OlderInfo mInfo = new OlderInfo();
-                            mInfo.setCareNumber(smartCardId);
-                            mInfo.setCustomerName(customerName);
-                            mInfo.setTargetType(targetTypes);
-                            mInfo.setPersonType("1");//0是登记人有编辑权，1是关联人无编辑权
-                            listOlder.add(mInfo);
-                            mainCareAdapter.notifyDataSetChanged();*/
+        WebServiceUtils.callWebService(Constants.WEBSERVER_URL, Constants.WEBSERVER_REREQUEST, map, new
+                WebServiceUtils.WebServiceCallBack() {
+                    @Override
+                    public void callBack(String result) {
+                        if (result != null) {
+                            try {
+                                JSONObject json = new JSONObject(result);
+                                int resultCode = json.getInt("ResultCode");
+                                String resultText = json.getString("ResultText");
+                                if (resultCode == 0) {
+                                    mProgressHUD.dismiss();
+                                    Utils.myToast(mContext, "关联对象成功");
+                                    getOlderList();
+                                } else {
+                                    mProgressHUD.dismiss();
+                                    Utils.myToast(mContext, resultText);
+                                }
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                                mProgressHUD.dismiss();
+                                Utils.myToast(mContext, "JSON解析出错");
+                            }
                         } else {
                             mProgressHUD.dismiss();
-                            Utils.myToast(mContext, resultText);
+                            Utils.myToast(mContext, "获取数据错误，请稍后重试！");
                         }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                        mProgressHUD.dismiss();
-                        Utils.myToast(mContext, "JSON解析出错");
                     }
-                } else {
-                    mProgressHUD.dismiss();
-                    Utils.myToast(mContext, "获取数据错误，请稍后重试！");
-                }
-            }
-        });
+                });
     }
 
     private long firstTime;
@@ -732,13 +721,30 @@ public class MainCareActivity extends Activity implements View.OnClickListener, 
         super.onRestart();
 
     }
+
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(MessageEvent event) {
         getOlderList();
     }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
         EventBus.getDefault().unregister(this);
+    }
+
+    private void getBannerInfo() {
+        new ThreadPoolTask.Builder()
+                .setGeneralParam(Constants.getToken(), "1005", "GetBannerInfo", null)
+                .setBeanType(Object.class)
+                .setCallBack(new WebServiceCallBack<Object>() {
+                    @Override
+                    public void onSuccess(Object bean) {
+                    }
+
+                    @Override
+                    public void onErrorResult(ErrorResult errorResult) {
+                    }
+                }).build().execute();
     }
 }

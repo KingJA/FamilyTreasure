@@ -211,7 +211,7 @@ public class RegisterActivity extends BackTitleActivity implements View.OnClickL
 
                         setProgressDialog(false);
                         save2Local(bean.getContent());
-                        sendCurrentCityCode("3303");
+                        sendCurrentCityCode(Constants.CURRENT_CITY);
                         ActivityManager.getAppManager().finishAllActivity();
                         GoUtil.goActivityAndFinish(RegisterActivity.this, MainCareActivity.class);
                     }

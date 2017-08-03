@@ -19,17 +19,17 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-
-import com.flyco.dialog.listener.OnBtnClickL;
 import com.flyco.dialog.widget.NormalDialog;
-import com.orhanobut.logger.Logger;
+import com.kingja.ui.popupwindow.BottomListPop;
 import com.tdr.familytreasure.R;
+import com.tdr.familytreasure.amap.MapActivity;
 import com.tdr.familytreasure.entiy.CheckElder;
 import com.tdr.familytreasure.entiy.ErrorResult;
 import com.tdr.familytreasure.entiy.MessageEvent;
@@ -40,20 +40,18 @@ import com.tdr.familytreasure.ui.ZProgressHUD;
 import com.tdr.familytreasure.ui.niftydialog.NiftyDialogBuilder;
 import com.tdr.familytreasure.util.Constants;
 import com.tdr.familytreasure.util.DataManager;
-import com.tdr.familytreasure.util.DialogUtil;
+import com.tdr.familytreasure.util.ToastUtil;
 import com.tdr.familytreasure.util.Utils;
 import com.tdr.familytreasure.util.WebServiceUtils;
 
 import org.greenrobot.eventbus.EventBus;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -62,6 +60,7 @@ import java.util.Map;
  */
 public class PersonConfig extends Activity implements View.OnClickListener {
     private static final String TAG = "PersonConfig";
+    private static final int LOCATION = 88;
 
     private Context mContext;
 
@@ -95,6 +94,20 @@ public class PersonConfig extends Activity implements View.OnClickListener {
     private String identity = "";
     private CheckElder.ContentBean content;
     private NormalDialog quitDialog;
+    private TextView tv_deviceCode;
+    private TextView tv_deviceType;
+    private TextView tv_activity_position;
+    private TextView tv_alarm_distance;
+    private TextView tv_modify_older;
+    private double lat;
+    private double lng;
+    private FrameLayout fl_root;
+    private BottomListPop mDistanceSelector;
+    private String deviceId;
+    private String deviceType;
+    private String alarmRadius;
+    private RelativeLayout rl_activity_position;
+    private RelativeLayout rl_alarm_distance;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -140,8 +153,10 @@ public class PersonConfig extends Activity implements View.OnClickListener {
     private TextView text_title;
     private TextView text_deal;
 
-    private RelativeLayout relative_olderName, relative_bodyPhoto, relative_olderPhone, relative_olderIdentity, relative_olderAddress, relative_olderHealth, relative_olderRemarks;
-    private TextView text_olderName, text_olderPhone, text_odlerIdentity, text_olderAddress, text_olderHealth, text_olderRemarks;
+    private RelativeLayout relative_olderName, relative_bodyPhoto, relative_olderPhone, relative_olderIdentity,
+            relative_olderAddress, relative_olderHealth, relative_olderRemarks;
+    private TextView text_olderName, text_olderPhone, text_odlerIdentity, text_olderAddress, text_olderHealth,
+            text_olderRemarks;
     private ImageView image_bodyPhoto;
     private TextView text_delGuardian1, text_guardianName1, text_guardianPhone1, text_guardianAddress1;
     private TextView text_delGuardian2, text_guardianName2, text_guardianPhone2, text_guardianAddress2;
@@ -151,6 +166,16 @@ public class PersonConfig extends Activity implements View.OnClickListener {
     private TextView text_addMoreGuardian;
 
     private void initView() {
+        rl_activity_position = (RelativeLayout) findViewById(R.id.rl_activity_position);
+        rl_alarm_distance = (RelativeLayout) findViewById(R.id.rl_alarm_distance);
+        tv_activity_position = (TextView) findViewById(R.id.tv_activity_position);
+        tv_alarm_distance = (TextView) findViewById(R.id.tv_alarm_distance);
+        tv_modify_older = (TextView) findViewById(R.id.tv_modify_older);
+        rl_activity_position.setOnClickListener(this);
+        rl_alarm_distance.setOnClickListener(this);
+        tv_modify_older.setOnClickListener(this);
+        tv_deviceCode = (TextView) findViewById(R.id.tv_deviceCode);
+        tv_deviceType = (TextView) findViewById(R.id.tv_deviceType);
         image_back = (ImageView) findViewById(R.id.fl_menu);
         image_back.setOnClickListener(this);
         text_title = (TextView) findViewById(R.id.text_title);
@@ -159,7 +184,7 @@ public class PersonConfig extends Activity implements View.OnClickListener {
         text_deal.setText("分享");
         text_deal.setVisibility(View.VISIBLE);
         text_deal.setOnClickListener(this);
-
+        fl_root = (FrameLayout) findViewById(R.id.fl_root);
         relative_olderName = (RelativeLayout) findViewById(R.id.relative_olderName);
         relative_olderName.setOnClickListener(this);
         text_olderName = (TextView) findViewById(R.id.text_olderName);
@@ -173,7 +198,7 @@ public class PersonConfig extends Activity implements View.OnClickListener {
         text_olderPhone = (TextView) findViewById(R.id.text_olderPhone);
 
         relative_olderIdentity = (RelativeLayout) findViewById(R.id.relative_olderIdentity);
-//        relative_olderIdentity.setOnClickListener(this);
+        relative_olderIdentity.setOnClickListener(this);
         text_odlerIdentity = (TextView) findViewById(R.id.text_odlerIdentity);
 
         relative_olderAddress = (RelativeLayout) findViewById(R.id.relative_olderAddress);
@@ -218,19 +243,38 @@ public class PersonConfig extends Activity implements View.OnClickListener {
 
     }
 
+    private String[] diatanceArr = {"1KM", "2KM", "3KM"};
+
     private void initData(CheckElder.ContentBean bean) {
+        deviceId = bean.getBINDINFO().getDEVICEID();
+        deviceType = bean.getBINDINFO().getDEVTYPE();
+        lng = Double.valueOf(bean.getLRPARAM().getCENTREPOINTLNG());
+        lat = Double.valueOf(bean.getLRPARAM().getCENTREPOINTLAT());
+        alarmRadius = bean.getLRPARAM().getRADIUS();
+        //TODO
         setClickable();
+        mDistanceSelector = new BottomListPop(fl_root, this, Arrays.asList(diatanceArr));
+        mDistanceSelector.setOnPopItemClickListener(new BottomListPop.OnPopItemClickListener() {
+            @Override
+            public void onPopItemClick(int position, String tag) {
+                tv_alarm_distance.setText(diatanceArr[position]);
+                alarmRadius = position + "";
+            }
+        });
+        tv_activity_position.setText("(" + lng + "," + lat + ")");
+        tv_alarm_distance.setText(getAlarmDistance(alarmRadius));
         text_olderName.setText(bean.getLRINFO().getCUSTOMERNAME());
         image_bodyPhoto.setImageBitmap(Utils.stringtoBitmap(bean.getPHOTOINFO().getCUSTOMERPHOTO()));
         text_olderPhone.setText(bean.getLRINFO().getCUSTOMMOBILE());
         identity = bean.getLRINFO().getCUSTOMERIDCARD();
         hideIdentity = Utils.hideID(identity);
-        Log.e(TAG, "hideIdentity: "+hideIdentity );
+        Log.e(TAG, "hideIdentity: " + hideIdentity);
         text_odlerIdentity.setText(hideIdentity);
         text_olderAddress.setText(bean.getLRINFO().getCUSTOMERADDRESS());
         text_olderHealth.setText(bean.getCUSTMERHEALTHINFO().getHEALTHCONDITION().replace(",", "  "));
         text_olderRemarks.setText(bean.getCUSTMERHEALTHINFO().getEMTNOTICE());
-
+        tv_deviceCode.setText(deviceId);
+        tv_deviceType.setText(bean.getBINDINFO().getBINDUNITNAME());
         int size = bean.getGUARDERLIST().size();
         if (size == 1) {
             text_delGuardian1.setVisibility(View.GONE);
@@ -274,6 +318,24 @@ public class PersonConfig extends Activity implements View.OnClickListener {
 
     }
 
+    private String getAlarmDistance(String code) {
+        String result = "";
+        switch (code) {
+            case "1":
+                result = "1KM";
+                break;
+            case "2":
+                result = "2KM";
+                break;
+            case "3":
+                result = "3KM";
+                break;
+            default:
+                break;
+        }
+        return result;
+    }
+
     private void setClickable() {
         personType = content.getPERSONTYPE();
         if (personType.equals("1")) {
@@ -289,6 +351,8 @@ public class PersonConfig extends Activity implements View.OnClickListener {
             text_delGuardian2.setClickable(false);
             text_delGuardian3.setClickable(false);
             relative_addMoreGuardian.setClickable(false);
+            rl_activity_position.setClickable(false);
+            rl_alarm_distance.setClickable(false);
             //text_addMoreGuardian.setClickable(false);
         }
     }
@@ -297,11 +361,11 @@ public class PersonConfig extends Activity implements View.OnClickListener {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.fl_menu:
-                //finish();
-                backToSave();
-
+                finish();
                 break;
-
+            case R.id.tv_modify_older:
+                backToSave();
+                break;
             case R.id.text_deal:
                 mProgressHUD.setMessage("分享中...");
                 mProgressHUD.setSpinnerType(ZProgressHUD.SIMPLE_ROUND_SPINNER);
@@ -323,37 +387,38 @@ public class PersonConfig extends Activity implements View.OnClickListener {
                 map.put("DataTypeCode", "Share_Target");
                 map.put("content", jsonObject.toString());
 
-                WebServiceUtils.callWebService(Constants.WEBSERVER_URL, Constants.WEBSERVER_REREQUEST, map, new WebServiceUtils.WebServiceCallBack() {
-                    @Override
-                    public void callBack(String result) {
-                        if (result != null) {
-                            Log.e(TAG, result);
-                            try {
-                                JSONObject json = new JSONObject(result);
-                                int resultCode = json.getInt("ResultCode");
-                                String resultText = Utils.initNullStr(json.getString("ResultText"));
-                                if (resultCode == 0) {
-                                    String content = json.getString("Content");
-                                    JSONObject object = new JSONObject(content);
-                                    String guid = object.getString("SHAREID");
-                                    mProgressHUD.dismiss();
-                                    generateQRcode("Q3", targetType, guid);
-                                    //dialogShow(0, guid, "");
+                WebServiceUtils.callWebService(Constants.WEBSERVER_URL, Constants.WEBSERVER_REREQUEST, map, new
+                        WebServiceUtils.WebServiceCallBack() {
+                            @Override
+                            public void callBack(String result) {
+                                if (result != null) {
+                                    Log.e(TAG, result);
+                                    try {
+                                        JSONObject json = new JSONObject(result);
+                                        int resultCode = json.getInt("ResultCode");
+                                        String resultText = Utils.initNullStr(json.getString("ResultText"));
+                                        if (resultCode == 0) {
+                                            String content = json.getString("Content");
+                                            JSONObject object = new JSONObject(content);
+                                            String guid = object.getString("SHAREID");
+                                            mProgressHUD.dismiss();
+                                            generateQRcode("Q3", targetType, guid);
+                                            //dialogShow(0, guid, "");
+                                        } else {
+                                            mProgressHUD.dismiss();
+                                            Utils.myToast(mContext, result);
+                                        }
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                        mProgressHUD.dismiss();
+                                        Utils.myToast(mContext, "JSON解析出错");
+                                    }
                                 } else {
                                     mProgressHUD.dismiss();
-                                    Utils.myToast(mContext, result);
+                                    Utils.myToast(mContext, "获取数据错误，请稍后重试！");
                                 }
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                                mProgressHUD.dismiss();
-                                Utils.myToast(mContext, "JSON解析出错");
                             }
-                        } else {
-                            mProgressHUD.dismiss();
-                            Utils.myToast(mContext, "获取数据错误，请稍后重试！");
-                        }
-                    }
-                });
+                        });
 
                 break;
             case R.id.relative_olderName:
@@ -367,7 +432,8 @@ public class PersonConfig extends Activity implements View.OnClickListener {
                 //实例化SelectPicPopupWindow
                 mSelectPicPopupWindow = new SelectPicPopupWindow(PersonConfig.this, this);
                 // 显示窗口
-                mSelectPicPopupWindow.showAtLocation(PersonConfig.this.findViewById(R.id.linear_pop),
+
+                mSelectPicPopupWindow.showAtLocation(fl_root,
                         Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 0); // 设置layout在PopupWindow中显示的位置
                 break;
 
@@ -444,7 +510,13 @@ public class PersonConfig extends Activity implements View.OnClickListener {
                 Intent intentGuardian1 = new Intent(mContext, GuardianActivity.class);
                 intentGuardian1.putExtra("smartcareId", content.getSMARTCAREID());
                 startActivityForResult(intentGuardian1, KEY);
-
+                break;
+            case R.id.rl_activity_position:
+                Intent intentl = new Intent(mContext, MapActivity.class);
+                startActivityForResult(intentl, LOCATION);
+                break;
+            case R.id.rl_alarm_distance:
+                mDistanceSelector.showPopupWindow();
                 break;
         }
     }
@@ -463,16 +535,32 @@ public class PersonConfig extends Activity implements View.OnClickListener {
 
                 JSONObject jsonPhoto = new JSONObject();
                 jsonPhoto.put("PHOTOID", change);
-                jsonPhoto.put("CUSTOMERPHOTO", TextUtils.isEmpty(Constants.getBodyPhoto())?content.getPHOTOINFO().getCUSTOMERPHOTO():Constants.getBodyPhoto());
+                jsonPhoto.put("CUSTOMERPHOTO", TextUtils.isEmpty(Constants.getBodyPhoto()) ? content.getPHOTOINFO()
+                        .getCUSTOMERPHOTO() : Constants.getBodyPhoto());
+
+//                jsonPhoto.put("CUSTOMERPHOTO", "abc");
 
                 JSONObject jsonHealth = new JSONObject();
                 jsonHealth.put("HEALTHCONDITION", text_olderHealth.getText().toString().trim().replace("  ", ","));
                 jsonHealth.put("EMTNOTICE", text_olderRemarks.getText().toString().trim());
 
+                JSONObject bindInfoObj = new JSONObject();
+                bindInfoObj.put("BINDXQCODE", "");
+                bindInfoObj.put("BINDUNITNAME", "");
+                bindInfoObj.put("DEVTYPE", deviceType);
+                bindInfoObj.put("DEVICEID", deviceId);
+
+                JSONObject lrParamObj = new JSONObject();
+                lrParamObj.put("CENTREPOINTLNG", lng);
+                lrParamObj.put("CENTREPOINTLAT", lat);
+                lrParamObj.put("RADIUS", alarmRadius);
+
                 jsonObject.put("SMARTCAREID", smartcareId);
                 jsonObject.put("LRINFO", jsonLrInfo);
                 jsonObject.put("PHOTOINFO", jsonPhoto);
                 jsonObject.put("CUSTMERHEALTHINFO", jsonHealth);
+                jsonObject.put("BINDINFO", bindInfoObj);
+                jsonObject.put("LRPARAM", lrParamObj);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -485,39 +573,36 @@ public class PersonConfig extends Activity implements View.OnClickListener {
             map.put("DataTypeCode", "ModifyElder");
             map.put("content", jsonObject.toString());
 
-            WebServiceUtils.callWebService(Constants.WEBSERVER_URL, Constants.WEBSERVER_REREQUEST, map, new WebServiceUtils.WebServiceCallBack() {
-                @Override
-                public void callBack(String result) {
-                    if (result != null) {
-                        Log.e(TAG, result);
-                        try {
-                            JSONObject json = new JSONObject(result);
-                            int resultCode = json.getInt("ResultCode");
-                            String resultText = Utils.initNullStr(json.getString("ResultText"));
-                            if (resultCode == 0) {
-                                EventBus.getDefault().post(new MessageEvent("MainCareActivity"));
-                                mProgressHUD.dismiss();
-                                Toast.makeText(PersonConfig.this, "修改成功", Toast.LENGTH_SHORT).show();
-//                                        Intent intent = new Intent(PersonConfig.this, OlderSelectActivity.class);
-//                                        intent.putExtra("smartcareId", smartcareId);
-//                                        overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
-//                                        startActivity(intent);
-                                finish();
+            WebServiceUtils.callWebService(Constants.WEBSERVER_URL, Constants.WEBSERVER_REREQUEST, map, new
+                    WebServiceUtils.WebServiceCallBack() {
+                        @Override
+                        public void callBack(String result) {
+                            if (result != null) {
+                                Log.e(TAG, result);
+                                try {
+                                    JSONObject json = new JSONObject(result);
+                                    int resultCode = json.getInt("ResultCode");
+                                    String resultText = Utils.initNullStr(json.getString("ResultText"));
+                                    if (resultCode == 0) {
+                                        EventBus.getDefault().post(new MessageEvent("MainCareActivity"));
+                                        mProgressHUD.dismiss();
+                                        ToastUtil.showToast("修改成功");
+                                        finish();
+                                    } else {
+                                        mProgressHUD.dismiss();
+                                        Utils.myToast(mContext, result);
+                                    }
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                    mProgressHUD.dismiss();
+                                    Utils.myToast(mContext, "JSON解析出错");
+                                }
                             } else {
                                 mProgressHUD.dismiss();
-                                Utils.myToast(mContext, result);
+                                Utils.myToast(mContext, "获取数据错误，请稍后重试！");
                             }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                            mProgressHUD.dismiss();
-                            Utils.myToast(mContext, "JSON解析出错");
                         }
-                    } else {
-                        mProgressHUD.dismiss();
-                        Utils.myToast(mContext, "获取数据错误，请稍后重试！");
-                    }
-                }
-            });
+                    });
 
         } else {
             finish();
@@ -540,37 +625,38 @@ public class PersonConfig extends Activity implements View.OnClickListener {
         map.put("taskId", "");
         map.put("DataTypeCode", "GenerateQRcode");
         map.put("content", jsonObject.toString());
-        WebServiceUtils.callWebService(Constants.WEBSERVER_URL, Constants.WEBSERVER_REREQUEST, map, new WebServiceUtils.WebServiceCallBack() {
-            @Override
-            public void callBack(String result) {
-                if (result != null) {
-                    try {
-                        JSONObject json = new JSONObject(result);
-                        int resultCode = json.getInt("ResultCode");
-                        String resultText = Utils.initNullStr(json.getString("ResultText"));
-                        if (resultCode == 0) {
-                            mProgressHUD.dismiss();
-                            String content = json.getString("Content");
-                            JSONObject object = new JSONObject(content);
-                            String QRCode = object.getString("QRCode");
-                            Intent intent = new Intent(mContext, QrCodeActivity.class);
-                            intent.putExtra("code", QRCode);
-                            mContext.startActivity(intent);
+        WebServiceUtils.callWebService(Constants.WEBSERVER_URL, Constants.WEBSERVER_REREQUEST, map, new
+                WebServiceUtils.WebServiceCallBack() {
+                    @Override
+                    public void callBack(String result) {
+                        if (result != null) {
+                            try {
+                                JSONObject json = new JSONObject(result);
+                                int resultCode = json.getInt("ResultCode");
+                                String resultText = Utils.initNullStr(json.getString("ResultText"));
+                                if (resultCode == 0) {
+                                    mProgressHUD.dismiss();
+                                    String content = json.getString("Content");
+                                    JSONObject object = new JSONObject(content);
+                                    String QRCode = object.getString("QRCode");
+                                    Intent intent = new Intent(mContext, QrCodeActivity.class);
+                                    intent.putExtra("code", QRCode);
+                                    mContext.startActivity(intent);
+                                } else {
+                                    mProgressHUD.dismiss();
+                                    Utils.myToast(mContext, resultText);
+                                }
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                                mProgressHUD.dismiss();
+                                Utils.myToast(mContext, "JSON解析出错");
+                            }
                         } else {
                             mProgressHUD.dismiss();
-                            Utils.myToast(mContext, resultText);
+                            Utils.myToast(mContext, "获取数据错误，请稍后重试！");
                         }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                        mProgressHUD.dismiss();
-                        Utils.myToast(mContext, "JSON解析出错");
                     }
-                } else {
-                    mProgressHUD.dismiss();
-                    Utils.myToast(mContext, "获取数据错误，请稍后重试！");
-                }
-            }
-        });
+                });
 
     }
 
@@ -587,7 +673,8 @@ public class PersonConfig extends Activity implements View.OnClickListener {
             effectstype = NiftyDialogBuilder.Effectstype.Fadein;
             dialogBuilder.withTitle("提示").withTitleColor("#333333").withMessage("点击确认分享至微信")
                     .isCancelableOnTouchOutside(false).withEffect(effectstype).withButton1Text("取消")
-                    .setCustomView(R.layout.custom_view, mContext).withButton2Text("确认").setButton1Click(new View.OnClickListener() {
+                    .setCustomView(R.layout.custom_view, mContext).withButton2Text("确认").setButton1Click(new View
+                    .OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     dialogBuilder.dismiss();
@@ -610,7 +697,8 @@ public class PersonConfig extends Activity implements View.OnClickListener {
             effectstype = NiftyDialogBuilder.Effectstype.Fadein;
             dialogBuilder.withTitle("提示").withTitleColor("#333333").withMessage("是否删除此监护人")
                     .isCancelableOnTouchOutside(false).withEffect(effectstype).withButton1Text("取消")
-                    .setCustomView(R.layout.custom_view, mContext).withButton2Text("确认").setButton1Click(new View.OnClickListener() {
+                    .setCustomView(R.layout.custom_view, mContext).withButton2Text("确认").setButton1Click(new View
+                    .OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     dialogBuilder.dismiss();
@@ -642,18 +730,19 @@ public class PersonConfig extends Activity implements View.OnClickListener {
         map.put("DataTypeCode", "DelGuardian");
         map.put("content", json.toString());
 
-        WebServiceUtils.callWebService(Constants.WEBSERVER_URL, Constants.WEBSERVER_REREQUEST, map, new WebServiceUtils.WebServiceCallBack() {
-            @Override
-            public void callBack(String result) {
-                if (result != null) {
-                    Log.e(TAG, result);
-                    try {
-                        JSONObject json = new JSONObject(result);
-                        int resultCode = json.getInt("ResultCode");
-                        String resultText = Utils.initNullStr(json.getString("ResultText"));
-                        if (resultCode == 0) {
-                            mProgressHUD.dismiss();
-                            initNet();
+        WebServiceUtils.callWebService(Constants.WEBSERVER_URL, Constants.WEBSERVER_REREQUEST, map, new
+                WebServiceUtils.WebServiceCallBack() {
+                    @Override
+                    public void callBack(String result) {
+                        if (result != null) {
+                            Log.e(TAG, result);
+                            try {
+                                JSONObject json = new JSONObject(result);
+                                int resultCode = json.getInt("ResultCode");
+                                String resultText = Utils.initNullStr(json.getString("ResultText"));
+                                if (resultCode == 0) {
+                                    mProgressHUD.dismiss();
+                                    initNet();
 //                            if (tag.equals("a")) {
 //                                linear_guardian1.setVisibility(View.GONE);
 //                            } else if (tag.equals("b")) {
@@ -661,24 +750,34 @@ public class PersonConfig extends Activity implements View.OnClickListener {
 //                            } else {
 //                                linear_guardian3.setVisibility(View.GONE);
 //                            }
-                        } else {
-                            mProgressHUD.dismiss();
-                            Utils.myToast(mContext, resultText);
+                                } else {
+                                    mProgressHUD.dismiss();
+                                    Utils.myToast(mContext, resultText);
+                                }
+                            } catch (JSONException e) {
+                                mProgressHUD.dismiss();
+                                e.printStackTrace();
+                                Utils.myToast(mContext, "JSON解析出错");
+                            }
                         }
-                    } catch (JSONException e) {
-                        mProgressHUD.dismiss();
-                        e.printStackTrace();
-                        Utils.myToast(mContext, "JSON解析出错");
                     }
-                }
-            }
-        });
+                });
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
+            case LOCATION:
+                if (resultCode == RESULT_OK) {
+                    String address = data.getStringExtra("address");
+                    lat = data.getDoubleExtra("lat", 0.0);
+                    lng = data.getDoubleExtra("lng", 0.0);
+                    tv_activity_position.setText("(" + lat + "," + lng + ")");
+                }
+
+                break;
+
             case IMAGE_REQUEST_CODE:
                 if (data == null) {
                     Utils.myToast(mContext, "没有取到图片");
@@ -804,11 +903,12 @@ public class PersonConfig extends Activity implements View.OnClickListener {
             isChanged = true;
             strPhoto = Utils.Byte2Str(Utils.Bitmap2Bytes(photo));
             Constants.setBodyPhoto(Utils.Byte2Str(Utils.Bitmap2Bytes(photo)));
-            change="CHANGED";
+            change = "CHANGED";
 
         }
     }
-    private String change="";
+
+    private String change = "";
 
     // 以下是关键，原本uri返回的是file:///...来着的，android4.4返回的是content:///...
     @SuppressLint("NewApi")
@@ -921,8 +1021,4 @@ public class PersonConfig extends Activity implements View.OnClickListener {
         return "com.google.android.apps.photos.content".equals(uri.getAuthority());
     }
 
-    @Override
-    public void onBackPressed() {
-        backToSave();
-    }
 }

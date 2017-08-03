@@ -10,6 +10,7 @@ import com.tdr.familytreasure.base.App;
  * Created by Linus_Xie on 2016/6/20.
  */
 public class Constants {
+    public static final String CURRENT_CITY="4520";
 
     public static final String SAVE_PATH = Environment.getExternalStorageDirectory() + "/Wisdom/com.tdr.wisdome/cardImage/";
 
@@ -28,9 +29,8 @@ public class Constants {
     /**
      * Webservice参数
      */
-//    public static final String WEBSERVER_URL = "http://192.168.1.25:20043/WebCardHolder.asmx";// WebServices访问地址，测试老
-//    public static final String WEBSERVER_URL = "http://122.228.188.210:20043/WebCardHolder.asmx";// WebServices访问地址，测试
-    public static final String WEBSERVER_URL = "http://116.255.205.110:1001/WEBCARDHOLDER.asmx";// WebServices访问地址，正式
+    public static final String WEBSERVER_URL = "http://122.228.188.210:20043/WebCardHolder.asmx";// WebServices访问地址，测试
+//    public static final String WEBSERVER_URL = "http://116.255.205.110:1001/WEBCARDHOLDER.asmx";// WebServices访问地址，正式
     public static final String WEBSERVER_NAMESPACE = "http://tempuri.org/";// 命名空间
 
     public static final String WEBSERVER_REREQUEST = "CardHolder";//智慧e点通服务
