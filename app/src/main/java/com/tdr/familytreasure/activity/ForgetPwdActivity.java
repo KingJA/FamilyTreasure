@@ -17,8 +17,8 @@ import com.tdr.familytreasure.ui.MaterialEditText;
 import com.tdr.familytreasure.util.CloseActivityUtil;
 import com.tdr.familytreasure.util.Constants;
 import com.tdr.familytreasure.util.DataManager;
+import com.tdr.familytreasure.util.MyUtils;
 import com.tdr.familytreasure.util.TimeCountUtil;
-import com.tdr.familytreasure.util.Utils;
 import com.tdr.familytreasure.util.WebServiceUtils;
 
 import org.json.JSONException;
@@ -81,17 +81,17 @@ public class ForgetPwdActivity extends Activity implements View.OnClickListener 
             case R.id.btn_code:
                 phoneNum = material_forgetPhoone.getText().toString().trim();
                 if (phoneNum.equals("")) {
-                    Utils.myToast(mContext, "请输入手机号码");
+                    MyUtils.myToast(mContext, "请输入手机号码");
                     break;
                 }
 
-                if (!Utils.isPhone(phoneNum)) {
-                    Utils.myToast(mContext, "请输入正确的手机号");
+                if (!MyUtils.isPhone(phoneNum)) {
+                    MyUtils.myToast(mContext, "请输入正确的手机号");
                     break;
                 }
 
                 if (activityType.equals("reset")&&!DataManager.getUserPhone().equals(phoneNum)) {
-                    Utils.myToast(mContext, "请输入注册的手机号");
+                    MyUtils.myToast(mContext, "请输入注册的手机号");
                     break;
                 }
 
@@ -121,13 +121,13 @@ public class ForgetPwdActivity extends Activity implements View.OnClickListener 
                             try {
                                 JSONObject object = new JSONObject(result);
                                 int resultCode = object.getInt("ResultCode");
-                                String resultText = Utils.initNullStr(object.getString("ResultText"));
+                                String resultText = MyUtils.initNullStr(object.getString("ResultText"));
                                 if (resultCode == 0) {
                                     String content = object.getString("Content");
                                     JSONObject obj = new JSONObject(content);
                                     String VerificationCodeID = obj.getString("VerificationCodeID");
                                     String VerificationCode = obj.getString("VerificationCode");
-                                    Utils.myToast(mContext, "获取验证码成功");
+                                    MyUtils.myToast(mContext, "获取验证码成功");
                                     Intent intent = new Intent();
                                     Bundle bundle = new Bundle();
                                     bundle.putString("phoneNum", material_forgetPhoone.getText().toString().trim());
@@ -141,15 +141,15 @@ public class ForgetPwdActivity extends Activity implements View.OnClickListener 
                                      CloseActivityUtil.activityFinish(ForgetPwdActivity.this);
                                     finish();
                                 } else {
-                                    Utils.myToast(mContext, resultText);
+                                    MyUtils.myToast(mContext, resultText);
                                 }
                             } catch (JSONException e) {
                                 e.printStackTrace();
-                                Utils.myToast(mContext, "JSON解析出错");
+                                MyUtils.myToast(mContext, "JSON解析出错");
                             }
 
                         } else {
-                            Utils.myToast(mContext, "获取数据错误，请稍后重试！");
+                            MyUtils.myToast(mContext, "获取数据错误，请稍后重试！");
                         }
                     }
                 });

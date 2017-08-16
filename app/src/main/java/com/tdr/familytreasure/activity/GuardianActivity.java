@@ -11,20 +11,18 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 
-import com.flyco.dialog.listener.OnBtnClickL;
 import com.tdr.familytreasure.R;
 import com.tdr.familytreasure.ui.ZProgressHUD;
 import com.tdr.familytreasure.util.Constants;
 import com.tdr.familytreasure.util.DialogUtil;
 import com.tdr.familytreasure.util.MD5;
+import com.tdr.familytreasure.util.MyUtils;
 import com.tdr.familytreasure.util.TextCountUtil;
-import com.tdr.familytreasure.util.Utils;
 import com.tdr.familytreasure.util.WebServiceUtils;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 
 /**
@@ -97,28 +95,28 @@ public class GuardianActivity extends Activity implements View.OnClickListener {
             case R.id.text_deal:
                 final String guardianName = edit_guardianName.getText().toString().trim();
                 if (guardianName.equals("")) {
-                    Utils.myToast(mContext, "请输入监护人姓名");
+                    MyUtils.myToast(mContext, "请输入监护人姓名");
                     break;
                 }
                 final String guardianIdentity = edit_guardianIdentity.getText().toString().trim();
                 if (guardianIdentity.equals("")) {
-                    Utils.myToast(mContext, "请输入监护人身份证");
+                    MyUtils.myToast(mContext, "请输入监护人身份证");
                     break;
                 }
                 final String phone = edit_phone.getText().toString().trim();
                 if (phone.equals("")) {
-                    Utils.myToast(mContext, "请输入监护人手机号码");
+                    MyUtils.myToast(mContext, "请输入监护人手机号码");
                     break;
                 }
                 final String guardianCode = edit_guardianCode.getText().toString().trim();
                 if (guardianCode.equals("")) {
-                    Utils.myToast(mContext, "请输入验证码");
+                    MyUtils.myToast(mContext, "请输入验证码");
                     break;
                 }
 
                 try {
                     if (!MD5.getMD5(guardianCode).equals(code)) {
-                        Utils.myToast(mContext, "验证码错误");
+                        MyUtils.myToast(mContext, "验证码错误");
                         break;
                     }
                 } catch (Exception e) {
@@ -127,7 +125,7 @@ public class GuardianActivity extends Activity implements View.OnClickListener {
 
                 final String guardianAddress = edit_guardianAddress.getText().toString().trim();
                 if (guardianAddress.equals("")) {
-                    Utils.myToast(mContext, "请输入监护人联系地址");
+                    MyUtils.myToast(mContext, "请输入监护人联系地址");
                     break;
                 }
 
@@ -162,7 +160,7 @@ public class GuardianActivity extends Activity implements View.OnClickListener {
                             try {
                                 json = new JSONObject(result);
                                 int resultCode = json.getInt("ResultCode");
-                                String resultText = Utils.initNullStr(json.getString("ResultText"));
+                                String resultText = MyUtils.initNullStr(json.getString("ResultText"));
                                 if (resultCode == 0) {
                                     String guardianAlternatePhone = edit_guardianAlternatePhone.getText().toString().trim();
                                     Intent intent = new Intent();
@@ -176,16 +174,16 @@ public class GuardianActivity extends Activity implements View.OnClickListener {
                                     mProgressHUD.dismiss();
                                 } else {
                                     mProgressHUD.dismiss();
-                                    Utils.myToast(mContext, resultText);
+                                    MyUtils.myToast(mContext, resultText);
                                 }
                             } catch (JSONException e) {
                                 e.printStackTrace();
-                                Utils.myToast(mContext, "JSON解析出错");
+                                MyUtils.myToast(mContext, "JSON解析出错");
                             }
 
                         } else {
                             mProgressHUD.dismiss();
-                            Utils.myToast(mContext, "获取数据错误，请稍后重试！");
+                            MyUtils.myToast(mContext, "获取数据错误，请稍后重试！");
                         }
                     }
                 });
@@ -196,7 +194,7 @@ public class GuardianActivity extends Activity implements View.OnClickListener {
             case R.id.text_code:
                 String phone1 = edit_phone.getText().toString();
                 if (phone1.equals("")) {
-                    Utils.myToast(GuardianActivity.this, "监护人1手机号码不可为空");
+                    MyUtils.myToast(GuardianActivity.this, "监护人1手机号码不可为空");
                     break;
                 }
                 TextCountUtil textCountUtilt1 = new TextCountUtil(GuardianActivity.this, 60000, 1000, text_code);
@@ -225,24 +223,24 @@ public class GuardianActivity extends Activity implements View.OnClickListener {
                                 try {
                                     object = new JSONObject(result);
                                     int resultCode = object.getInt("ResultCode");
-                                    String resultText = Utils.initNullStr(object.getString("ResultText"));
+                                    String resultText = MyUtils.initNullStr(object.getString("ResultText"));
                                     if (resultCode == 0) {
-                                        Utils.myToast(GuardianActivity.this, "获取验证码成功");
+                                        MyUtils.myToast(GuardianActivity.this, "获取验证码成功");
                                         String content = object.getString("Content");
                                         JSONObject json = new JSONObject(content);
                                         code = json.getString("SMSVERIFY");
                                         Log.e(TAG, "验证码: "+code );
                                         //phoneVerify1 = json.getString("MOBILEPHONE");
                                     } else {
-                                        Utils.myToast(GuardianActivity.this, resultText);
+                                        MyUtils.myToast(GuardianActivity.this, resultText);
                                     }
                                 } catch (JSONException e) {
                                     e.printStackTrace();
-                                    Utils.myToast(GuardianActivity.this, "JSON解析出错");
+                                    MyUtils.myToast(GuardianActivity.this, "JSON解析出错");
                                 }
 
                             } else {
-                                Utils.myToast(GuardianActivity.this, "获取数据错误，请稍后重试！");
+                                MyUtils.myToast(GuardianActivity.this, "获取数据错误，请稍后重试！");
                             }
                         }
                     }

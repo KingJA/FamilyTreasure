@@ -1,16 +1,10 @@
 package com.tdr.familytreasure.activity;
 
 import android.app.Activity;
-import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import com.tdr.familytreasure.R;
 import com.tdr.familytreasure.entiy.CheckElder;
@@ -19,21 +13,11 @@ import com.tdr.familytreasure.net.ThreadPoolTask;
 import com.tdr.familytreasure.net.WebServiceCallBack;
 import com.tdr.familytreasure.ui.MaterialEditText;
 import com.tdr.familytreasure.ui.ZProgressHUD;
-import com.tdr.familytreasure.ui.niftydialog.NiftyDialogBuilder;
 import com.tdr.familytreasure.util.CheckUtil;
-import com.tdr.familytreasure.util.CloseActivityUtil;
-import com.tdr.familytreasure.util.Constants;
 import com.tdr.familytreasure.util.DataManager;
 import com.tdr.familytreasure.util.MD5;
-import com.tdr.familytreasure.util.TimeCountUtil;
 import com.tdr.familytreasure.util.ToastUtil;
-import com.tdr.familytreasure.util.Utils;
-import com.tdr.familytreasure.util.WebServiceUtils;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.Map;
 

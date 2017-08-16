@@ -10,7 +10,7 @@ import android.widget.TextView;
 
 import com.tdr.familytreasure.R;
 import com.tdr.familytreasure.ui.ClearEditTextView;
-import com.tdr.familytreasure.util.Utils;
+import com.tdr.familytreasure.util.MyUtils;
 
 /**
  * 修改人员配置信息
@@ -75,11 +75,11 @@ public class ModifyActivity extends Activity implements View.OnClickListener {
             case R.id.text_deal:
                 String result = clear_modify.getText().toString().trim();
                 if (result.equals("")) {
-                    Utils.myToast(this, "输入框不可为空");
+                    MyUtils.myToast(this, "输入框不可为空");
                     break;
                 } else if (activityName.equals("olderIdentity")) {
-                    if (!Utils.isIDCard18(result)) {
-                        Utils.myToast(this, "输入的身份证有误");
+                    if (!MyUtils.isIDCard18(result)) {
+                        MyUtils.myToast(this, "输入的身份证有误");
                         break;
                     } else {
                         Intent intent = new Intent();

@@ -2,7 +2,6 @@ package com.tdr.familytreasure.activity;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
@@ -14,9 +13,9 @@ import com.orhanobut.logger.Logger;
 import com.tdr.familytreasure.R;
 import com.tdr.familytreasure.ui.ZProgressHUD;
 import com.tdr.familytreasure.util.Constants;
+import com.tdr.familytreasure.util.MyUtils;
 import com.tdr.familytreasure.util.TimeUtil;
 import com.tdr.familytreasure.util.ToastUtil;
-import com.tdr.familytreasure.util.Utils;
 import com.tdr.familytreasure.util.WebServiceUtils;
 
 import org.json.JSONException;
@@ -115,16 +114,16 @@ public class LostAlarmActivity extends Activity implements View.OnClickListener 
                                     finish();
                                 } else {
                                     mProgressHUD.dismiss();
-                                    Utils.myToast(mContext, resultText);
+                                    MyUtils.myToast(mContext, resultText);
                                 }
                             } catch (JSONException e) {
                                 e.printStackTrace();
                                 mProgressHUD.dismiss();
-                                Utils.myToast(mContext, "JSON解析出错");
+                                MyUtils.myToast(mContext, "JSON解析出错");
                             }
                         } else {
                             mProgressHUD.dismiss();
-                            Utils.myToast(mContext, "获取数据错误，请稍后重试！");
+                            MyUtils.myToast(mContext, "获取数据错误，请稍后重试！");
                         }
                     }
                 });

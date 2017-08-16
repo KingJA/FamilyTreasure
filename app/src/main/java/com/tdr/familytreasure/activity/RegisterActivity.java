@@ -23,9 +23,9 @@ import com.tdr.familytreasure.util.CheckUtil;
 import com.tdr.familytreasure.util.Constants;
 import com.tdr.familytreasure.util.GoUtil;
 import com.tdr.familytreasure.util.MD5;
+import com.tdr.familytreasure.util.MyUtils;
 import com.tdr.familytreasure.util.PhoneUtil;
 import com.tdr.familytreasure.util.ToastUtil;
-import com.tdr.familytreasure.util.Utils;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -243,19 +243,19 @@ public class RegisterActivity extends BackTitleActivity implements View.OnClickL
     }
 
     private void save2Local(Login.ContentBean content) {
-        Constants.setUserId(Utils.initNullStr(content.getUserID()));
-        Constants.setUserPhone(Utils.initNullStr(content.getPhone()));
-        Constants.setUserName(Utils.initNullStr(content.getUserName()));
-        Constants.setUserIdentitycard(Utils.initNullStr(content.getIDCard()));
-        Constants.setFaceId(Utils.initNullStr(content.getFaceID()));
-        Constants.setFaceBase(Utils.initNullStr(content.getFaceBase()));
-        Constants.setToken(Utils.initNullStr(content.getToken()));
-        Constants.setCertification(Utils.initNullStr(content.getCertification() + ""));
-        Constants.setRealName(Utils.initNullStr(content.getRealname()));
-        Constants.setPermanentAddr(Utils.initNullStr(content.getAddress()));
+        Constants.setUserId(MyUtils.initNullStr(content.getUserID()));
+        Constants.setUserPhone(MyUtils.initNullStr(content.getPhone()));
+        Constants.setUserName(MyUtils.initNullStr(content.getUserName()));
+        Constants.setUserIdentitycard(MyUtils.initNullStr(content.getIDCard()));
+        Constants.setFaceId(MyUtils.initNullStr(content.getFaceID()));
+        Constants.setFaceBase(MyUtils.initNullStr(content.getFaceBase()));
+        Constants.setToken(MyUtils.initNullStr(content.getToken()));
+        Constants.setCertification(MyUtils.initNullStr(content.getCertification() + ""));
+        Constants.setRealName(MyUtils.initNullStr(content.getRealname()));
+        Constants.setPermanentAddr(MyUtils.initNullStr(content.getAddress()));
         if (content.getCity() != null) {
-            Constants.setCityName(Utils.initNullStr(content.getCity().getCityName()));
-            Constants.setCityCode(Utils.initNullStr(content.getCity().getCityCode()));
+            Constants.setCityName(MyUtils.initNullStr(content.getCity().getCityName()));
+            Constants.setCityCode(MyUtils.initNullStr(content.getCity().getCityCode()));
         }
     }
 }

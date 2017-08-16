@@ -24,7 +24,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.flyco.dialog.widget.NormalDialog;
 import com.kingja.ui.popupwindow.BottomListPop;
@@ -38,10 +37,11 @@ import com.tdr.familytreasure.net.WebServiceCallBack;
 import com.tdr.familytreasure.ui.SelectPicPopupWindow;
 import com.tdr.familytreasure.ui.ZProgressHUD;
 import com.tdr.familytreasure.ui.niftydialog.NiftyDialogBuilder;
+import com.tdr.familytreasure.util.CheckUtil;
 import com.tdr.familytreasure.util.Constants;
 import com.tdr.familytreasure.util.DataManager;
+import com.tdr.familytreasure.util.MyUtils;
 import com.tdr.familytreasure.util.ToastUtil;
-import com.tdr.familytreasure.util.Utils;
 import com.tdr.familytreasure.util.WebServiceUtils;
 
 import org.greenrobot.eventbus.EventBus;
@@ -108,6 +108,8 @@ public class PersonConfig extends Activity implements View.OnClickListener {
     private String alarmRadius;
     private RelativeLayout rl_activity_position;
     private RelativeLayout rl_alarm_distance;
+    private String name;
+    private String photo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -258,23 +260,25 @@ public class PersonConfig extends Activity implements View.OnClickListener {
             @Override
             public void onPopItemClick(int position, String tag) {
                 tv_alarm_distance.setText(diatanceArr[position]);
-                alarmRadius = position + "";
+                alarmRadius = position + 1 + "";
             }
         });
         tv_activity_position.setText("(" + lng + "," + lat + ")");
         tv_alarm_distance.setText(getAlarmDistance(alarmRadius));
-        text_olderName.setText(bean.getLRINFO().getCUSTOMERNAME());
-        image_bodyPhoto.setImageBitmap(Utils.stringtoBitmap(bean.getPHOTOINFO().getCUSTOMERPHOTO()));
+        name = bean.getLRINFO().getCUSTOMERNAME();
+        text_olderName.setText(name);
+        photo = bean.getPHOTOINFO().getCUSTOMERPHOTO();
+        image_bodyPhoto.setImageBitmap(MyUtils.stringtoBitmap(photo));
         text_olderPhone.setText(bean.getLRINFO().getCUSTOMMOBILE());
         identity = bean.getLRINFO().getCUSTOMERIDCARD();
-        hideIdentity = Utils.hideID(identity);
+        hideIdentity = MyUtils.hideID(identity);
         Log.e(TAG, "hideIdentity: " + hideIdentity);
         text_odlerIdentity.setText(hideIdentity);
         text_olderAddress.setText(bean.getLRINFO().getCUSTOMERADDRESS());
         text_olderHealth.setText(bean.getCUSTMERHEALTHINFO().getHEALTHCONDITION().replace(",", "  "));
         text_olderRemarks.setText(bean.getCUSTMERHEALTHINFO().getEMTNOTICE());
         tv_deviceCode.setText(deviceId);
-        tv_deviceType.setText(bean.getBINDINFO().getBINDUNITNAME());
+        tv_deviceType.setText(bean.getBINDINFO().getDEVTYPENAME());
         int size = bean.getGUARDERLIST().size();
         if (size == 1) {
             text_delGuardian1.setVisibility(View.GONE);
@@ -396,7 +400,7 @@ public class PersonConfig extends Activity implements View.OnClickListener {
                                     try {
                                         JSONObject json = new JSONObject(result);
                                         int resultCode = json.getInt("ResultCode");
-                                        String resultText = Utils.initNullStr(json.getString("ResultText"));
+                                        String resultText = MyUtils.initNullStr(json.getString("ResultText"));
                                         if (resultCode == 0) {
                                             String content = json.getString("Content");
                                             JSONObject object = new JSONObject(content);
@@ -406,16 +410,16 @@ public class PersonConfig extends Activity implements View.OnClickListener {
                                             //dialogShow(0, guid, "");
                                         } else {
                                             mProgressHUD.dismiss();
-                                            Utils.myToast(mContext, result);
+                                            MyUtils.myToast(mContext, result);
                                         }
                                     } catch (JSONException e) {
                                         e.printStackTrace();
                                         mProgressHUD.dismiss();
-                                        Utils.myToast(mContext, "JSON解析出错");
+                                        MyUtils.myToast(mContext, "JSON解析出错");
                                     }
                                 } else {
                                     mProgressHUD.dismiss();
-                                    Utils.myToast(mContext, "获取数据错误，请稍后重试！");
+                                    MyUtils.myToast(mContext, "获取数据错误，请稍后重试！");
                                 }
                             }
                         });
@@ -440,7 +444,7 @@ public class PersonConfig extends Activity implements View.OnClickListener {
             case R.id.btn_takephoto:
                 Intent intentFromCapture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                 // 判断存储卡是否可以用，可用进行存储
-                if (Utils.hasSdcard()) {
+                if (MyUtils.hasSdcard()) {
                     intentFromCapture.putExtra(MediaStore.EXTRA_OUTPUT,
                             Uri.fromFile(new File(Environment.getExternalStorageDirectory(), IMAGE_FILE_NAME)));
                 }
@@ -522,91 +526,92 @@ public class PersonConfig extends Activity implements View.OnClickListener {
     }
 
     private void backToSave() {
-        if (isChanged) {
-            mProgressHUD.setMessage("提交中...");
-            mProgressHUD.setSpinnerType(ZProgressHUD.SIMPLE_ROUND_SPINNER);
-            JSONObject jsonObject = new JSONObject();
-            try {
-                JSONObject jsonLrInfo = new JSONObject();
-                jsonLrInfo.put("CUSTOMERNAME", text_olderName.getText().toString().trim());
-                jsonLrInfo.put("CUSTOMERIDCARD", identity);
-                jsonLrInfo.put("CUSTOMMOBILE", text_olderPhone.getText().toString().trim());
-                jsonLrInfo.put("CUSTOMERADDRESS", text_olderAddress.getText().toString().trim());
 
-                JSONObject jsonPhoto = new JSONObject();
-                jsonPhoto.put("PHOTOID", change);
-                jsonPhoto.put("CUSTOMERPHOTO", TextUtils.isEmpty(Constants.getBodyPhoto()) ? content.getPHOTOINFO()
-                        .getCUSTOMERPHOTO() : Constants.getBodyPhoto());
+        String idcard = text_odlerIdentity.toString().trim();
+        String phone = text_olderPhone.toString().trim();
+        if (CheckUtil.checkPhoneFormat(phone) || CheckUtil.checkIdCard(idcard, "身份证格式错误")) {
+            return;
+        }
+        mProgressHUD.setMessage("提交中...");
+        mProgressHUD.setSpinnerType(ZProgressHUD.SIMPLE_ROUND_SPINNER);
+        JSONObject jsonObject = new JSONObject();
+        try {
+            JSONObject jsonLrInfo = new JSONObject();
+            jsonLrInfo.put("CUSTOMERNAME", text_olderName.getText().toString().trim());
+            jsonLrInfo.put("CUSTOMERIDCARD", idcard);
+            jsonLrInfo.put("CUSTOMMOBILE", phone);
+            jsonLrInfo.put("CUSTOMERADDRESS", text_olderAddress.getText().toString().trim());
+
+            JSONObject jsonPhoto = new JSONObject();
+            jsonPhoto.put("PHOTOID", change);
+            jsonPhoto.put("CUSTOMERPHOTO", TextUtils.isEmpty(Constants.getBodyPhoto()) ? content.getPHOTOINFO()
+                    .getCUSTOMERPHOTO() : Constants.getBodyPhoto());
 
 //                jsonPhoto.put("CUSTOMERPHOTO", "abc");
 
-                JSONObject jsonHealth = new JSONObject();
-                jsonHealth.put("HEALTHCONDITION", text_olderHealth.getText().toString().trim().replace("  ", ","));
-                jsonHealth.put("EMTNOTICE", text_olderRemarks.getText().toString().trim());
+            JSONObject jsonHealth = new JSONObject();
+            jsonHealth.put("HEALTHCONDITION", text_olderHealth.getText().toString().trim().replace("  ", ","));
+            jsonHealth.put("EMTNOTICE", text_olderRemarks.getText().toString().trim());
 
-                JSONObject bindInfoObj = new JSONObject();
-                bindInfoObj.put("BINDXQCODE", "");
-                bindInfoObj.put("BINDUNITNAME", "");
-                bindInfoObj.put("DEVTYPE", deviceType);
-                bindInfoObj.put("DEVICEID", deviceId);
+            JSONObject bindInfoObj = new JSONObject();
+            bindInfoObj.put("BINDXQCODE", "");
+            bindInfoObj.put("BINDUNITNAME", "");
+            bindInfoObj.put("DEVTYPE", deviceType);
+            bindInfoObj.put("DEVICEID", deviceId);
 
-                JSONObject lrParamObj = new JSONObject();
-                lrParamObj.put("CENTREPOINTLNG", lng);
-                lrParamObj.put("CENTREPOINTLAT", lat);
-                lrParamObj.put("RADIUS", alarmRadius);
+            JSONObject lrParamObj = new JSONObject();
+            lrParamObj.put("CENTREPOINTLNG", lng);
+            lrParamObj.put("CENTREPOINTLAT", lat);
+            lrParamObj.put("RADIUS", alarmRadius);
 
-                jsonObject.put("SMARTCAREID", smartcareId);
-                jsonObject.put("LRINFO", jsonLrInfo);
-                jsonObject.put("PHOTOINFO", jsonPhoto);
-                jsonObject.put("CUSTMERHEALTHINFO", jsonHealth);
-                jsonObject.put("BINDINFO", bindInfoObj);
-                jsonObject.put("LRPARAM", lrParamObj);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-
-            mProgressHUD.show();
-            HashMap<String, String> map = new HashMap<>();
-            map.put("token", Constants.getToken());
-            map.put("cardType", "1005");
-            map.put("taskId", "");
-            map.put("DataTypeCode", "ModifyElder");
-            map.put("content", jsonObject.toString());
-
-            WebServiceUtils.callWebService(Constants.WEBSERVER_URL, Constants.WEBSERVER_REREQUEST, map, new
-                    WebServiceUtils.WebServiceCallBack() {
-                        @Override
-                        public void callBack(String result) {
-                            if (result != null) {
-                                Log.e(TAG, result);
-                                try {
-                                    JSONObject json = new JSONObject(result);
-                                    int resultCode = json.getInt("ResultCode");
-                                    String resultText = Utils.initNullStr(json.getString("ResultText"));
-                                    if (resultCode == 0) {
-                                        EventBus.getDefault().post(new MessageEvent("MainCareActivity"));
-                                        mProgressHUD.dismiss();
-                                        ToastUtil.showToast("修改成功");
-                                        finish();
-                                    } else {
-                                        mProgressHUD.dismiss();
-                                        Utils.myToast(mContext, result);
-                                    }
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
-                                    mProgressHUD.dismiss();
-                                    Utils.myToast(mContext, "JSON解析出错");
-                                }
-                            } else {
-                                mProgressHUD.dismiss();
-                                Utils.myToast(mContext, "获取数据错误，请稍后重试！");
-                            }
-                        }
-                    });
-
-        } else {
-            finish();
+            jsonObject.put("SMARTCAREID", smartcareId);
+            jsonObject.put("LRINFO", jsonLrInfo);
+            jsonObject.put("PHOTOINFO", jsonPhoto);
+            jsonObject.put("CUSTMERHEALTHINFO", jsonHealth);
+            jsonObject.put("BINDINFO", bindInfoObj);
+            jsonObject.put("LRPARAM", lrParamObj);
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
+
+        mProgressHUD.show();
+        HashMap<String, String> map = new HashMap<>();
+        map.put("token", Constants.getToken());
+        map.put("cardType", "1005");
+        map.put("taskId", "");
+        map.put("DataTypeCode", "ModifyElder");
+        map.put("content", jsonObject.toString());
+
+        WebServiceUtils.callWebService(Constants.WEBSERVER_URL, Constants.WEBSERVER_REREQUEST, map, new
+                WebServiceUtils.WebServiceCallBack() {
+                    @Override
+                    public void callBack(String result) {
+                        if (result != null) {
+                            Log.e(TAG, result);
+                            try {
+                                JSONObject json = new JSONObject(result);
+                                int resultCode = json.getInt("ResultCode");
+                                String resultText = MyUtils.initNullStr(json.getString("ResultText"));
+                                if (resultCode == 0) {
+                                    EventBus.getDefault().post(new MessageEvent("MainCareActivity"));
+                                    mProgressHUD.dismiss();
+                                    ToastUtil.showToast("修改成功");
+                                    finish();
+                                } else {
+                                    mProgressHUD.dismiss();
+                                    MyUtils.myToast(mContext, result);
+                                }
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                                mProgressHUD.dismiss();
+                                MyUtils.myToast(mContext, "JSON解析出错");
+                            }
+                        } else {
+                            mProgressHUD.dismiss();
+                            MyUtils.myToast(mContext, "获取数据错误，请稍后重试！");
+                        }
+                    }
+                });
     }
 
     private void generateQRcode(String q3, String targetType, String shareId) {
@@ -633,7 +638,7 @@ public class PersonConfig extends Activity implements View.OnClickListener {
                             try {
                                 JSONObject json = new JSONObject(result);
                                 int resultCode = json.getInt("ResultCode");
-                                String resultText = Utils.initNullStr(json.getString("ResultText"));
+                                String resultText = MyUtils.initNullStr(json.getString("ResultText"));
                                 if (resultCode == 0) {
                                     mProgressHUD.dismiss();
                                     String content = json.getString("Content");
@@ -641,19 +646,22 @@ public class PersonConfig extends Activity implements View.OnClickListener {
                                     String QRCode = object.getString("QRCode");
                                     Intent intent = new Intent(mContext, QrCodeActivity.class);
                                     intent.putExtra("code", QRCode);
+                                    intent.putExtra("name", name);
+                                    intent.putExtra("idcard", hideIdentity);
+                                    intent.putExtra("photo", photo);
                                     mContext.startActivity(intent);
                                 } else {
                                     mProgressHUD.dismiss();
-                                    Utils.myToast(mContext, resultText);
+                                    MyUtils.myToast(mContext, resultText);
                                 }
                             } catch (JSONException e) {
                                 e.printStackTrace();
                                 mProgressHUD.dismiss();
-                                Utils.myToast(mContext, "JSON解析出错");
+                                MyUtils.myToast(mContext, "JSON解析出错");
                             }
                         } else {
                             mProgressHUD.dismiss();
-                            Utils.myToast(mContext, "获取数据错误，请稍后重试！");
+                            MyUtils.myToast(mContext, "获取数据错误，请稍后重试！");
                         }
                     }
                 });
@@ -739,7 +747,7 @@ public class PersonConfig extends Activity implements View.OnClickListener {
                             try {
                                 JSONObject json = new JSONObject(result);
                                 int resultCode = json.getInt("ResultCode");
-                                String resultText = Utils.initNullStr(json.getString("ResultText"));
+                                String resultText = MyUtils.initNullStr(json.getString("ResultText"));
                                 if (resultCode == 0) {
                                     mProgressHUD.dismiss();
                                     initNet();
@@ -752,12 +760,12 @@ public class PersonConfig extends Activity implements View.OnClickListener {
 //                            }
                                 } else {
                                     mProgressHUD.dismiss();
-                                    Utils.myToast(mContext, resultText);
+                                    MyUtils.myToast(mContext, resultText);
                                 }
                             } catch (JSONException e) {
                                 mProgressHUD.dismiss();
                                 e.printStackTrace();
-                                Utils.myToast(mContext, "JSON解析出错");
+                                MyUtils.myToast(mContext, "JSON解析出错");
                             }
                         }
                     }
@@ -780,17 +788,17 @@ public class PersonConfig extends Activity implements View.OnClickListener {
 
             case IMAGE_REQUEST_CODE:
                 if (data == null) {
-                    Utils.myToast(mContext, "没有取到图片");
+                    MyUtils.myToast(mContext, "没有取到图片");
                     return;
                 }
                 startPhotoZoom(data.getData());
                 break;
             case CAMERA_REQUEST_CODE:
-                if (Utils.hasSdcard()) {
+                if (MyUtils.hasSdcard()) {
                     File tempFile = new File(Environment.getExternalStorageDirectory() + "/" + IMAGE_FILE_NAME);
                     startPhotoZoom(Uri.fromFile(tempFile));
                 } else {
-                    Utils.myToast(mContext, "未找到存储卡，无法存储照片！");
+                    MyUtils.myToast(mContext, "未找到存储卡，无法存储照片！");
                 }
 
                 break;
@@ -817,7 +825,7 @@ public class PersonConfig extends Activity implements View.OnClickListener {
                         if (!result.toUpperCase().equals(identity)) {
                             isChanged = true;
                             identity = result.toUpperCase();
-                            text_odlerIdentity.setText(Utils.hideID(result));
+                            text_odlerIdentity.setText(MyUtils.hideID(result));
                         }
                     } else if (activity.equals("olderAddress")) {
                         if (!result.equals(text_olderAddress.getText().toString().trim())) {
@@ -901,8 +909,8 @@ public class PersonConfig extends Activity implements View.OnClickListener {
             // facePhoto = drawable.toString();
             // 保存新头像
             isChanged = true;
-            strPhoto = Utils.Byte2Str(Utils.Bitmap2Bytes(photo));
-            Constants.setBodyPhoto(Utils.Byte2Str(Utils.Bitmap2Bytes(photo)));
+            strPhoto = MyUtils.Byte2Str(MyUtils.Bitmap2Bytes(photo));
+            Constants.setBodyPhoto(MyUtils.Byte2Str(MyUtils.Bitmap2Bytes(photo)));
             change = "CHANGED";
 
         }

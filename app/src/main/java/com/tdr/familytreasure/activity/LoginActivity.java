@@ -12,13 +12,7 @@ import com.tdr.familytreasure.update.GetVersionCodeAsynckTask;
 import com.tdr.familytreasure.update.UpdateManager;
 import com.tdr.familytreasure.util.ActivityManager;
 import com.tdr.familytreasure.util.Constants;
-import com.tdr.familytreasure.util.Utils;
-import com.tdr.familytreasure.util.WebServiceUtils;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.HashMap;
 import java.util.List;
 
 public class LoginActivity extends IndicatorFragmentActivity implements Handler.Callback {
@@ -29,6 +23,7 @@ public class LoginActivity extends IndicatorFragmentActivity implements Handler.
     private String TAG=getClass().getSimpleName();
     private int updateCount;// 更新次数
 
+
     @Override
     protected int supplyTabs(List<TabInfo> tabs) {
         tabs.add(new TabInfo(FRAGMENT_ONE, "登录", LoginFragment.class));
@@ -38,6 +33,7 @@ public class LoginActivity extends IndicatorFragmentActivity implements Handler.
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         ActivityManager.getAppManager().addActivity(this);
         mHandler = new Handler(this);

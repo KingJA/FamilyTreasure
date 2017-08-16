@@ -26,7 +26,7 @@ import com.tdr.familytreasure.ui.SegmentControlView;
 import com.tdr.familytreasure.ui.ZProgressHUD;
 import com.tdr.familytreasure.util.Constants;
 import com.tdr.familytreasure.util.DateTimePickDialogUtil;
-import com.tdr.familytreasure.util.Utils;
+import com.tdr.familytreasure.util.MyUtils;
 import com.tdr.familytreasure.util.WebServiceUtils;
 
 import org.json.JSONArray;
@@ -231,7 +231,7 @@ public class OlderSelectActivity extends Activity implements View.OnClickListene
                     try {
                         JSONObject json = new JSONObject(result);
                         int resultCode = json.getInt("ResultCode");
-                        String resultText = Utils.initNullStr(json.getString("ResultText"));
+                        String resultText = MyUtils.initNullStr(json.getString("ResultText"));
                         if (resultCode == 0) {
                             String content = json.getString("Content");
                             JSONObject obj = new JSONObject(content);
@@ -289,17 +289,17 @@ public class OlderSelectActivity extends Activity implements View.OnClickListene
                             webview_olderInfo.reload();
                         } else {
                             mProgressHUD.dismiss();
-                            Utils.myToast(mContext, resultText);
+                            MyUtils.myToast(mContext, resultText);
                         }
                     } catch (JSONException e) {
                         mProgressHUD.dismiss();
                         e.printStackTrace();
-                        Utils.myToast(mContext, "JSON解析出错");
+                        MyUtils.myToast(mContext, "JSON解析出错");
                     }
 
                 } else {
                     mProgressHUD.dismiss();
-                    Utils.myToast(mContext, "获取数据错误，请稍后重试！");
+                    MyUtils.myToast(mContext, "获取数据错误，请稍后重试！");
                 }
             }
         });
@@ -448,12 +448,12 @@ public class OlderSelectActivity extends Activity implements View.OnClickListene
         try {
             object.put("SMARTCAREID", smartcareId);
             if (text_startTime.getText().toString().equals("")) {
-                object.put("STARTTIME", Utils.getNowDate());
+                object.put("STARTTIME", MyUtils.getNowDate());
             } else {
                 object.put("STARTTIME", text_startTime.getText().toString());
             }
             if (text_endTime.getText().toString().equals("")) {
-                object.put("ENDTIME", Utils.getNowTime());
+                object.put("ENDTIME", MyUtils.getNowTime());
             } else {
                 object.put("ENDTIME", text_endTime.getText().toString());
             }
@@ -475,7 +475,7 @@ public class OlderSelectActivity extends Activity implements View.OnClickListene
                     try {
                         json = new JSONObject(result);
                         int resultCode = json.getInt("ResultCode");
-                        String resultText = Utils.initNullStr(json.getString("ResultText"));
+                        String resultText = MyUtils.initNullStr(json.getString("ResultText"));
                         if (resultCode == 0) {
                             String content = json.getString("Content");
                             JSONObject obj = new JSONObject(content);
@@ -496,11 +496,11 @@ public class OlderSelectActivity extends Activity implements View.OnClickListene
                     } catch (JSONException e) {
                         e.printStackTrace();
                         mProgressHUD.dismiss();
-                        Utils.myToast(mContext, "JSON解析出错");
+                        MyUtils.myToast(mContext, "JSON解析出错");
                     }
                 } else {
                     mProgressHUD.dismiss();
-                    Utils.myToast(mContext, "获取数据错误，请稍后重试！");
+                    MyUtils.myToast(mContext, "获取数据错误，请稍后重试！");
                 }
             }
         });

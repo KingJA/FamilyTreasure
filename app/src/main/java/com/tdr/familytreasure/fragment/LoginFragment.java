@@ -1,20 +1,16 @@
 package com.tdr.familytreasure.fragment;
 
+import android.Manifest;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
+import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.google.gson.Gson;
-import com.orhanobut.logger.Logger;
 import com.tdr.familytreasure.R;
 import com.tdr.familytreasure.activity.ForgetActivityPhone;
-import com.tdr.familytreasure.activity.ForgetPwdActivity;
-import com.tdr.familytreasure.activity.LoginActivity;
 import com.tdr.familytreasure.activity.MainCareActivity;
 import com.tdr.familytreasure.entiy.ErrorResult;
 import com.tdr.familytreasure.entiy.Login;
@@ -22,24 +18,25 @@ import com.tdr.familytreasure.entiy.PhoneInfo;
 import com.tdr.familytreasure.net.ThreadPoolTask;
 import com.tdr.familytreasure.net.WebServiceCallBack;
 import com.tdr.familytreasure.ui.MaterialEditText;
-import com.tdr.familytreasure.ui.ZProgressHUD;
 import com.tdr.familytreasure.util.CheckUtil;
-import com.tdr.familytreasure.util.CloseActivityUtil;
 import com.tdr.familytreasure.util.Constants;
 import com.tdr.familytreasure.util.GoUtil;
 import com.tdr.familytreasure.util.MD5;
+import com.tdr.familytreasure.util.PermissionsDialogUtil;
 import com.tdr.familytreasure.util.PhoneUtil;
-import com.tdr.familytreasure.util.Utils;
-import com.tdr.familytreasure.util.WebServiceUtils;
+import com.tdr.familytreasure.util.ToastUtil;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.Map;
 
+import permissions.dispatcher.NeedsPermission;
+import permissions.dispatcher.OnNeverAskAgain;
+import permissions.dispatcher.OnPermissionDenied;
+import permissions.dispatcher.OnShowRationale;
+import permissions.dispatcher.PermissionRequest;
+import permissions.dispatcher.RuntimePermissions;
 
+@RuntimePermissions
 public class LoginFragment extends BaseFragment implements View.OnClickListener {
 
     private static final String TAG = "LoginFragment";
@@ -56,7 +53,7 @@ public class LoginFragment extends BaseFragment implements View.OnClickListener 
                 String userName = material_loginName.getText().toString();
                 String userPwd = material_loginPwd.getText().toString();
                 if (CheckUtil.checkEmpty(userName, "请输入用户名") && CheckUtil.checkEmpty(userName, "请输入密码")) {
-                    doLogin(userName, userPwd);
+                    LoginFragmentPermissionsDispatcher.doLoginWithCheck(this,userName,userPwd);
                 }
 
                 break;
@@ -69,9 +66,11 @@ public class LoginFragment extends BaseFragment implements View.OnClickListener 
 
 
     }
-
-    private void doLogin(String name, String password) {
+    @NeedsPermission(Manifest.permission.READ_PHONE_STATE)
+    public void doLogin(String name, String password) {
         setProgressDialog(true);
+        PhoneInfo phoneInfo = new PhoneUtil(getActivity()).getInfo();
+        imei = phoneInfo.getIMEI();
         Map<String, Object> param = new HashMap<>();
         param.put("Phone", name);
         param.put("UserPassword", MD5.getMD5(password));
@@ -150,8 +149,7 @@ public class LoginFragment extends BaseFragment implements View.OnClickListener 
 
     @Override
     public void initFragmentVariables() {
-        PhoneInfo phoneInfo = new PhoneUtil(getActivity()).getInfo();
-        imei = phoneInfo.getIMEI();
+
     }
 
     @Override
@@ -168,5 +166,27 @@ public class LoginFragment extends BaseFragment implements View.OnClickListener 
     @Override
     public void setFragmentData() {
 
+    }
+
+    @OnShowRationale(Manifest.permission.READ_PHONE_STATE)
+    void showRationaleForCamera(final PermissionRequest request) {
+        PermissionsDialogUtil.showRationaleDialog(getActivity(),"需要打开相机权限", request);
+    }
+
+    @OnPermissionDenied(Manifest.permission.READ_PHONE_STATE)
+    void showDeniedForCamera() {
+        ToastUtil.showToast("未获取响应权限，无法继续操作");
+    }
+
+    @OnNeverAskAgain(Manifest.permission.READ_PHONE_STATE)
+    void showNeverAskForCamera() {
+        PermissionsDialogUtil.showSettingdDialog(getContext(),"获取手机硬件信息");
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[]
+            grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        LoginFragmentPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
     }
 }

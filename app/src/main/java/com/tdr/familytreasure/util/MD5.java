@@ -18,7 +18,7 @@ public class MD5 {
         }
         md5.update(val.getBytes());
         byte[] m = md5.digest();//加密
-        return Utils.bytesToHexString(m);
+        return MyUtils.bytesToHexString(m);
     }
 
 }

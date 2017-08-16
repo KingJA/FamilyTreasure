@@ -33,7 +33,7 @@ import java.util.regex.Pattern;
  * 工具类
  * Created by Linus_Xie on 2016/7/27.
  */
-public class Utils {
+public class MyUtils {
 
     /**
      * 自定义Toast
@@ -282,12 +282,15 @@ public class Utils {
      * 身份证号码，隐藏中间的出身年月日
      */
     public static final String hideID(String id) {
+        if (id == null) {
+            return "";
+        }
         StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < id.length()-4; i++) {
+        for (int i = 0; i < id.length() - 4; i++) {
             sb.append("*");
         }
         String newId = id.substring(0, 2) + sb.toString()
-                + id.substring(id.length()-2);
+                + id.substring(id.length() - 2);
         return newId;
     }
 
@@ -541,8 +544,7 @@ public class Utils {
     /**
      * 读取图片属性：旋转的角度
      *
-     * @param path
-     *            图片绝对路径
+     * @param path 图片绝对路径
      * @return degree旋转的角度
      */
     public static int readPictureDegree(String path) {
@@ -599,6 +601,7 @@ public class Utils {
         }
         return null;
     }
+
     public static int computeSampleSize(BitmapFactory.Options options, int minSideLength, int maxNumOfPixels) {
         int initialSize = computeInitialSampleSize(options, minSideLength, maxNumOfPixels);
 

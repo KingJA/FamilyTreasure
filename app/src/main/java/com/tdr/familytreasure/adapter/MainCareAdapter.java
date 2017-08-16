@@ -12,22 +12,19 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 
 import com.daimajia.swipe.SwipeLayout;
 import com.daimajia.swipe.adapters.BaseSwipeAdapter;
 import com.tdr.familytreasure.R;
 import com.tdr.familytreasure.activity.LostAlarmActivity;
-import com.tdr.familytreasure.activity.OlderSelectActivity;
 import com.tdr.familytreasure.activity.PersonConfig;
 import com.tdr.familytreasure.activity.QrCodeActivity;
 import com.tdr.familytreasure.entiy.OlderInfo;
 import com.tdr.familytreasure.ui.ZProgressHUD;
 import com.tdr.familytreasure.ui.niftydialog.NiftyDialogBuilder;
 import com.tdr.familytreasure.util.Constants;
-import com.tdr.familytreasure.util.ToastUtil;
-import com.tdr.familytreasure.util.Utils;
+import com.tdr.familytreasure.util.MyUtils;
 import com.tdr.familytreasure.util.WebServiceUtils;
 import com.tdr.familytreasure.zbar.CaptureActivity;
 
@@ -113,7 +110,7 @@ public class MainCareAdapter extends BaseSwipeAdapter {
                     intent.putExtra("targetType", targetType);
                     mContext.startActivity(intent);
                 } else {
-                    Utils.myToast(mContext, "请先登记");
+                    MyUtils.myToast(mContext, "请先登记");
                 }
 
             }
@@ -133,7 +130,7 @@ public class MainCareAdapter extends BaseSwipeAdapter {
             public void onClick(View v) {
                 String IsRegedit = list.get(position).getIsRegedit();
                 if (IsRegedit.equals("0")) {
-                    Utils.myToast(mContext, "请先登记");
+                    MyUtils.myToast(mContext, "请先登记");
                 } else {
                     mProgressHUD.setMessage("生成分享二维码...");
                     mProgressHUD.setSpinnerType(ZProgressHUD.SIMPLE_ROUND_SPINNER);
@@ -147,7 +144,7 @@ public class MainCareAdapter extends BaseSwipeAdapter {
                     } else {
                         operatorName = Constants.getUserPhone();
                     }
-                    String shareTime = Utils.getNowTime();
+                    String shareTime = MyUtils.getNowTime();
 
                     JSONObject jsonObject = new JSONObject();
                     try {
@@ -166,39 +163,44 @@ public class MainCareAdapter extends BaseSwipeAdapter {
                     map.put("DataTypeCode", "Share_Target");
                     map.put("content", jsonObject.toString());
 
-                    WebServiceUtils.callWebService(Constants.WEBSERVER_URL, Constants.WEBSERVER_REREQUEST, map, new WebServiceUtils.WebServiceCallBack() {
-                        @Override
-                        public void callBack(String result) {
-                            if (result != null) {
-                                try {
-                                    JSONObject json = new JSONObject(result);
-                                    int resultCode = json.getInt("ResultCode");
-                                    String resultText = Utils.initNullStr(json.getString("ResultText"));
-                                    if (resultCode == 0) {
-                                        String content = json.getString("Content");
-                                        JSONObject object = new JSONObject(content);
-                                        String shareId = object.getString("SHAREID");
-                                        //Intent intent = new Intent(mContext, QrCodeActivity.class);
-                                        //intent.putExtra("targetType", list.get(position).getTargetType());
-                                        //intent.putExtra("shareId", guid);
-                                        //mContext.startActivity(intent);
-                                        generateQRcode("Q3", list.get(position).getTargetType(), shareId);
+                    WebServiceUtils.callWebService(Constants.WEBSERVER_URL, Constants.WEBSERVER_REREQUEST, map, new
+                            WebServiceUtils.WebServiceCallBack() {
+                                @Override
+                                public void callBack(String result) {
+                                    if (result != null) {
+                                        try {
+                                            JSONObject json = new JSONObject(result);
+                                            int resultCode = json.getInt("ResultCode");
+                                            String resultText = MyUtils.initNullStr(json.getString("ResultText"));
+                                            if (resultCode == 0) {
+                                                String content = json.getString("Content");
+                                                JSONObject object = new JSONObject(content);
+                                                String shareId = object.getString("SHAREID");
+                                                //Intent intent = new Intent(mContext, QrCodeActivity.class);
+                                                //intent.putExtra("targetType", list.get(position).getTargetType());
+                                                //intent.putExtra("shareId", guid);
+                                                //mContext.startActivity(intent);
+                                                generateQRcode("Q3", list.get(position).getTargetType(), shareId,
+                                                        list.get
+                                                        (position).getCustomerName(), list.get(position)
+                                                                .getCustomerIdCard(), list.get(position)
+                                                                .getCustomerPhoto());
 
+                                            } else {
+                                                mProgressHUD.dismiss();
+                                                MyUtils.myToast(mContext, result);
+                                            }
+                                        } catch (JSONException e) {
+                                            mProgressHUD.dismiss();
+                                            e.printStackTrace();
+                                            MyUtils.myToast(mContext, "JSON解析出错");
+                                        }
                                     } else {
                                         mProgressHUD.dismiss();
-                                        Utils.myToast(mContext, result);
+                                        MyUtils.myToast(mContext, "获取数据错误，请稍后重试！");
                                     }
-                                } catch (JSONException e) {
-                                    mProgressHUD.dismiss();
-                                    e.printStackTrace();
-                                    Utils.myToast(mContext, "JSON解析出错");
                                 }
-                            } else {
-                                mProgressHUD.dismiss();
-                                Utils.myToast(mContext, "获取数据错误，请稍后重试！");
-                            }
-                        }
-                    });
+                            });
 
                 }
             }
@@ -209,7 +211,7 @@ public class MainCareAdapter extends BaseSwipeAdapter {
             public void onClick(View v) {
                 String IsRegedit = list.get(position).getIsRegedit();
                 if (IsRegedit.equals("0")) {
-                    Utils.myToast(mContext, "请去申领系统删除");
+                    MyUtils.myToast(mContext, "请去申领系统删除");
                 } else {
                     String careNumber = list.get(position).getCareNumber();
                     dialogShow(careNumber, position, list.get(position).getPersonType());
@@ -219,7 +221,8 @@ public class MainCareAdapter extends BaseSwipeAdapter {
         return convertView;
     }
 
-    private void generateQRcode(String q3, String targetType, String shareId) {
+    private void generateQRcode(String q3, String targetType, String shareId, final String customerName, final String
+            customerIdCard, final String customerPhoto) {
         JSONObject jsonObject = new JSONObject();
         try {
             jsonObject.put("QRType", q3);
@@ -235,37 +238,41 @@ public class MainCareAdapter extends BaseSwipeAdapter {
         map.put("taskId", "");
         map.put("DataTypeCode", "GenerateQRcode");
         map.put("content", jsonObject.toString());
-        WebServiceUtils.callWebService(Constants.WEBSERVER_URL, Constants.WEBSERVER_REREQUEST, map, new WebServiceUtils.WebServiceCallBack() {
-            @Override
-            public void callBack(String result) {
-                if (result != null) {
-                    try {
-                        JSONObject json = new JSONObject(result);
-                        int resultCode = json.getInt("ResultCode");
-                        String resultText = Utils.initNullStr(json.getString("ResultText"));
-                        if (resultCode == 0) {
-                            mProgressHUD.dismiss();
-                            String content = json.getString("Content");
-                            JSONObject object = new JSONObject(content);
-                            String QRCode = object.getString("QRCode");
-                            Intent intent = new Intent(mContext, QrCodeActivity.class);
-                            intent.putExtra("code", QRCode);
-                            mContext.startActivity(intent);
+        WebServiceUtils.callWebService(Constants.WEBSERVER_URL, Constants.WEBSERVER_REREQUEST, map, new
+                WebServiceUtils.WebServiceCallBack() {
+                    @Override
+                    public void callBack(String result) {
+                        if (result != null) {
+                            try {
+                                JSONObject json = new JSONObject(result);
+                                int resultCode = json.getInt("ResultCode");
+                                String resultText = MyUtils.initNullStr(json.getString("ResultText"));
+                                if (resultCode == 0) {
+                                    mProgressHUD.dismiss();
+                                    String content = json.getString("Content");
+                                    JSONObject object = new JSONObject(content);
+                                    String QRCode = object.getString("QRCode");
+                                    Intent intent = new Intent(mContext, QrCodeActivity.class);
+                                    intent.putExtra("code", QRCode);
+                                    intent.putExtra("idcard", MyUtils.hideID(customerIdCard));
+                                    intent.putExtra("name", customerName);
+                                    intent.putExtra("photo", customerPhoto);
+                                    mContext.startActivity(intent);
+                                } else {
+                                    mProgressHUD.dismiss();
+                                    MyUtils.myToast(mContext, resultText);
+                                }
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                                mProgressHUD.dismiss();
+                                MyUtils.myToast(mContext, "JSON解析出错");
+                            }
                         } else {
                             mProgressHUD.dismiss();
-                            Utils.myToast(mContext, resultText);
+                            MyUtils.myToast(mContext, "获取数据错误，请稍后重试！");
                         }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                        mProgressHUD.dismiss();
-                        Utils.myToast(mContext, "JSON解析出错");
                     }
-                } else {
-                    mProgressHUD.dismiss();
-                    Utils.myToast(mContext, "获取数据错误，请稍后重试！");
-                }
-            }
-        });
+                });
 
     }
 
@@ -281,9 +288,10 @@ public class MainCareAdapter extends BaseSwipeAdapter {
         TextView text_olderName = (TextView) convertView.findViewById(R.id.text_olderName);
         TextView text_braceletBattery = (TextView) convertView.findViewById(R.id.text_braceletBattery);
         final Button btn_register = (Button) convertView.findViewById(R.id.btn_register);
-        iv_head.setImageBitmap(Utils.stringtoBitmap(list.get(position).getCustomerPhoto()));
-        tv_age.setText(list.get(position).getAGE()+"岁");
-        text_msgType.setBackgroundResource(("男").equals(list.get(position).getSEX())?R.drawable.shape_bg_man:R.drawable.shape_bg_woman);
+        iv_head.setImageBitmap(MyUtils.stringtoBitmap(list.get(position).getCustomerPhoto()));
+        tv_age.setText(list.get(position).getAGE() + "岁");
+        text_msgType.setBackgroundResource(("男").equals(list.get(position).getSEX()) ? R.drawable.shape_bg_man : R
+                .drawable.shape_bg_woman);
         if (needTitle(position)) {
             // 显示标题并设置内容
             if (list.get(position).getIsRegedit().equals("0")) {
@@ -299,7 +307,7 @@ public class MainCareAdapter extends BaseSwipeAdapter {
             text_tag.setVisibility(View.GONE);
         }
 
-        btn_register.setVisibility(list.get(position).getIsRegedit().equals("0")?View.VISIBLE:View.GONE);
+        btn_register.setVisibility(list.get(position).getIsRegedit().equals("0") ? View.VISIBLE : View.GONE);
 
 
         if (list.get(position).getTargetType().equals("0")) {
@@ -390,7 +398,8 @@ public class MainCareAdapter extends BaseSwipeAdapter {
         effectstype = NiftyDialogBuilder.Effectstype.Fadein;
         dialogBuilder.withTitle("提示").withTitleColor("#333333").withMessage("是否删除此关爱人")
                 .isCancelableOnTouchOutside(false).withEffect(effectstype).withButton1Text("取消")
-                .setCustomView(R.layout.custom_view, mContext).withButton2Text("确认").setButton1Click(new View.OnClickListener() {
+                .setCustomView(R.layout.custom_view, mContext).withButton2Text("确认").setButton1Click(new View
+                .OnClickListener() {
             @Override
             public void onClick(View v) {
                 dialogBuilder.dismiss();
@@ -428,42 +437,43 @@ public class MainCareAdapter extends BaseSwipeAdapter {
         }
 
         map.put("content", jsonObject.toString());
-        WebServiceUtils.callWebService(Constants.WEBSERVER_URL, Constants.WEBSERVER_REREQUEST, map, new WebServiceUtils.WebServiceCallBack() {
-            @Override
-            public void callBack(String result) {
-                if (result != null) {
-                    Log.e("删除老人", result);
-                    try {
-                        JSONObject jsonObject = new JSONObject(result);
-                        int resultCode = jsonObject.getInt("ResultCode");
-                        String resultText = Utils.initNullStr(jsonObject.getString("ResultText"));
-                        if (resultCode == 0) {
-                            mProgressHUD.dismiss();
-                            list.remove(position);
-                            notifyDataSetChanged();
-                            Utils.myToast(mContext, "删除此关爱人成功");
+        WebServiceUtils.callWebService(Constants.WEBSERVER_URL, Constants.WEBSERVER_REREQUEST, map, new
+                WebServiceUtils.WebServiceCallBack() {
+                    @Override
+                    public void callBack(String result) {
+                        if (result != null) {
+                            Log.e("删除老人", result);
+                            try {
+                                JSONObject jsonObject = new JSONObject(result);
+                                int resultCode = jsonObject.getInt("ResultCode");
+                                String resultText = MyUtils.initNullStr(jsonObject.getString("ResultText"));
+                                if (resultCode == 0) {
+                                    mProgressHUD.dismiss();
+                                    list.remove(position);
+                                    notifyDataSetChanged();
+                                    MyUtils.myToast(mContext, "删除此关爱人成功");
+                                } else {
+                                    mProgressHUD.dismiss();
+                                    MyUtils.myToast(mContext, resultText);
+                                }
+                            } catch (JSONException e) {
+                                mProgressHUD.dismiss();
+                                e.printStackTrace();
+                                MyUtils.myToast(mContext, "JSON解析出错");
+                            }
                         } else {
                             mProgressHUD.dismiss();
-                            Utils.myToast(mContext, resultText);
+                            MyUtils.myToast(mContext, "获取数据错误，请稍后重试！");
                         }
-                    } catch (JSONException e) {
-                        mProgressHUD.dismiss();
-                        e.printStackTrace();
-                        Utils.myToast(mContext, "JSON解析出错");
                     }
-                } else {
-                    mProgressHUD.dismiss();
-                    Utils.myToast(mContext, "获取数据错误，请稍后重试！");
-                }
-            }
-        });
+                });
     }
 
     /*protected void onActivityResult(final int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
             case SCANNIN_GREQUEST_CODE:
                 if (data == null) {
-                    Utils.myToast(mContext, "没有扫描到二维码");
+                    MyUtils.myToast(mContext, "没有扫描到二维码");
                     break;
                 } else {
                     mProgressHUD.setMessage("二维码解析中...");
@@ -472,7 +482,7 @@ public class MainCareAdapter extends BaseSwipeAdapter {
                     Bundle bundle = data.getExtras();
                     String scanResult = bundle.getString("result");
                     Log.e("二维码内容：", scanResult);
-                    Utils.myToast(mContext, "二维码扫描成功，请稍候...");
+                    MyUtils.myToast(mContext, "二维码扫描成功，请稍候...");
                     String url = "http://ga.iotone.cn/";
                     if (scanResult.contains(url)) {
                         JSONObject object = new JSONObject();
@@ -487,7 +497,8 @@ public class MainCareAdapter extends BaseSwipeAdapter {
                         map.put("taskId", "");
                         map.put("DataTypeCode", "ParseQRcode");
                         map.put("content", object.toString());
-                        WebServiceUtils.callWebService(Constants.WEBSERVER_URL, Constants.WEBSERVER_REREQUEST, map, new WebServiceUtils.WebServiceCallBack() {
+                        WebServiceUtils.callWebService(Constants.WEBSERVER_URL, Constants.WEBSERVER_REREQUEST, map,
+                        new WebServiceUtils.WebServiceCallBack() {
                             @Override
                             public void callBack(String result) {
                                 if (result != null) {
@@ -504,29 +515,31 @@ public class MainCareAdapter extends BaseSwipeAdapter {
                                             if (QRType.equals("Q1")) {
                                                 mProgressHUD.dismiss();
                                                 checkDevice(Id);
-                                                *//*Intent intent = new Intent(MainCareActivity.this, AddOlderActivity.class);
+                                                *//*Intent intent = new Intent(MainCareActivity.this,
+                                                * AddOlderActivity.class);
                                                 intent.putExtra("code", Id);
                                                 startActivity(intent);
-                                                overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);*//*
+                                                overridePendingTransition(android.R.anim.slide_in_left, android.R
+                                                .anim.slide_out_right);*//*
                                             } else if (QRType.equals("Q2")) {
                                                 mProgressHUD.dismiss();
-                                                Utils.myToast(mContext, "此设备为网关设备，请到关爱对象的设备配置页面进行添加");
+                                                MyUtils.myToast(mContext, "此设备为网关设备，请到关爱对象的设备配置页面进行添加");
                                             } else if (QRType.equals("Q3")) {
                                                 mProgressHUD.dismiss();
-                                                Utils.myToast(mContext, "分享的关爱人，请使用右上角的扫描二维码");
+                                                MyUtils.myToast(mContext, "分享的关爱人，请使用右上角的扫描二维码");
                                             }
                                         } else {
                                             mProgressHUD.dismiss();
-                                            Utils.myToast(mContext, resultText);
+                                            MyUtils.myToast(mContext, resultText);
                                         }
                                     } catch (JSONException e) {
                                         mProgressHUD.dismiss();
                                         e.printStackTrace();
-                                        Utils.myToast(mContext, "JSON解析出错");
+                                        MyUtils.myToast(mContext, "JSON解析出错");
                                     }
                                 } else {
                                     mProgressHUD.dismiss();
-                                    Utils.myToast(mContext, "请确认设备是否为关爱设备");
+                                    MyUtils.myToast(mContext, "请确认设备是否为关爱设备");
                                 }
                             }
                         });
@@ -549,7 +562,8 @@ public class MainCareAdapter extends BaseSwipeAdapter {
                         map.put("DataTypeCode", "AESDecrypt");
                         map.put("content", jsonObject.toString());
 
-                        WebServiceUtils.callWebService(Constants.WEBSERVER_URL, Constants.WEBSERVER_REREQUEST, map, new WebServiceUtils.WebServiceCallBack() {
+                        WebServiceUtils.callWebService(Constants.WEBSERVER_URL, Constants.WEBSERVER_REREQUEST, map,
+                        new WebServiceUtils.WebServiceCallBack() {
                             @Override
                             public void callBack(String result) {
                                 if (result != null) {
@@ -565,29 +579,31 @@ public class MainCareAdapter extends BaseSwipeAdapter {
                                             String code = obj.getString("StrString");
                                             //edit_code.setText(content);
                                             checkDevice(code);
-                                           *//* Intent intent = new Intent(MainCareActivity.this, AddOlderActivity.class);
+                                           *//* Intent intent = new Intent(MainCareActivity.this, AddOlderActivity
+                                           * .class);
                                             intent.putExtra("code", code);
                                             startActivity(intent);
-                                            overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);*//*
+                                            overridePendingTransition(android.R.anim.slide_in_left, android.R.anim
+                                            .slide_out_right);*//*
                                         } else {
                                             mProgressHUD.dismiss();
-                                            Utils.myToast(mContext, resultText);
+                                            MyUtils.myToast(mContext, resultText);
                                         }
                                     } catch (JSONException e) {
                                         e.printStackTrace();
                                         mProgressHUD.dismiss();
-                                        Utils.myToast(mContext, "JSON解析出错");
+                                        MyUtils.myToast(mContext, "JSON解析出错");
                                     }
 
                                 } else {
                                     mProgressHUD.dismiss();
-                                    Utils.myToast(mContext, "获取数据错误，请稍后重试！");
+                                    MyUtils.myToast(mContext, "获取数据错误，请稍后重试！");
                                 }
                             }
                         });
                     } else {
                         mProgressHUD.dismiss();
-                        Utils.myToast(mContext, "非指定亲情关爱设备");
+                        MyUtils.myToast(mContext, "非指定亲情关爱设备");
                         break;
                     }
                 }
@@ -614,7 +630,8 @@ public class MainCareAdapter extends BaseSwipeAdapter {
         map.put("DataTypeCode", "CheckDeviceNumber");
         map.put("content", jsonObject.toString());
 
-        WebServiceUtils.callWebService(Constants.WEBSERVER_URL, Constants.WEBSERVER_REREQUEST, map, new WebServiceUtils.WebServiceCallBack() {
+        WebServiceUtils.callWebService(Constants.WEBSERVER_URL, Constants.WEBSERVER_REREQUEST, map, new
+        WebServiceUtils.WebServiceCallBack() {
             @Override
             public void callBack(String result) {
                 if (result != null) {
@@ -629,24 +646,25 @@ public class MainCareAdapter extends BaseSwipeAdapter {
                             String isOccupied = object.getString("ISOCCUPIED");
                             if (isMultiuse.equals("0")) {
                                 if (isOccupied.equals("1")) {
-                                    Utils.myToast(mContext, "该设备已被使用");
+                                    MyUtils.myToast(mContext, "该设备已被使用");
                                 } else {
                                     Intent intent = new Intent(mContext, AddOlderActivity.class);
                                     intent.putExtra("code", id);
                                     intent.putExtra("SmartId", SmartId);
                                     mContext.startActivity(intent);
-                                    ((Activity) mContext).overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
+                                    ((Activity) mContext).overridePendingTransition(android.R.anim.slide_in_left,
+                                    android.R.anim.slide_out_right);
                                 }
                             }
                         } else {
-                            Utils.myToast(mContext, resultText);
+                            MyUtils.myToast(mContext, resultText);
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();
-                        Utils.myToast(mContext, "JSON解析出错");
+                        MyUtils.myToast(mContext, "JSON解析出错");
                     }
                 } else {
-                    Utils.myToast(mContext, "获取数据错误，请稍后重试！");
+                    MyUtils.myToast(mContext, "获取数据错误，请稍后重试！");
                 }
             }
         });

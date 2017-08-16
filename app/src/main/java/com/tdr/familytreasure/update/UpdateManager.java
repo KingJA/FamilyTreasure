@@ -14,7 +14,7 @@ import android.view.View;
 import android.widget.ProgressBar;
 
 import com.tdr.familytreasure.R;
-import com.tdr.familytreasure.util.Utils;
+import com.tdr.familytreasure.util.MyUtils;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -69,7 +69,7 @@ public class UpdateManager {
                     installApk();
                     break;
                 case 99:
-                    Utils.myToast(mContext, "请检查您de的SD卡");
+                    MyUtils.myToast(mContext, "请检查您de的SD卡");
                     break;
                 default:
                     break;

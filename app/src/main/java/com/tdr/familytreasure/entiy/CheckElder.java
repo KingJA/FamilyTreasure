@@ -121,6 +121,7 @@ public class CheckElder {
         private String PERSONTYPE;
         private String CARENUMBER;
 
+
         public BINDINFOBean getBINDINFO() {
             return BINDINFO;
         }
@@ -135,6 +136,16 @@ public class CheckElder {
             private String BINDUNITNAME;
             private String BINDXQCODE;
             private String DEVTYPE;
+
+            public String getDEVTYPENAME() {
+                return DEVTYPENAME;
+            }
+
+            public void setDEVTYPENAME(String DEVTYPENAME) {
+                this.DEVTYPENAME = DEVTYPENAME;
+            }
+
+            private String DEVTYPENAME;
 
             public String getDEVICEID() {
                 return DEVICEID;

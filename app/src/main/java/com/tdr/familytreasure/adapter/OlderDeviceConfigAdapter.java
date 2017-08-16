@@ -14,7 +14,7 @@ import com.tdr.familytreasure.entiy.GroupItem;
 import com.tdr.familytreasure.ui.ZProgressHUD;
 import com.tdr.familytreasure.ui.niftydialog.NiftyDialogBuilder;
 import com.tdr.familytreasure.util.Constants;
-import com.tdr.familytreasure.util.Utils;
+import com.tdr.familytreasure.util.MyUtils;
 import com.tdr.familytreasure.util.WebServiceUtils;
 
 import org.json.JSONException;
@@ -207,23 +207,23 @@ public class OlderDeviceConfigAdapter extends BaseAdapter {
                     try {
                         JSONObject jsonObject = new JSONObject(result);
                         int resultCode = jsonObject.getInt("ResultCode");
-                        String resultText = Utils.initNullStr(jsonObject.getString("ResultText"));
+                        String resultText = MyUtils.initNullStr(jsonObject.getString("ResultText"));
                         if (resultCode == 0) {
                             mProgressHUD.dismiss();
                             mData.remove(position);
-                            Utils.myToast(mContext, "删除此设备成功");
+                            MyUtils.myToast(mContext, "删除此设备成功");
                         } else {
                             mProgressHUD.dismiss();
-                            Utils.myToast(mContext, resultText);
+                            MyUtils.myToast(mContext, resultText);
                         }
                     } catch (JSONException e) {
                         mProgressHUD.dismiss();
                         e.printStackTrace();
-                        Utils.myToast(mContext, "JSON解析出错");
+                        MyUtils.myToast(mContext, "JSON解析出错");
                     }
                 } else {
                     mProgressHUD.dismiss();
-                    Utils.myToast(mContext, "获取数据错误，请稍后重试！");
+                    MyUtils.myToast(mContext, "获取数据错误，请稍后重试！");
                 }
             }
         });

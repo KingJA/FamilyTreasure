@@ -5,7 +5,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -34,9 +34,10 @@ import com.tdr.familytreasure.ui.CircleFlowIndicator;
 import com.tdr.familytreasure.ui.ViewFlow;
 import com.tdr.familytreasure.ui.ZProgressHUD;
 import com.tdr.familytreasure.ui.niftydialog.NiftyDialogBuilder;
+import com.tdr.familytreasure.util.AppUtil;
 import com.tdr.familytreasure.util.Constants;
 import com.tdr.familytreasure.util.GoUtil;
-import com.tdr.familytreasure.util.Utils;
+import com.tdr.familytreasure.util.MyUtils;
 import com.tdr.familytreasure.util.WebServiceUtils;
 import com.tdr.familytreasure.util.ZeusManager;
 import com.tdr.familytreasure.zbar.CaptureActivity;
@@ -52,7 +53,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * 老人关爱主界面
@@ -84,9 +84,10 @@ public class MainCareActivity extends Activity implements View.OnClickListener, 
     private ArrayList<OlderInfo> data2 = new ArrayList<>();
 
     private String SmartId = "";
-    private final String[] permissionArr = {Manifest.permission.CAMERA, Manifest.permission.READ_PHONE_STATE,
+    private final String[] permissionArr = {Manifest.permission.CAMERA,
             Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.ACCESS_FINE_LOCATION};
     private ZeusManager mZeusManager;
+    private SwipeRefreshLayout srl;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -130,6 +131,7 @@ public class MainCareActivity extends Activity implements View.OnClickListener, 
         mBottomListPop.setOnPopItemClickListener(this);
         text_title = (TextView) findViewById(R.id.text_title);
         image_scan = (ImageView) findViewById(R.id.image_scan);
+        srl = (SwipeRefreshLayout) findViewById(R.id.srl);
         image_scan.setOnClickListener(this);
 
         list_care = (ListView) findViewById(R.id.list_care);
@@ -144,6 +146,14 @@ public class MainCareActivity extends Activity implements View.OnClickListener, 
         indicator_point = (CircleFlowIndicator) findViewById(R.id.indicator_point);
 
         mProgressHUD = new ZProgressHUD(mContext);
+        srl.setColorSchemeResources(R.color.bg_black);
+        srl.setProgressViewOffset(false, 0, AppUtil.dp2px(24));
+        srl.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                getOlderList();
+            }
+        });
     }
 
     private void initData() {
@@ -165,7 +175,7 @@ public class MainCareActivity extends Activity implements View.OnClickListener, 
                             try {
                                 JSONObject jsonObject = new JSONObject(result);
                                 int resultCode = jsonObject.getInt("ResultCode");
-                                String resultText = Utils.initNullStr(jsonObject.getString("ResultText"));
+                                String resultText = MyUtils.initNullStr(jsonObject.getString("ResultText"));
                                 if (resultCode == 0) {
                                     String content = jsonObject.getString("Content");
                                     JSONObject json = new JSONObject(content);
@@ -196,9 +206,7 @@ public class MainCareActivity extends Activity implements View.OnClickListener, 
     }
 
     private void getOlderList() {
-        mProgressHUD.setMessage("数据加载中...");
-        mProgressHUD.setSpinnerType(ZProgressHUD.SIMPLE_ROUND_SPINNER);
-        mProgressHUD.show();
+        srl.setRefreshing(true);
 
         JSONObject jsonObject = new JSONObject();
         try {
@@ -223,7 +231,7 @@ public class MainCareActivity extends Activity implements View.OnClickListener, 
                             try {
                                 JSONObject jsonObject = new JSONObject(result);
                                 int resultCode = jsonObject.getInt("ResultCode");
-                                String resultText = Utils.initNullStr(jsonObject.getString("ResultText"));
+                                String resultText = MyUtils.initNullStr(jsonObject.getString("ResultText"));
                                 if (resultCode == 0) {
                                     listOlder.clear();
                                     data.clear();
@@ -239,14 +247,14 @@ public class MainCareActivity extends Activity implements View.OnClickListener, 
                                         for (int i = 0; i < array.length(); i++) {
                                             JSONObject obj = array.getJSONObject(i);
                                             OlderInfo mInfo = new OlderInfo();
-                                            mInfo.setAGE(Utils.initNullStr(obj.getString("AGE")));
-                                            mInfo.setSEX(Utils.initNullStr(obj.getString("SEX")));
-                                            mInfo.setCustomerPhoto(Utils.initNullStr(obj.getString("CUSTOMERPHOTO")));
-                                            mInfo.setCareNumber(Utils.initNullStr(obj.getString("SMARTCAREID")));
-                                            mInfo.setCustomerName(Utils.initNullStr(obj.getString("CUSTOMERNAME")));
-                                            mInfo.setTargetType(Utils.initNullStr(obj.getString("TARGETTYPES")));
-                                            mInfo.setIsRegedit(Utils.initNullStr(obj.getString("ISREGEDIT")));
-                                            mInfo.setPersonType(Utils.initNullStr(obj.getString("PERSONTYPE")));
+                                            mInfo.setAGE(MyUtils.initNullStr(obj.getString("AGE")));
+                                            mInfo.setSEX(MyUtils.initNullStr(obj.getString("SEX")));
+                                            mInfo.setCustomerPhoto(MyUtils.initNullStr(obj.getString("CUSTOMERPHOTO")));
+                                            mInfo.setCareNumber(MyUtils.initNullStr(obj.getString("SMARTCAREID")));
+                                            mInfo.setCustomerName(MyUtils.initNullStr(obj.getString("CUSTOMERNAME")));
+                                            mInfo.setTargetType(MyUtils.initNullStr(obj.getString("TARGETTYPES")));
+                                            mInfo.setIsRegedit(MyUtils.initNullStr(obj.getString("ISREGEDIT")));
+                                            mInfo.setPersonType(MyUtils.initNullStr(obj.getString("PERSONTYPE")));
                                             //0是登记人有编辑权，1是关联人无编辑权
                                             listOlder.add(mInfo);
                                         }
@@ -277,19 +285,19 @@ public class MainCareActivity extends Activity implements View.OnClickListener, 
 
                                     }
 
-                                    mProgressHUD.dismiss();
+                                    srl.setRefreshing(false);
                                 } else {
-                                    mProgressHUD.dismiss();
-                                    Utils.myToast(mContext, resultText);
+                                    srl.setRefreshing(false);
+                                    MyUtils.myToast(mContext, resultText);
                                 }
                             } catch (JSONException e) {
                                 e.printStackTrace();
-                                mProgressHUD.dismiss();
-                                Utils.myToast(mContext, "JSON解析出错");
+                                srl.setRefreshing(false);
+                                MyUtils.myToast(mContext, "JSON解析出错");
                             }
                         } else {
-                            mProgressHUD.dismiss();
-                            Utils.myToast(mContext, "获取数据错误，请稍后重试！");
+                            srl.setRefreshing(false);
+                            MyUtils.myToast(mContext, "获取数据错误，请稍后重试！");
                         }
                     }
                 });
@@ -344,7 +352,7 @@ public class MainCareActivity extends Activity implements View.OnClickListener, 
         switch (requestCode) {
             case SCANNIN_GREQUEST_CODE:
                 if (data == null) {
-                    Utils.myToast(mContext, "没有扫描到二维码");
+                    MyUtils.myToast(mContext, "没有扫描到二维码");
                     break;
                 } else {
                     mProgressHUD.setMessage("二维码解析中...");
@@ -354,7 +362,7 @@ public class MainCareActivity extends Activity implements View.OnClickListener, 
                     String scanResult = bundle.getString("result");
                     SmartId = bundle.getString("SmartId");
                     Log.e("二维码内容：", scanResult);
-                    Utils.myToast(mContext, "二维码扫描成功，请稍候...");
+                    MyUtils.myToast(mContext, "二维码扫描成功，请稍候...");
                     String url = "http://ga.iotone.cn/";
                     if (scanResult.contains(url)) {
                         JSONObject object = new JSONObject();
@@ -389,23 +397,23 @@ public class MainCareActivity extends Activity implements View.OnClickListener, 
                                                         checkDevice(Id);
                                                     } else if (QRType.equals("Q2")) {
                                                         mProgressHUD.dismiss();
-                                                        Utils.myToast(mContext, "此设备为网关设备，请到关爱对象的设备配置页面进行添加");
+                                                        MyUtils.myToast(mContext, "此设备为网关设备，请到关爱对象的设备配置页面进行添加");
                                                     } else if (QRType.equals("Q3")) {
                                                         mProgressHUD.dismiss();
                                                         getShare(Id);
                                                     }
                                                 } else {
                                                     mProgressHUD.dismiss();
-                                                    Utils.myToast(mContext, resultText);
+                                                    MyUtils.myToast(mContext, resultText);
                                                 }
                                             } catch (JSONException e) {
                                                 mProgressHUD.dismiss();
                                                 e.printStackTrace();
-                                                Utils.myToast(mContext, "JSON解析出错");
+                                                MyUtils.myToast(mContext, "JSON解析出错");
                                             }
                                         } else {
                                             mProgressHUD.dismiss();
-                                            Utils.myToast(mContext, "请确认设备是否为关爱设备");
+                                            MyUtils.myToast(mContext, "请确认设备是否为关爱设备");
                                         }
                                     }
                                 });
@@ -446,23 +454,23 @@ public class MainCareActivity extends Activity implements View.OnClickListener, 
                                                     checkDevice(code);
                                                 } else {
                                                     mProgressHUD.dismiss();
-                                                    Utils.myToast(mContext, resultText);
+                                                    MyUtils.myToast(mContext, resultText);
                                                 }
                                             } catch (JSONException e) {
                                                 e.printStackTrace();
                                                 mProgressHUD.dismiss();
-                                                Utils.myToast(mContext, "JSON解析出错");
+                                                MyUtils.myToast(mContext, "JSON解析出错");
                                             }
 
                                         } else {
                                             mProgressHUD.dismiss();
-                                            Utils.myToast(mContext, "获取数据错误，请稍后重试！");
+                                            MyUtils.myToast(mContext, "获取数据错误，请稍后重试！");
                                         }
                                     }
                                 });
                     } else {
                         mProgressHUD.dismiss();
-                        Utils.myToast(mContext, "非指定亲情关爱设备");
+                        MyUtils.myToast(mContext, "非指定亲情关爱设备");
                         break;
                     }
                 }
@@ -507,20 +515,20 @@ public class MainCareActivity extends Activity implements View.OnClickListener, 
                                     String deviceType = object.getString("DEVICETYPE");
                                     String deviceName = object.getString("DEVICETYPENAME");
                                     if (isOccupied.equals("1")) {
-                                        Utils.myToast(mContext, "该设备已被使用");
+                                        MyUtils.myToast(mContext, "该设备已被使用");
                                     } else {
                                         AddOlderActivity.goActivity(MainCareActivity.this, id, deviceType,
                                                 deviceName, SmartId);
                                     }
                                 } else {
-                                    Utils.myToast(mContext, resultText);
+                                    MyUtils.myToast(mContext, resultText);
                                 }
                             } catch (JSONException e) {
                                 e.printStackTrace();
-                                Utils.myToast(mContext, "JSON解析出错");
+                                MyUtils.myToast(mContext, "JSON解析出错");
                             }
                         } else {
-                            Utils.myToast(mContext, "获取数据错误，请稍后重试！");
+                            MyUtils.myToast(mContext, "获取数据错误，请稍后重试！");
                         }
                     }
                 });
@@ -567,17 +575,17 @@ public class MainCareActivity extends Activity implements View.OnClickListener, 
                                             customerName,
                                             customerAddress);
                                 } else {
-                                    Utils.myToast(mContext, resultText);
+                                    MyUtils.myToast(mContext, resultText);
                                     mProgressHUD.dismiss();
                                 }
                             } catch (JSONException e) {
                                 mProgressHUD.dismiss();
                                 e.printStackTrace();
-                                Utils.myToast(mContext, "JSON解析出错");
+                                MyUtils.myToast(mContext, "JSON解析出错");
                             }
                         } else {
                             mProgressHUD.dismiss();
-                            Utils.myToast(mContext, "获取数据错误，请稍后重试！");
+                            MyUtils.myToast(mContext, "获取数据错误，请稍后重试！");
                         }
                     }
                 });
@@ -597,13 +605,13 @@ public class MainCareActivity extends Activity implements View.OnClickListener, 
         LayoutInflater mInflater = LayoutInflater.from(this);
         View relatedEdler = mInflater.inflate(R.layout.layout_relatedelder, null);
         ImageView image_elderBody = (ImageView) relatedEdler.findViewById(R.id.image_elderBody);
-        image_elderBody.setImageBitmap(Utils.stringtoBitmap(photo));
+        image_elderBody.setImageBitmap(MyUtils.stringtoBitmap(photo));
         TextView text_layoutTitle = (TextView) relatedEdler.findViewById(R.id.text_layoutTitle);
         text_layoutTitle.setText(operatorName + "向您分享一位老人，信息如下:");
         TextView text_olderName = (TextView) relatedEdler.findViewById(R.id.text_olderName);
         text_olderName.setText(customerName);
         TextView text_olderIdentity = (TextView) relatedEdler.findViewById(R.id.text_olderIdentity);
-        text_olderIdentity.setText(Utils.hideID(customerIdCard));
+        text_olderIdentity.setText(MyUtils.hideID(customerIdCard));
         TextView text_olderAddress = (TextView) relatedEdler.findViewById(R.id.text_olderAddress);
         text_olderAddress.setText(customerAddress);
         dialogBuilder.withTitle("关联老人").withTitleColor("#333333").withMessage(null)
@@ -660,20 +668,20 @@ public class MainCareActivity extends Activity implements View.OnClickListener, 
                                 String resultText = json.getString("ResultText");
                                 if (resultCode == 0) {
                                     mProgressHUD.dismiss();
-                                    Utils.myToast(mContext, "关联对象成功");
+                                    MyUtils.myToast(mContext, "关联对象成功");
                                     getOlderList();
                                 } else {
                                     mProgressHUD.dismiss();
-                                    Utils.myToast(mContext, resultText);
+                                    MyUtils.myToast(mContext, resultText);
                                 }
                             } catch (JSONException e) {
                                 e.printStackTrace();
                                 mProgressHUD.dismiss();
-                                Utils.myToast(mContext, "JSON解析出错");
+                                MyUtils.myToast(mContext, "JSON解析出错");
                             }
                         } else {
                             mProgressHUD.dismiss();
-                            Utils.myToast(mContext, "获取数据错误，请稍后重试！");
+                            MyUtils.myToast(mContext, "获取数据错误，请稍后重试！");
                         }
                     }
                 });

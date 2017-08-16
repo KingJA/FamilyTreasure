@@ -23,8 +23,8 @@ import com.tdr.familytreasure.ui.niftydialog.NiftyDialogBuilder;
 import com.tdr.familytreasure.util.Constants;
 import com.tdr.familytreasure.util.DialogUtil;
 import com.tdr.familytreasure.util.MD5;
+import com.tdr.familytreasure.util.MyUtils;
 import com.tdr.familytreasure.util.TextCountUtil;
-import com.tdr.familytreasure.util.Utils;
 import com.tdr.familytreasure.util.WebServiceUtils;
 
 import org.greenrobot.eventbus.EventBus;
@@ -32,7 +32,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 
 /**
@@ -166,32 +165,32 @@ public class AddGuardianActivity extends Activity implements View.OnClickListene
             case R.id.text_deal:
                 String guardianName1 = edit_guardianName1.getText().toString().trim();
                 if (guardianName1.equals("")) {
-                    Utils.myToast(mContext, "请输入监护人1姓名");
+                    MyUtils.myToast(mContext, "请输入监护人1姓名");
                     break;
                 }
                 String guardianIdentity1 = edit_guardianIdentity1.getText().toString().toUpperCase().trim();
                 if (guardianIdentity1.equals("")) {
-                    Utils.myToast(mContext, "请输入监护人1身份证号");
+                    MyUtils.myToast(mContext, "请输入监护人1身份证号");
                     break;
                 }
-                if (!Utils.isIDCard18(guardianIdentity1)) {
-                    Utils.myToast(mContext, "请输入监护人1正确的身份证号");
+                if (!MyUtils.isIDCard18(guardianIdentity1)) {
+                    MyUtils.myToast(mContext, "请输入监护人1正确的身份证号");
                     break;
                 }
                 String uploadPhone1 = edit_phone1.getText().toString().trim();
                 if (uploadPhone1.equals("")) {
-                    Utils.myToast(mContext, "请输入监护人1手机号码");
+                    MyUtils.myToast(mContext, "请输入监护人1手机号码");
                     break;
                 }
                 if (!uploadPhone1.equals(checkedPhone1)) {
-                    Utils.myToast(mContext, "监护人1的手机号码不是收取验证码的手机号码");
+                    MyUtils.myToast(mContext, "监护人1的手机号码不是收取验证码的手机号码");
                     break;
                 }
 
 
                 String guardianCode1 = edit_guardianCode1.getText().toString().trim();
                 if (guardianCode1.equals("")) {
-                    Utils.myToast(mContext, "请输入监护人1的验证码");
+                    MyUtils.myToast(mContext, "请输入监护人1的验证码");
                     break;
                 }
 
@@ -199,7 +198,7 @@ public class AddGuardianActivity extends Activity implements View.OnClickListene
                     Log.e(TAG, "监护人1 getMD5: "+MD5.getMD5(guardianCode1) );
                     Log.e(TAG, "监护人1 SMSVerify1: "+SMSVerify1 );
                     if (!MD5.getMD5(guardianCode1).equals(SMSVerify1)) {
-                        Utils.myToast(mContext, "监护人1的验证码错误");
+                        MyUtils.myToast(mContext, "监护人1的验证码错误");
                         break;
                     }
                 } catch (Exception e) {
@@ -207,37 +206,37 @@ public class AddGuardianActivity extends Activity implements View.OnClickListene
                 }
                 String guardianAddress1 = edit_guardianAddress1.getText().toString().trim();
                 if (guardianAddress1.equals("")) {
-                    Utils.myToast(mContext, "请输入监护人1的联系地址");
+                    MyUtils.myToast(mContext, "请输入监护人1的联系地址");
                     break;
                 }
 
                 if (linear_guardian2.getVisibility() == View.VISIBLE) {
                     String guardianName2 = edit_guardianName2.getText().toString().trim();
                     if (guardianName2.equals("")) {
-                        Utils.myToast(mContext, "请输入监护人2姓名");
+                        MyUtils.myToast(mContext, "请输入监护人2姓名");
                         break;
                     }
                     String guardianIdentity2 = edit_guardianIdentity2.getText().toString().toUpperCase().trim();
                     if (guardianIdentity2.equals("")) {
-                        Utils.myToast(mContext, "请输入监护人2身份证号");
+                        MyUtils.myToast(mContext, "请输入监护人2身份证号");
                         break;
                     }
-                    if (!Utils.isIDCard18(guardianIdentity2)) {
-                        Utils.myToast(mContext, "请输入监护人2正确的身份证号");
+                    if (!MyUtils.isIDCard18(guardianIdentity2)) {
+                        MyUtils.myToast(mContext, "请输入监护人2正确的身份证号");
                         break;
                     }
                     String uploadPhone2 = edit_phone2.getText().toString().trim();
                     if (uploadPhone2.equals("")) {
-                        Utils.myToast(mContext, "请输入监护人2手机号码");
+                        MyUtils.myToast(mContext, "请输入监护人2手机号码");
                         break;
                     }
                     if (!uploadPhone2.equals(checkedPhone2)) {
-                        Utils.myToast(mContext, "监护人2的手机号码不是收取验证码的手机号码");
+                        MyUtils.myToast(mContext, "监护人2的手机号码不是收取验证码的手机号码");
                         break;
                     }
                     String guardianCode2 = edit_guardianCode2.getText().toString().trim();
                     if (guardianCode2.equals("")) {
-                        Utils.myToast(mContext, "请输入监护人2的验证码");
+                        MyUtils.myToast(mContext, "请输入监护人2的验证码");
                         break;
                     }
 
@@ -245,7 +244,7 @@ public class AddGuardianActivity extends Activity implements View.OnClickListene
                         Log.e(TAG, "监护人2 getMD5: "+MD5.getMD5(guardianCode2) );
                         Log.e(TAG, "监护人2 SMSVerify2: "+SMSVerify2 );
                         if (!MD5.getMD5(guardianCode2).equals(SMSVerify2)) {
-                            Utils.myToast(mContext, "监护人2的验证码错误");
+                            MyUtils.myToast(mContext, "监护人2的验证码错误");
                             break;
                         }
                     } catch (Exception e) {
@@ -254,7 +253,7 @@ public class AddGuardianActivity extends Activity implements View.OnClickListene
 
                     String guardianAddress2 = edit_guardianAddress2.getText().toString().trim();
                     if (guardianAddress2.equals("")) {
-                        Utils.myToast(mContext, "请输入监护人2的联系地址");
+                        MyUtils.myToast(mContext, "请输入监护人2的联系地址");
                         break;
                     }
                 }
@@ -262,30 +261,30 @@ public class AddGuardianActivity extends Activity implements View.OnClickListene
                 if (linear_guardian3.getVisibility() == View.VISIBLE) {
                     String guardianName3 = edit_guardianName3.getText().toString().trim();
                     if (guardianName3.equals("")) {
-                        Utils.myToast(mContext, "请输入监护人3姓名");
+                        MyUtils.myToast(mContext, "请输入监护人3姓名");
                         break;
                     }
                     String guardianIdentity3 = edit_guardianIdentity3.getText().toString().toUpperCase().trim();
                     if (guardianIdentity3.equals("")) {
-                        Utils.myToast(mContext, "请输入监护人3身份证号");
+                        MyUtils.myToast(mContext, "请输入监护人3身份证号");
                         break;
                     }
-                    if (!Utils.isIDCard18(guardianIdentity3)) {
-                        Utils.myToast(mContext, "请输入监护人3正确的身份证号");
+                    if (!MyUtils.isIDCard18(guardianIdentity3)) {
+                        MyUtils.myToast(mContext, "请输入监护人3正确的身份证号");
                         break;
                     }
                     String uploadPhone3 = edit_phone3.getText().toString().trim();
                     if (uploadPhone3.equals("")) {
-                        Utils.myToast(mContext, "请输入监护人3手机号码");
+                        MyUtils.myToast(mContext, "请输入监护人3手机号码");
                         break;
                     }
                     if (!uploadPhone3.equals(checkedPhone2)) {
-                        Utils.myToast(mContext, "监护人3的手机号码不是收取验证码的手机号码");
+                        MyUtils.myToast(mContext, "监护人3的手机号码不是收取验证码的手机号码");
                         break;
                     }
                     String guardianCode3 = edit_guardianCode3.getText().toString().trim();
                     if (guardianCode3.equals("")) {
-                        Utils.myToast(mContext, "请输入监护人3的验证码");
+                        MyUtils.myToast(mContext, "请输入监护人3的验证码");
                         break;
                     }
 
@@ -293,7 +292,7 @@ public class AddGuardianActivity extends Activity implements View.OnClickListene
                         Log.e(TAG, "监护人3 getMD5: "+MD5.getMD5(guardianCode3) );
                         Log.e(TAG, "监护人3 SMSVerify3: "+SMSVerify3 );
                         if (!MD5.getMD5(guardianCode3).equals(SMSVerify3)) {
-                            Utils.myToast(mContext, "监护人3的验证码错误");
+                            MyUtils.myToast(mContext, "监护人3的验证码错误");
                             break;
                         }
                     } catch (Exception e) {
@@ -302,7 +301,7 @@ public class AddGuardianActivity extends Activity implements View.OnClickListene
 
                     String guardianAddress3 = edit_guardianAddress3.getText().toString().trim();
                     if (guardianAddress3.equals("")) {
-                        Utils.myToast(mContext, "请输入监护人3的联系地址");
+                        MyUtils.myToast(mContext, "请输入监护人3的联系地址");
                         break;
                     }
                 }
@@ -397,23 +396,23 @@ public class AddGuardianActivity extends Activity implements View.OnClickListene
                             try {
                                 JSONObject json = new JSONObject(result);
                                 int resultCode = json.getInt("ResultCode");
-                                String resultText = Utils.initNullStr(json.getString("ResultText"));
+                                String resultText = MyUtils.initNullStr(json.getString("ResultText"));
                                 if (resultCode == 0) {
                                     EventBus.getDefault().post(new MessageEvent("MainCareActivity"));
                                     mProgressHUD.dismiss();
                                     dialogShow(mInfo.getCustomerName());
                                 } else {
                                     mProgressHUD.dismiss();
-                                    Utils.myToast(mContext, resultText);
+                                    MyUtils.myToast(mContext, resultText);
                                 }
                             } catch (JSONException e) {
                                 mProgressHUD.dismiss();
                                 e.printStackTrace();
-                                Utils.myToast(mContext, "JSON解析出错");
+                                MyUtils.myToast(mContext, "JSON解析出错");
                             }
                         } else {
                             mProgressHUD.dismiss();
-                            Utils.myToast(mContext, "获取数据错误，请稍后重试！");
+                            MyUtils.myToast(mContext, "获取数据错误，请稍后重试！");
                         }
                     }
                 });
@@ -423,7 +422,7 @@ public class AddGuardianActivity extends Activity implements View.OnClickListene
             case R.id.text_code1:
                 String phone1 = edit_phone1.getText().toString();
                 if (phone1.equals("")) {
-                    Utils.myToast(mContext, "监护人1手机号码不可为空");
+                    MyUtils.myToast(mContext, "监护人1手机号码不可为空");
                     break;
                 }
                 checkedPhone1 = phone1;
@@ -453,22 +452,22 @@ public class AddGuardianActivity extends Activity implements View.OnClickListene
                                 try {
                                     object = new JSONObject(result);
                                     int resultCode = object.getInt("ResultCode");
-                                    String resultText = Utils.initNullStr(object.getString("ResultText"));
+                                    String resultText = MyUtils.initNullStr(object.getString("ResultText"));
                                     if (resultCode == 0) {
                                         String content = object.getString("Content");
                                         JSONObject json = new JSONObject(content);
                                         SMSVerify1 = json.getString("SMSVERIFY");
                                         phoneVerify1 = json.getString("MOBILEPHONE");
                                     } else {
-                                        Utils.myToast(mContext, resultText);
+                                        MyUtils.myToast(mContext, resultText);
                                     }
                                 } catch (JSONException e) {
                                     e.printStackTrace();
-                                    Utils.myToast(mContext, "JSON解析出错");
+                                    MyUtils.myToast(mContext, "JSON解析出错");
                                 }
 
                             } else {
-                                Utils.myToast(mContext, "获取数据错误，请稍后重试！");
+                                MyUtils.myToast(mContext, "获取数据错误，请稍后重试！");
                             }
                         }
                     }
@@ -483,7 +482,7 @@ public class AddGuardianActivity extends Activity implements View.OnClickListene
             case R.id.text_code2:
                 String phone2 = edit_phone2.getText().toString();
                 if (phone2.equals("")) {
-                    Utils.myToast(mContext, "监护人2手机号码不可为空");
+                    MyUtils.myToast(mContext, "监护人2手机号码不可为空");
                     break;
                 }
                 checkedPhone2 = phone2;
@@ -512,23 +511,23 @@ public class AddGuardianActivity extends Activity implements View.OnClickListene
                                 try {
                                     object = new JSONObject(result);
                                     int resultCode = object.getInt("ResultCode");
-                                    String resultText = Utils.initNullStr(object.getString("ResultText"));
+                                    String resultText = MyUtils.initNullStr(object.getString("ResultText"));
                                     if (resultCode == 0) {
-                                        Utils.myToast(mContext, "获取验证码成功");
+                                        MyUtils.myToast(mContext, "获取验证码成功");
                                         String content = object.getString("Content");
                                         JSONObject json = new JSONObject(content);
                                         SMSVerify2 = json.getString("SMSVERIFY");
                                         phoneVerify2 = json.getString("MOBILEPHONE");
                                     } else {
-                                        Utils.myToast(mContext, resultText);
+                                        MyUtils.myToast(mContext, resultText);
                                     }
                                 } catch (JSONException e) {
                                     e.printStackTrace();
-                                    Utils.myToast(mContext, "JSON解析出错");
+                                    MyUtils.myToast(mContext, "JSON解析出错");
                                 }
 
                             } else {
-                                Utils.myToast(mContext, "获取数据错误，请稍后重试！");
+                                MyUtils.myToast(mContext, "获取数据错误，请稍后重试！");
                             }
                         }
                     }
@@ -542,7 +541,7 @@ public class AddGuardianActivity extends Activity implements View.OnClickListene
             case R.id.text_code3:
                 String phone3 = edit_phone1.getText().toString();
                 if (phone3.equals("")) {
-                    Utils.myToast(mContext, "监护人3手机号码不可为空");
+                    MyUtils.myToast(mContext, "监护人3手机号码不可为空");
                     break;
                 }
                 checkedPhone3 = phone3;
@@ -572,23 +571,23 @@ public class AddGuardianActivity extends Activity implements View.OnClickListene
                                 try {
                                     object = new JSONObject(result);
                                     int resultCode = object.getInt("ResultCode");
-                                    String resultText = Utils.initNullStr(object.getString("ResultText"));
+                                    String resultText = MyUtils.initNullStr(object.getString("ResultText"));
                                     if (resultCode == 0) {
-                                        Utils.myToast(mContext, "获取验证码成功");
+                                        MyUtils.myToast(mContext, "获取验证码成功");
                                         String content = object.getString("Content");
                                         JSONObject json = new JSONObject(content);
                                         SMSVerify3 = json.getString("SMSVERIFY");
                                         phoneVerify3 = json.getString("MOBILEPHONE");
                                     } else {
-                                        Utils.myToast(mContext, resultText);
+                                        MyUtils.myToast(mContext, resultText);
                                     }
                                 } catch (JSONException e) {
                                     e.printStackTrace();
-                                    Utils.myToast(mContext, "JSON解析出错");
+                                    MyUtils.myToast(mContext, "JSON解析出错");
                                 }
 
                             } else {
-                                Utils.myToast(mContext, "获取数据错误，请稍后重试！");
+                                MyUtils.myToast(mContext, "获取数据错误，请稍后重试！");
                             }
                         }
                     }
@@ -597,7 +596,7 @@ public class AddGuardianActivity extends Activity implements View.OnClickListene
 
             case R.id.relative_addMoreGuardian:
                 if (linear_guardian2.getVisibility() == View.VISIBLE && linear_guardian3.getVisibility() == View.VISIBLE) {
-                    Utils.myToast(mContext, "最多允许添加三个监护人");
+                    MyUtils.myToast(mContext, "最多允许添加三个监护人");
                     break;
                 }
                 if (linear_guardian2.getVisibility() == View.VISIBLE) {

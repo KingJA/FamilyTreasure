@@ -47,4 +47,8 @@ dependencies {
     compile project(':libk-ui')
     compile 'org.greenrobot:eventbus:3.0.0'
     compile 'org.xutils:xutils:3.3.26'
+    compile("com.github.hotchemi:permissionsdispatcher:2.4.0") {
+        exclude module: "support-v13"
+    }
+    annotationProcessor "com.github.hotchemi:permissionsdispatcher-processor:2.4.0"
 }

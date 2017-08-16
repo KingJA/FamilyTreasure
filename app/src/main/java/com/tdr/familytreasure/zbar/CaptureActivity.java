@@ -22,7 +22,7 @@ import android.widget.TextView;
 
 
 import com.tdr.familytreasure.R;
-import com.tdr.familytreasure.util.Utils;
+import com.tdr.familytreasure.util.MyUtils;
 
 import net.sourceforge.zbar.Config;
 import net.sourceforge.zbar.Image;
@@ -138,7 +138,7 @@ public class CaptureActivity extends Activity {
             mCameraManager.openDriver();
         } catch (Exception e) {
             e.printStackTrace();
-            Utils.myToast(mContext,"请开启相机权限");
+            MyUtils.myToast(mContext,"请开启相机权限");
             finish();
             return;
         }

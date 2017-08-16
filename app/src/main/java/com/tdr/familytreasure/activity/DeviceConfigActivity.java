@@ -16,7 +16,7 @@ import com.tdr.familytreasure.adapter.OlderDeviceConfigAdapter;
 import com.tdr.familytreasure.entiy.GroupItem;
 import com.tdr.familytreasure.ui.ZProgressHUD;
 import com.tdr.familytreasure.util.Constants;
-import com.tdr.familytreasure.util.Utils;
+import com.tdr.familytreasure.util.MyUtils;
 import com.tdr.familytreasure.util.WebServiceUtils;
 import com.tdr.familytreasure.zbar.CaptureActivity;
 
@@ -151,16 +151,16 @@ public class DeviceConfigActivity extends Activity implements View.OnClickListen
                             list_deviceConfig.setAdapter(mAdapter);
                         } else {
                             mProgressHUD.dismiss();
-                            Utils.myToast(mContext, resultText);
+                            MyUtils.myToast(mContext, resultText);
                         }
                     } catch (JSONException e) {
                         mProgressHUD.dismiss();
                         e.printStackTrace();
-                        Utils.myToast(mContext, "JSON解析出错");
+                        MyUtils.myToast(mContext, "JSON解析出错");
                     }
                 } else {
                     mProgressHUD.dismiss();
-                    Utils.myToast(mContext, "获取数据错误，请稍后重试！");
+                    MyUtils.myToast(mContext, "获取数据错误，请稍后重试！");
                 }
             }
         });
@@ -186,7 +186,7 @@ public class DeviceConfigActivity extends Activity implements View.OnClickListen
         switch (requestCode) {
             case SCANNIN_GREQUEST_CODE:
                 if (data == null) {
-                    Utils.myToast(mContext, "没有扫描到二维码");
+                    MyUtils.myToast(mContext, "没有扫描到二维码");
                     break;
                 } else {
                     mProgressHUD.setMessage("二维码解析中...");
@@ -195,7 +195,7 @@ public class DeviceConfigActivity extends Activity implements View.OnClickListen
                     Bundle bundle = data.getExtras();
                     String scanResult = bundle.getString("result");
                     Log.e("二维码内容：", scanResult);
-                    Utils.myToast(mContext, "二维码扫描成功，请稍候...");
+                    MyUtils.myToast(mContext, "二维码扫描成功，请稍候...");
                     String url = "http://ga.iotone.cn/";
                     if (scanResult.contains(url)) {
                         JSONObject object = new JSONObject();
@@ -233,20 +233,20 @@ public class DeviceConfigActivity extends Activity implements View.OnClickListen
                                             } else if (QRType.equals("Q3")) {
                                                 mProgressHUD.dismiss();
                                                 //getShare(Id);
-                                                Utils.myToast(mContext, "请在亲情关爱主页面关联老人");
+                                                MyUtils.myToast(mContext, "请在亲情关爱主页面关联老人");
                                             }
                                         } else {
                                             mProgressHUD.dismiss();
-                                            Utils.myToast(mContext, resultText);
+                                            MyUtils.myToast(mContext, resultText);
                                         }
                                     } catch (JSONException e) {
                                         mProgressHUD.dismiss();
                                         e.printStackTrace();
-                                        Utils.myToast(mContext, "JSON解析出错");
+                                        MyUtils.myToast(mContext, "JSON解析出错");
                                     }
                                 } else {
                                     mProgressHUD.dismiss();
-                                    Utils.myToast(mContext, "请确认设备是否为关爱设备");
+                                    MyUtils.myToast(mContext, "请确认设备是否为关爱设备");
                                 }
                             }
                         });
@@ -286,23 +286,23 @@ public class DeviceConfigActivity extends Activity implements View.OnClickListen
                                             checkDevice(code);
                                         } else {
                                             mProgressHUD.dismiss();
-                                            Utils.myToast(mContext, resultText);
+                                            MyUtils.myToast(mContext, resultText);
                                         }
                                     } catch (JSONException e) {
                                         e.printStackTrace();
                                         mProgressHUD.dismiss();
-                                        Utils.myToast(mContext, "JSON解析出错");
+                                        MyUtils.myToast(mContext, "JSON解析出错");
                                     }
 
                                 } else {
                                     mProgressHUD.dismiss();
-                                    Utils.myToast(mContext, "获取数据错误，请稍后重试！");
+                                    MyUtils.myToast(mContext, "获取数据错误，请稍后重试！");
                                 }
                             }
                         });
                     } else {
                         mProgressHUD.dismiss();
-                        Utils.myToast(mContext, "非指定亲情关爱设备");
+                        MyUtils.myToast(mContext, "非指定亲情关爱设备");
                         break;
                     }
                 }
@@ -338,20 +338,20 @@ public class DeviceConfigActivity extends Activity implements View.OnClickListen
                         String resultText = jsonObject.getString("ResultText");
                         if (resultCode == 0) {
                             mProgressHUD.dismiss();
-                            Utils.myToast(mContext, "设备绑定成功");
+                            MyUtils.myToast(mContext, "设备绑定成功");
                             initData();
                         } else {
                             mProgressHUD.dismiss();
-                            Utils.myToast(mContext, resultText);
+                            MyUtils.myToast(mContext, resultText);
                         }
                     } catch (JSONException e) {
                         mProgressHUD.dismiss();
                         e.printStackTrace();
-                        Utils.myToast(mContext, "JSON解析出错");
+                        MyUtils.myToast(mContext, "JSON解析出错");
                     }
                 } else {
                     mProgressHUD.dismiss();
-                    Utils.myToast(mContext, "获取数据错误，请稍后重试！");
+                    MyUtils.myToast(mContext, "获取数据错误，请稍后重试！");
                 }
             }
         });
@@ -392,20 +392,20 @@ public class DeviceConfigActivity extends Activity implements View.OnClickListen
                             String isOccupied = object.getString("ISOCCUPIED");
                             if (isMultiuse.equals("0")) {
                                 if (isOccupied.equals("1")) {
-                                    Utils.myToast(mContext, "该设备已被使用");
+                                    MyUtils.myToast(mContext, "该设备已被使用");
                                 } else {
                                     targetBandDevice(smartcareId, id);
                                 }
                             }
                         } else {
-                            Utils.myToast(mContext, resultText);
+                            MyUtils.myToast(mContext, resultText);
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();
-                        Utils.myToast(mContext, "JSON解析出错");
+                        MyUtils.myToast(mContext, "JSON解析出错");
                     }
                 } else {
-                    Utils.myToast(mContext, "获取数据错误，请稍后重试！");
+                    MyUtils.myToast(mContext, "获取数据错误，请稍后重试！");
                 }
             }
         });
