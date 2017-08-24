@@ -17,6 +17,7 @@ import android.widget.TextView;
 import com.daimajia.swipe.SwipeLayout;
 import com.daimajia.swipe.adapters.BaseSwipeAdapter;
 import com.tdr.familytreasure.R;
+import com.tdr.familytreasure.activity.FootprintActivity;
 import com.tdr.familytreasure.activity.LostAlarmActivity;
 import com.tdr.familytreasure.activity.PersonConfig;
 import com.tdr.familytreasure.activity.QrCodeActivity;
@@ -123,6 +124,13 @@ public class MainCareAdapter extends BaseSwipeAdapter {
                 mContext.startActivity(intent);
             }
         });
+        //TODO
+        convertView.findViewById(R.id.tv_footprint).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FootprintActivity.goActivity(mContext,list.get(position).getCareNumber());
+            }
+        });
 
 
         convertView.findViewById(R.id.text_share).setOnClickListener(new View.OnClickListener() {
@@ -182,7 +190,7 @@ public class MainCareAdapter extends BaseSwipeAdapter {
                                                 //mContext.startActivity(intent);
                                                 generateQRcode("Q3", list.get(position).getTargetType(), shareId,
                                                         list.get
-                                                        (position).getCustomerName(), list.get(position)
+                                                                (position).getCustomerName(), list.get(position)
                                                                 .getCustomerIdCard(), list.get(position)
                                                                 .getCustomerPhoto());
 

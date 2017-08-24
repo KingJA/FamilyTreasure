@@ -30,6 +30,7 @@ import android.widget.TextView;
 
 
 import com.flyco.dialog.widget.NormalDialog;
+import com.kingja.ui.popupwindow.BottomListPop;
 import com.tdr.familytreasure.R;
 import com.tdr.familytreasure.amap.MapActivity;
 import com.tdr.familytreasure.dao.DbDaoXutils3;
@@ -41,8 +42,10 @@ import com.tdr.familytreasure.entiy.OlderInfo;
 import com.tdr.familytreasure.ui.PaichusuoBottomWheelView;
 import com.tdr.familytreasure.ui.SelectPicPopupWindow;
 import com.tdr.familytreasure.ui.ZProgressHUD;
+import com.tdr.familytreasure.util.CheckUtil;
 import com.tdr.familytreasure.util.Constants;
 import com.tdr.familytreasure.util.DialogUtil;
+import com.tdr.familytreasure.util.ImageUtil;
 import com.tdr.familytreasure.util.MyUtils;
 import com.tdr.familytreasure.util.WebServiceUtils;
 
@@ -53,17 +56,21 @@ import org.json.JSONObject;
 import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static com.tdr.familytreasure.R.id.image_bodyPhoto;
 
 /**
  * 添加老人
  * Created by Linus_Xie on 2016/8/16.
  */
-public class AddOlderActivity extends Activity implements View.OnClickListener {
+public class AddOlderActivity extends Activity implements View.OnClickListener, BottomListPop.OnPopItemClickListener {
     private static final String TAG = "AddOlderActivity";
-
+    private static final int REQUEST_CAMARA = 1005;
+    private static final int REQUEST_PICTURE = 1008;
     private Context mContext;
 
     private SelectPicPopupWindow mSelectPicPopupWindow;
@@ -108,6 +115,9 @@ public class AddOlderActivity extends Activity implements View.OnClickListener {
     private TextView tv_deviceType;
     private String deviceType;
     private String deviceName;
+    private String base64Avatar;
+    private BottomListPop mBottomListPop;
+    private RelativeLayout relative_title;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -150,54 +160,57 @@ public class AddOlderActivity extends Activity implements View.OnClickListener {
 
             WebServiceUtils.callWebService(Constants.WEBSERVER_URL, Constants.WEBSERVER_REREQUEST, map, new
                     WebServiceUtils.WebServiceCallBack() {
-                @Override
-                public void callBack(String result) {
-                    if (result != null) {
-                        Log.e(TAG + "对象列表：", result);
-                        try {
-                            JSONObject jsonObject = new JSONObject(result);
-                            int resultCode = jsonObject.getInt("ResultCode");
-                            String resultText = MyUtils.initNullStr(jsonObject.getString("ResultText"));
-                            if (resultCode == 0) {
-                                String content = jsonObject.getString("Content");
-                                JSONObject json = new JSONObject(content);
-                                String lrInfo = json.getString("LRINFO");
-                                JSONObject lrObj = new JSONObject(lrInfo);
-                                edit_lovedName.setText(MyUtils.initNullStr(lrObj.getString("CUSTOMERNAME")));
-                                edit_lovedIdentity.setText(MyUtils.initNullStr(lrObj.getString("CUSTOMERIDCARD")));
-                                edit_lovedPhone.setText(MyUtils.initNullStr(lrObj.getString("CUSTOMMOBILE")));
-                                edit_lovedAddress.setText(MyUtils.initNullStr(lrObj.getString("CUSTOMERADDRESS")));
+                        @Override
+                        public void callBack(String result) {
+                            if (result != null) {
+                                Log.e(TAG + "对象列表：", result);
+                                try {
+                                    JSONObject jsonObject = new JSONObject(result);
+                                    int resultCode = jsonObject.getInt("ResultCode");
+                                    String resultText = MyUtils.initNullStr(jsonObject.getString("ResultText"));
+                                    if (resultCode == 0) {
+                                        String content = jsonObject.getString("Content");
+                                        JSONObject json = new JSONObject(content);
+                                        String lrInfo = json.getString("LRINFO");
+                                        JSONObject lrObj = new JSONObject(lrInfo);
+                                        edit_lovedName.setText(MyUtils.initNullStr(lrObj.getString("CUSTOMERNAME")));
+                                        edit_lovedIdentity.setText(MyUtils.initNullStr(lrObj.getString
+                                                ("CUSTOMERIDCARD")));
+                                        edit_lovedPhone.setText(MyUtils.initNullStr(lrObj.getString("CUSTOMMOBILE")));
+                                        edit_lovedAddress.setText(MyUtils.initNullStr(lrObj.getString
+                                                ("CUSTOMERADDRESS")));
 
-                                String guardianInfo = json.getString("GUARDIANINFO");
-                                JSONArray array = new JSONArray(guardianInfo);
-                                for (int i = 0; i < array.length(); i++) {
-                                    JSONObject object = array.getJSONObject(0);
-                                    mGuardianInfo.setGuardianName(MyUtils.initNullStr(object.getString("GUARDIANNAME")));
-                                    mGuardianInfo.setGuardianIdCard(MyUtils.initNullStr(object.getString
-                                            ("GUARDIANIDCARD")));
-                                    mGuardianInfo.setGuardianMobile(MyUtils.initNullStr(object.getString
-                                            ("GUARDIANMOBILE")));
-                                    mGuardianInfo.setGuardianAddress(MyUtils.initNullStr(object.getString
-                                            ("GUARDIANADDRESS")));
-                                    mGuardianInfo.setEnmergencyCall(MyUtils.initNullStr(object.getString
-                                            ("ENMERGENCYCALL")));
+                                        String guardianInfo = json.getString("GUARDIANINFO");
+                                        JSONArray array = new JSONArray(guardianInfo);
+                                        for (int i = 0; i < array.length(); i++) {
+                                            JSONObject object = array.getJSONObject(0);
+                                            mGuardianInfo.setGuardianName(MyUtils.initNullStr(object.getString
+                                                    ("GUARDIANNAME")));
+                                            mGuardianInfo.setGuardianIdCard(MyUtils.initNullStr(object.getString
+                                                    ("GUARDIANIDCARD")));
+                                            mGuardianInfo.setGuardianMobile(MyUtils.initNullStr(object.getString
+                                                    ("GUARDIANMOBILE")));
+                                            mGuardianInfo.setGuardianAddress(MyUtils.initNullStr(object.getString
+                                                    ("GUARDIANADDRESS")));
+                                            mGuardianInfo.setEnmergencyCall(MyUtils.initNullStr(object.getString
+                                                    ("ENMERGENCYCALL")));
+                                        }
+                                        mProgressHUD.dismiss();
+                                    } else {
+                                        mProgressHUD.dismiss();
+                                        MyUtils.myToast(mContext, resultText);
+                                    }
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                    mProgressHUD.dismiss();
+                                    MyUtils.myToast(mContext, "JSON解析出错");
                                 }
-                                mProgressHUD.dismiss();
                             } else {
                                 mProgressHUD.dismiss();
-                                MyUtils.myToast(mContext, resultText);
+                                MyUtils.myToast(mContext, "获取数据错误，请稍后重试！");
                             }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                            mProgressHUD.dismiss();
-                            MyUtils.myToast(mContext, "JSON解析出错");
                         }
-                    } else {
-                        mProgressHUD.dismiss();
-                        MyUtils.myToast(mContext, "获取数据错误，请稍后重试！");
-                    }
-                }
-            });
+                    });
         }
     }
 
@@ -220,6 +233,7 @@ public class AddOlderActivity extends Activity implements View.OnClickListener {
         tv_deviceType = (TextView) findViewById(R.id.tv_deviceType);
         ll_select_area = (LinearLayout) findViewById(R.id.ll_select_area);
         ll_select_police = (LinearLayout) findViewById(R.id.ll_select_police);
+        relative_title = (RelativeLayout) findViewById(R.id.relative_title);
         image_back = (ImageView) findViewById(R.id.fl_menu);
         image_back.setOnClickListener(this);
         text_title = (TextView) findViewById(R.id.text_title);
@@ -317,6 +331,8 @@ public class AddOlderActivity extends Activity implements View.OnClickListener {
         mProgressHUD = new ZProgressHUD(mContext);
         mProgressHUD.setMessage("请求数据中...");
         mProgressHUD.setSpinnerType(ZProgressHUD.SIMPLE_ROUND_SPINNER);
+        mBottomListPop = new BottomListPop(relative_title, this, Arrays.asList("拍照", "相册"));
+        mBottomListPop.setOnPopItemClickListener(this);
     }
 
     @Override
@@ -346,16 +362,23 @@ public class AddOlderActivity extends Activity implements View.OnClickListener {
                     break;
                 }
                 String lovedIdentity = edit_lovedIdentity.getText().toString().toUpperCase().trim();
-                int length = lovedIdentity.length();
-                if (length == 18) {//出现15位身份证就直接过去
-                    if (lovedIdentity.equals("")) {
-                        MyUtils.myToast(mContext, "请输入身份证号码");
-                        break;
-                    }
-                    if (!MyUtils.isIDCard18(lovedIdentity)) {
-                        MyUtils.myToast(mContext, "请输入正确身份证号");
-                        break;
-                    }
+//                int length = lovedIdentity.length();
+//                if (length == 18) {//出现15位身份证就直接过去
+//                    if (lovedIdentity.equals("")) {
+//                        MyUtils.myToast(mContext, "请输入身份证号码");
+//                        break;
+//                    }
+//                    if (!MyUtils.isIDCard18(lovedIdentity)) {
+//                        MyUtils.myToast(mContext, "请输入正确身份证号");
+//                        break;
+//                    }
+//                }
+                if (!CheckUtil.checkIdCard(lovedIdentity, "身份证格式错误")) {
+                    break;
+                }
+                String phone = edit_lovedPhone.getText().toString().toUpperCase().trim();
+                if (!CheckUtil.checkPhoneFormat(phone)) {
+                    break;
                 }
 
                 String lovedAddress = edit_lovedAddress.getText().toString().trim();
@@ -411,11 +434,14 @@ public class AddOlderActivity extends Activity implements View.OnClickListener {
                 break;
 
             case R.id.image_bodyphoto:
-                // 实例化SelectPicPopupWindow
-                mSelectPicPopupWindow = new SelectPicPopupWindow(AddOlderActivity.this, this);
-                // 显示窗口
-                mSelectPicPopupWindow.showAtLocation(AddOlderActivity.this.findViewById(R.id.fl_root),
-                        Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 0); // 设置layout在PopupWindow中显示的位置
+//                // 实例化SelectPicPopupWindow
+//                mSelectPicPopupWindow = new SelectPicPopupWindow(AddOlderActivity.this, this);
+//                // 显示窗口
+//                mSelectPicPopupWindow.showAtLocation(AddOlderActivity.this.findViewById(R.id.fl_root),
+//                        Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 0); // 设置layout在PopupWindow中显示的位置
+
+//                takePhoto();
+                mBottomListPop.showPopupWindow();
                 break;
 
             case R.id.btn_takephoto:
@@ -459,6 +485,11 @@ public class AddOlderActivity extends Activity implements View.OnClickListener {
         }
     }
 
+    private void takePhoto() {
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        startActivityForResult(intent, REQUEST_CAMARA);
+    }
+
     private void initAreaPop() {
         List<Basic_XingZhengQuHua_Kj> xingZhengQuHuaDbList = (List<Basic_XingZhengQuHua_Kj>) DbDaoXutils3.getInstance
                 ().sleectAllDb(Basic_XingZhengQuHua_Kj.class);
@@ -495,11 +526,14 @@ public class AddOlderActivity extends Activity implements View.OnClickListener {
 
                 break;
             case RESULT_REQUEST_CODE:
-                if (data != null) {
-                    getImageToView(data);
+                if (resultCode == RESULT_OK && data != null) {
+                    Bitmap bitmap = (Bitmap) data.getExtras().get("data");
+                    image_bodyphoto.setImageBitmap(bitmap);
+                    image_bodyphoto.setEnabled(true);
+                    base64Avatar = new String(ImageUtil.bitmapToBase64(bitmap));
+                    Constants.setBodyPhoto(base64Avatar);
                 }
                 break;
-
             case LOCPOSITION:
                 if (resultCode == RESULT_OK) {
                     address = data.getStringExtra("address");
@@ -509,6 +543,20 @@ public class AddOlderActivity extends Activity implements View.OnClickListener {
                     Log.e(TAG + "取到坐标：", address + lat + lng);
                 }
 
+                break;
+            case REQUEST_CAMARA:
+                if (resultCode == RESULT_OK) {
+                    Bitmap bitmap = (Bitmap) data.getExtras().get("data");
+                    image_bodyphoto.setImageBitmap(bitmap);
+                    image_bodyphoto.setEnabled(true);
+                    base64Avatar = new String(ImageUtil.bitmapToBase64(bitmap));
+                    Constants.setBodyPhoto(base64Avatar);
+                }
+                break;
+            case REQUEST_PICTURE:
+                if (resultCode == RESULT_OK && data != null) {
+                    startPhotoZoom(data.getData());
+                }
                 break;
         }
     }
@@ -524,7 +572,7 @@ public class AddOlderActivity extends Activity implements View.OnClickListener {
         // intent.setDataAndType(uri, "image/*");
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             String url = getPath(mContext, uri);
-            intent.setDataAndType(Uri.fromFile(new File(url)), "image/*");
+            intent.setDataAndType(ImageUtil.getImageContentUri(this, new File(url)), "image/*");
         } else {
             intent.setDataAndType(uri, "image/*");
         }
@@ -686,4 +734,23 @@ public class AddOlderActivity extends Activity implements View.OnClickListener {
         context.startActivity(intent);
     }
 
+    @Override
+    public void onPopItemClick(int position, String tag) {
+        switch (position) {
+            case 0:
+                takePhoto();
+                break;
+            case 1:
+                getPhoto();
+                break;
+        }
+    }
+
+
+    private void getPhoto() {
+        Intent intentFromGallery = new Intent();
+        intentFromGallery.setType("image/*"); // 设置文件类型
+        intentFromGallery.setAction(Intent.ACTION_PICK);
+        startActivityForResult(intentFromGallery, REQUEST_PICTURE);
+    }
 }

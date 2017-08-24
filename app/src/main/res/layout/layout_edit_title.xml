@@ -3,7 +3,8 @@
                 android:id="@+id/relative_title"
                 android:layout_width="match_parent"
                 android:layout_height="45dp"
-                android:background="@color/colorPrimaryDark">
+                android:background="@color/colorPrimaryDark"
+    >
 
     <ImageView
         android:id="@+id/fl_menu"

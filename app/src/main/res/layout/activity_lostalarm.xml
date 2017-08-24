@@ -16,7 +16,7 @@
         android:gravity="top"
         android:maxLength="200"
         android:padding="15dp"
-        android:hint="请简单描述下老人性别、年龄、身高、体重和明显的外形特征等信息，最好可以提供老人走失的大致地点，、时间以及走失时所传穿的衣服特征，方便寻找老人"
+        android:hint="请简单描述下老人性别、年龄、身高、体重和明显的外形特征等信息，最好可以提供老人走失的大致地点，、时间以及走失时所穿的衣服特征，方便寻找老人"
         android:textColor="@color/colorInput"
         android:textColorHint="@color/colorHint"
         android:textSize="15sp" />

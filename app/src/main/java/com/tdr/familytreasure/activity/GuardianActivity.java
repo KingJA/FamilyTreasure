@@ -11,6 +11,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 
+import com.flyco.dialog.listener.OnBtnClickL;
+import com.flyco.dialog.widget.NormalDialog;
 import com.tdr.familytreasure.R;
 import com.tdr.familytreasure.ui.ZProgressHUD;
 import com.tdr.familytreasure.util.Constants;
@@ -38,6 +40,11 @@ public class GuardianActivity extends Activity implements View.OnClickListener {
 
     private ZProgressHUD mProgressHUD;
     private String code;
+    private NormalDialog addSuccessDialog;
+    private String phone;
+    private String guardianIdentity;
+    private String guardianName;
+    private String guardianAddress;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,7 +65,8 @@ public class GuardianActivity extends Activity implements View.OnClickListener {
     private TextView text_deal;
 
     private TextView text_guardianNum, text_delGuardian, text_code;
-    private EditText edit_guardianName, edit_guardianIdentity, edit_phone, edit_guardianCode, edit_guardianAddress, edit_guardianAlternatePhone;
+    private EditText edit_guardianName, edit_guardianIdentity, edit_phone, edit_guardianCode, edit_guardianAddress,
+            edit_guardianAlternatePhone;
 
     private void initView() {
         image_back = (ImageView) findViewById(R.id.fl_menu);
@@ -83,6 +91,24 @@ public class GuardianActivity extends Activity implements View.OnClickListener {
         edit_guardianCode = (EditText) findViewById(R.id.edit_guardianCode);
         edit_guardianAddress = (EditText) findViewById(R.id.edit_guardianAddress);
         edit_guardianAlternatePhone = (EditText) findViewById(R.id.edit_guardianAlternatePhone);
+
+        addSuccessDialog = DialogUtil.getConfirmDialog(mContext, "添加监护人成功");
+        addSuccessDialog.setCanceledOnTouchOutside(false);
+        addSuccessDialog.setCancelable(false);
+        addSuccessDialog.setOnBtnClickL(new OnBtnClickL() {
+            @Override
+            public void onBtnClick() {
+                addSuccessDialog.dismiss();
+                Intent intent = new Intent();
+                intent.setClass(GuardianActivity.this, PersonConfig.class);
+                Bundle bundle = new Bundle();
+                bundle.putString("activity", "guardianActivity");
+                bundle.putString("result", guardianName + "," + phone + "," + guardianAddress);
+                intent.putExtras(bundle);
+                setResult(RESULT_OK, intent);
+                finish();
+            }
+        });
     }
 
     @Override
@@ -93,17 +119,21 @@ public class GuardianActivity extends Activity implements View.OnClickListener {
                 break;
 
             case R.id.text_deal:
-                final String guardianName = edit_guardianName.getText().toString().trim();
+                guardianName = edit_guardianName.getText().toString().trim();
                 if (guardianName.equals("")) {
                     MyUtils.myToast(mContext, "请输入监护人姓名");
                     break;
                 }
-                final String guardianIdentity = edit_guardianIdentity.getText().toString().trim();
+                guardianIdentity = edit_guardianIdentity.getText().toString().trim();
                 if (guardianIdentity.equals("")) {
                     MyUtils.myToast(mContext, "请输入监护人身份证");
                     break;
                 }
-                final String phone = edit_phone.getText().toString().trim();
+                if (!MyUtils.isIDCard18(guardianIdentity)) {
+                    MyUtils.myToast(mContext, "请输入监护人正确的身份证号");
+                    break;
+                }
+                phone = edit_phone.getText().toString().trim();
                 if (phone.equals("")) {
                     MyUtils.myToast(mContext, "请输入监护人手机号码");
                     break;
@@ -123,7 +153,7 @@ public class GuardianActivity extends Activity implements View.OnClickListener {
                     e.printStackTrace();
                 }
 
-                final String guardianAddress = edit_guardianAddress.getText().toString().trim();
+                guardianAddress = edit_guardianAddress.getText().toString().trim();
                 if (guardianAddress.equals("")) {
                     MyUtils.myToast(mContext, "请输入监护人联系地址");
                     break;
@@ -151,7 +181,8 @@ public class GuardianActivity extends Activity implements View.OnClickListener {
                 map.put("DataTypeCode", "AddGuardian");
                 map.put("content", jsonObject.toString());
 
-                WebServiceUtils.callWebService(Constants.WEBSERVER_URL, Constants.WEBSERVER_REREQUEST, map, new WebServiceUtils.WebServiceCallBack() {
+                WebServiceUtils.callWebService(Constants.WEBSERVER_URL, Constants.WEBSERVER_REREQUEST, map, new
+                        WebServiceUtils.WebServiceCallBack() {
                     @Override
                     public void callBack(String result) {
                         if (result != null) {
@@ -162,16 +193,9 @@ public class GuardianActivity extends Activity implements View.OnClickListener {
                                 int resultCode = json.getInt("ResultCode");
                                 String resultText = MyUtils.initNullStr(json.getString("ResultText"));
                                 if (resultCode == 0) {
-                                    String guardianAlternatePhone = edit_guardianAlternatePhone.getText().toString().trim();
-                                    Intent intent = new Intent();
-                                    intent.setClass(GuardianActivity.this, PersonConfig.class);
-                                    Bundle bundle = new Bundle();
-                                    bundle.putString("activity", "guardianActivity");
-                                    bundle.putString("result", guardianName + "," + phone + "," + guardianAddress);
-                                    intent.putExtras(bundle);
-                                    setResult(RESULT_OK, intent);
-                                    finish();
                                     mProgressHUD.dismiss();
+                                    addSuccessDialog.show();
+
                                 } else {
                                     mProgressHUD.dismiss();
                                     MyUtils.myToast(mContext, resultText);
@@ -213,7 +237,8 @@ public class GuardianActivity extends Activity implements View.OnClickListener {
                 map1.put("DataTypeCode", "GET_SMS");
                 map1.put("content", jsonObject1.toString());
 
-                WebServiceUtils.callWebService(Constants.WEBSERVER_URL, Constants.WEBSERVER_REREQUEST, map1, new WebServiceUtils.WebServiceCallBack() {
+                WebServiceUtils.callWebService(Constants.WEBSERVER_URL, Constants.WEBSERVER_REREQUEST, map1, new
+                        WebServiceUtils.WebServiceCallBack() {
                     @Override
                     public void callBack(String result) {
                         if (result != null) {
@@ -229,7 +254,7 @@ public class GuardianActivity extends Activity implements View.OnClickListener {
                                         String content = object.getString("Content");
                                         JSONObject json = new JSONObject(content);
                                         code = json.getString("SMSVERIFY");
-                                        Log.e(TAG, "验证码: "+code );
+                                        Log.e(TAG, "验证码: " + code);
                                         //phoneVerify1 = json.getString("MOBILEPHONE");
                                     } else {
                                         MyUtils.myToast(GuardianActivity.this, resultText);

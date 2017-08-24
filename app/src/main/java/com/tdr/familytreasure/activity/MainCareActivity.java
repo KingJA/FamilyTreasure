@@ -207,7 +207,6 @@ public class MainCareActivity extends Activity implements View.OnClickListener, 
 
     private void getOlderList() {
         srl.setRefreshing(true);
-
         JSONObject jsonObject = new JSONObject();
         try {
             jsonObject.put("USERPHONE", Constants.getUserPhone());
@@ -237,8 +236,6 @@ public class MainCareActivity extends Activity implements View.OnClickListener, 
                                     data.clear();
                                     data1.clear();
                                     data2.clear();
-
-
                                     String content = jsonObject.getString("Content");
                                     JSONObject json = new JSONObject(content);
                                     String concernList = json.getString("CONCERNLIST");

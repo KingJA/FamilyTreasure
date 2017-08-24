@@ -36,6 +36,25 @@ public class DialogUtil {
         return dialog;
     }
 
+    public static NormalDialog getConfirmDialog(Context context, String title) {
+        final NormalDialog dialog = new NormalDialog(context);
+        dialog.isTitleShow(false)
+                .content(title)
+                .contentTextSize(15f)
+                .bgColor(ContextCompat.getColor(context, R.color.bg_white))
+                .cornerRadius(5)
+                .contentGravity(Gravity.CENTER)
+                .widthScale(0.85f)
+                .contentTextColor(ContextCompat.getColor(context, R.color.font_3))
+                .dividerColor(ContextCompat.getColor(context, R.color.bg_divider))
+                .btnTextSize(15f, 15f)
+                .btnText("确定")
+                .btnTextColor(ContextCompat.getColor(context, R.color.bg_blue), ContextCompat.getColor(context, R
+                        .color.bg_blue))
+                .btnPressColor(ContextCompat.getColor(context, R.color.bg_press));
+        return dialog;
+    }
+
     public static NormalListDialog getListDialog(Context context, String title, BaseAdapter adapter) {
         final NormalListDialog dialog = new NormalListDialog(context, adapter);
         dialog.title(title).layoutAnimation(null).heightScale(0.5f)

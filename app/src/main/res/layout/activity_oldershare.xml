@@ -5,6 +5,8 @@
              android:layout_height="match_parent"
              android:orientation="vertical">
 
+    <include layout="@layout/layout_edit_title"/>
+
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -179,7 +181,8 @@
                         android:layout_alignParentRight="true"
                         android:layout_centerVertical="true"
                         android:layout_marginRight="27dp"
-                        android:background="@mipmap/image_userphoto"/>
+                        android:background="@mipmap/image_userphoto"
+                        android:scaleType="centerCrop"/>
 
                     <ImageView
                         android:layout_width="8dp"
@@ -387,6 +390,7 @@
                 </RelativeLayout>
 
                 <View style="@style/divider_nomal_horizontal"/>
+
                 <RelativeLayout
                     android:id="@+id/rl_activity_position"
                     android:layout_width="match_parent"
@@ -425,6 +429,7 @@
                 </RelativeLayout>
 
                 <View style="@style/divider_nomal_horizontal"/>
+
                 <RelativeLayout
                     android:id="@+id/rl_alarm_distance"
                     android:layout_width="match_parent"
@@ -498,6 +503,7 @@
                         android:textSize="12sp"/>
 
                 </RelativeLayout>
+
                 <View style="@style/divider_nomal_horizontal"/>
                 <!--guardianinfo_name-->
                 <RelativeLayout
@@ -536,6 +542,7 @@
                         android:visibility="gone"/>
 
                 </RelativeLayout>
+
                 <View style="@style/divider_nomal_horizontal"/>
                 <!--guardianinfo_selfnum-->
                 <RelativeLayout
@@ -572,6 +579,7 @@
                         android:visibility="gone"/>
 
                 </RelativeLayout>
+
                 <View style="@style/divider_nomal_horizontal"/>
                 <!--guardianinfo_address-->
                 <RelativeLayout
@@ -652,6 +660,7 @@
                         android:textSize="12sp"/>
 
                 </RelativeLayout>
+
                 <View style="@style/divider_nomal_horizontal"/>
 
                 <RelativeLayout
@@ -690,6 +699,7 @@
                         android:visibility="gone"/>
 
                 </RelativeLayout>
+
                 <View style="@style/divider_nomal_horizontal"/>
                 <!--guardianinfo_selfnum-->
                 <RelativeLayout
@@ -846,6 +856,7 @@
                         android:visibility="gone"/>
 
                 </RelativeLayout>
+
                 <View style="@style/divider_nomal_horizontal"/>
                 <!--guardianinfo_selfnum-->
                 <RelativeLayout
@@ -951,7 +962,12 @@
 
     </ScrollView>
 
-    <include layout="@layout/layout_edit_title"/>
+    <ImageView
+        android:visibility="gone"
+        android:id="@+id/iv_bigAvatar"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"/>
 
 
 </FrameLayout>

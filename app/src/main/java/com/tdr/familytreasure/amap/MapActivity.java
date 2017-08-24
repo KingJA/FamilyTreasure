@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.ImageView;
@@ -22,6 +23,8 @@ import com.amap.api.maps.model.MarkerOptions;
 import com.tdr.familytreasure.R;
 import com.tdr.familytreasure.activity.AddOlderActivity;
 import com.tdr.familytreasure.util.ToastUtil;
+
+import static android.content.ContentValues.TAG;
 
 /**
  * Created by Linus_Xie on 2016/8/18.
@@ -246,7 +249,8 @@ public class MapActivity extends Activity implements AMap.OnCameraChangeListener
         lng = entity.longitude;
         mAddressTextView.setText(address);
         RouteTask.getInstance(getApplicationContext()).setStartPoint(entity);
-
+        Log.e("onLocationGet", "lat: "+lat );
+        Log.e("onLocationGet", "lng: "+lng );
         mStartPosition = new LatLng(entity.latitue, entity.longitude);
         CameraUpdate cameraUpate = CameraUpdateFactory.newLatLngZoom(
                 mStartPosition, 17);

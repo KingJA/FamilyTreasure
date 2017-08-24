@@ -616,6 +616,7 @@
                 </LinearLayout>
 
                 <ImageView
+                    android:scaleType="centerCrop"
                     android:id="@+id/image_bodyphoto"
                     android:layout_width="58dp"
                     android:layout_height="58dp"
@@ -677,7 +678,7 @@
                         android:layout_marginLeft="16dp"
                         android:text="心脏病"
                         android:textColor="@color/colorInput"
-                        android:textSize="12dp" />
+                        android:textSize="15sp" />
 
                     <CheckBox
                         android:id="@+id/check_heartdisease"
@@ -735,5 +736,13 @@
         </LinearLayout>
 
     </ScrollView>
+
+    <ImageView
+        android:visibility="gone"
+        android:scaleType="centerCrop"
+        android:id="@+id/iv_bigAvatar"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
 
 </LinearLayout>

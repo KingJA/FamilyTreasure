@@ -40,6 +40,8 @@ import com.tdr.familytreasure.ui.niftydialog.NiftyDialogBuilder;
 import com.tdr.familytreasure.util.CheckUtil;
 import com.tdr.familytreasure.util.Constants;
 import com.tdr.familytreasure.util.DataManager;
+import com.tdr.familytreasure.util.GoUtil;
+import com.tdr.familytreasure.util.ImageUtil;
 import com.tdr.familytreasure.util.MyUtils;
 import com.tdr.familytreasure.util.ToastUtil;
 import com.tdr.familytreasure.util.WebServiceUtils;
@@ -58,9 +60,11 @@ import java.util.Map;
  * 人员配置
  * Created by Linus_Xie on 2016/8/19.
  */
-public class PersonConfig extends Activity implements View.OnClickListener {
+public class PersonConfig extends Activity implements View.OnClickListener, BottomListPop.OnPopItemClickListener {
     private static final String TAG = "PersonConfig";
     private static final int LOCATION = 88;
+    private static final int REQUEST_CAMARA = 1009;
+    private static final int REQUEST_PICTURE = 1008;
 
     private Context mContext;
 
@@ -110,6 +114,11 @@ public class PersonConfig extends Activity implements View.OnClickListener {
     private RelativeLayout rl_alarm_distance;
     private String name;
     private String photo;
+    private String base64Avatar;
+    private BottomListPop mBottomListPop;
+    private FrameLayout fl_menu;
+    private RelativeLayout relative_title;
+    private ImageView iv_bigAvatar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -168,11 +177,13 @@ public class PersonConfig extends Activity implements View.OnClickListener {
     private TextView text_addMoreGuardian;
 
     private void initView() {
+        iv_bigAvatar = (ImageView) findViewById(R.id.iv_bigAvatar);
         rl_activity_position = (RelativeLayout) findViewById(R.id.rl_activity_position);
         rl_alarm_distance = (RelativeLayout) findViewById(R.id.rl_alarm_distance);
         tv_activity_position = (TextView) findViewById(R.id.tv_activity_position);
         tv_alarm_distance = (TextView) findViewById(R.id.tv_alarm_distance);
         tv_modify_older = (TextView) findViewById(R.id.tv_modify_older);
+        iv_bigAvatar.setOnClickListener(this);
         rl_activity_position.setOnClickListener(this);
         rl_alarm_distance.setOnClickListener(this);
         tv_modify_older.setOnClickListener(this);
@@ -194,7 +205,7 @@ public class PersonConfig extends Activity implements View.OnClickListener {
         relative_bodyPhoto = (RelativeLayout) findViewById(R.id.relative_bodyPhoto);
         relative_bodyPhoto.setOnClickListener(this);
         image_bodyPhoto = (ImageView) findViewById(R.id.image_bodyPhoto);
-
+        image_bodyPhoto.setOnClickListener(this);
         relative_olderPhone = (RelativeLayout) findViewById(R.id.relative_olderPhone);
         relative_olderPhone.setOnClickListener(this);
         text_olderPhone = (TextView) findViewById(R.id.text_olderPhone);
@@ -238,11 +249,12 @@ public class PersonConfig extends Activity implements View.OnClickListener {
         relative_addMoreGuardian.setOnClickListener(this);
         //text_addMoreGuardian = (TextView) findViewById(R.id.text_addMoreGuardian);
         //text_addMoreGuardian.setOnClickListener(this);
-
+        relative_title = (RelativeLayout) findViewById(R.id.relative_title);
         mProgressHUD = new ZProgressHUD(PersonConfig.this);
         //mProgressHUD.setMessage("分享中...");
         //mProgressHUD.setSpinnerType(ZProgressHUD.SIMPLE_ROUND_SPINNER);
-
+        mBottomListPop = new BottomListPop(relative_title, this, Arrays.asList("拍照", "相册"));
+        mBottomListPop.setOnPopItemClickListener(this);
     }
 
     private String[] diatanceArr = {"1KM", "2KM", "3KM"};
@@ -357,6 +369,8 @@ public class PersonConfig extends Activity implements View.OnClickListener {
             relative_addMoreGuardian.setClickable(false);
             rl_activity_position.setClickable(false);
             rl_alarm_distance.setClickable(false);
+            image_bodyPhoto.setClickable(false);
+            tv_modify_older.setVisibility(View.GONE);
             //text_addMoreGuardian.setClickable(false);
         }
     }
@@ -364,6 +378,15 @@ public class PersonConfig extends Activity implements View.OnClickListener {
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
+            case R.id.image_bodyPhoto:
+                if (!TextUtils.isEmpty(photo)) {
+                    iv_bigAvatar.setImageBitmap(MyUtils.stringtoBitmap(photo));
+                    iv_bigAvatar.setVisibility(View.VISIBLE);
+                }
+                break;
+            case R.id.iv_bigAvatar:
+                iv_bigAvatar.setVisibility(View.GONE);
+                break;
             case R.id.fl_menu:
                 finish();
                 break;
@@ -434,11 +457,12 @@ public class PersonConfig extends Activity implements View.OnClickListener {
 
             case R.id.relative_bodyPhoto:
                 //实例化SelectPicPopupWindow
-                mSelectPicPopupWindow = new SelectPicPopupWindow(PersonConfig.this, this);
-                // 显示窗口
-
-                mSelectPicPopupWindow.showAtLocation(fl_root,
-                        Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 0); // 设置layout在PopupWindow中显示的位置
+//                mSelectPicPopupWindow = new SelectPicPopupWindow(PersonConfig.this, this);
+//                // 显示窗口
+//
+//                mSelectPicPopupWindow.showAtLocation(fl_root,
+//                        Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 0); // 设置layout在PopupWindow中显示的位置
+                mBottomListPop.showPopupWindow();
                 break;
 
             case R.id.btn_takephoto:
@@ -454,10 +478,7 @@ public class PersonConfig extends Activity implements View.OnClickListener {
                 break;
 
             case R.id.btn_pickphoto:
-                Intent intentFromGallery = new Intent();
-                intentFromGallery.setType("image/*"); // 设置文件类型
-                intentFromGallery.setAction(Intent.ACTION_PICK);
-                startActivityForResult(intentFromGallery, IMAGE_REQUEST_CODE);
+                getPhoto();
                 mSelectPicPopupWindow.dismiss();
                 break;
 
@@ -527,9 +548,8 @@ public class PersonConfig extends Activity implements View.OnClickListener {
 
     private void backToSave() {
 
-        String idcard = text_odlerIdentity.toString().trim();
-        String phone = text_olderPhone.toString().trim();
-        if (CheckUtil.checkPhoneFormat(phone) || CheckUtil.checkIdCard(idcard, "身份证格式错误")) {
+        String phone = text_olderPhone.getText().toString().trim();
+        if (!CheckUtil.checkPhoneFormat(phone) || !CheckUtil.checkIdCard(identity, "身份证格式错误")) {
             return;
         }
         mProgressHUD.setMessage("提交中...");
@@ -538,7 +558,7 @@ public class PersonConfig extends Activity implements View.OnClickListener {
         try {
             JSONObject jsonLrInfo = new JSONObject();
             jsonLrInfo.put("CUSTOMERNAME", text_olderName.getText().toString().trim());
-            jsonLrInfo.put("CUSTOMERIDCARD", idcard);
+            jsonLrInfo.put("CUSTOMERIDCARD", identity);
             jsonLrInfo.put("CUSTOMMOBILE", phone);
             jsonLrInfo.put("CUSTOMERADDRESS", text_olderAddress.getText().toString().trim());
 
@@ -803,8 +823,15 @@ public class PersonConfig extends Activity implements View.OnClickListener {
 
                 break;
             case RESULT_REQUEST_CODE:
-                if (data != null) {
-                    getImageToView(data);
+//                if (data != null) {
+//                    getImageToView(data);
+//                }
+                if (resultCode == RESULT_OK && data != null) {
+                    Bitmap bitmap = (Bitmap) data.getExtras().get("data");
+                    image_bodyPhoto.setImageBitmap(bitmap);
+                    image_bodyPhoto.setEnabled(true);
+                    base64Avatar = new String(ImageUtil.bitmapToBase64(bitmap));
+                    Constants.setBodyPhoto(base64Avatar);
                 }
                 break;
             case KEY:
@@ -863,8 +890,26 @@ public class PersonConfig extends Activity implements View.OnClickListener {
 //                        }
                     }
                 }
+            case REQUEST_CAMARA:
+                if (resultCode == RESULT_OK && data != null) {
+                    Bitmap bitmap = (Bitmap) data.getExtras().get("data");
+                    image_bodyPhoto.setImageBitmap(bitmap);
+                    image_bodyPhoto.setEnabled(true);
+                    base64Avatar = new String(ImageUtil.bitmapToBase64(bitmap));
+                    Constants.setBodyPhoto(base64Avatar);
+                }
+                break;
+            case REQUEST_PICTURE:
+                if (resultCode == RESULT_OK && data != null) {
+                    startPhotoZoom(data.getData());
+                }
                 break;
         }
+    }
+
+    private void takePhoto() {
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        startActivityForResult(intent, REQUEST_CAMARA);
     }
 
     /**
@@ -878,7 +923,7 @@ public class PersonConfig extends Activity implements View.OnClickListener {
         // intent.setDataAndType(uri, "image/*");
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             String url = getPath(mContext, uri);
-            intent.setDataAndType(Uri.fromFile(new File(url)), "image/*");
+            intent.setDataAndType(ImageUtil.getImageContentUri(this, new File(url)), "image/*");
         } else {
             intent.setDataAndType(uri, "image/*");
         }
@@ -1029,4 +1074,22 @@ public class PersonConfig extends Activity implements View.OnClickListener {
         return "com.google.android.apps.photos.content".equals(uri.getAuthority());
     }
 
+    @Override
+    public void onPopItemClick(int position, String tag) {
+        switch (position) {
+            case 0:
+                takePhoto();
+                break;
+            case 1:
+                getPhoto();
+                break;
+        }
+    }
+
+    private void getPhoto() {
+        Intent intentFromGallery = new Intent();
+        intentFromGallery.setType("image/*"); // 设置文件类型
+        intentFromGallery.setAction(Intent.ACTION_PICK);
+        startActivityForResult(intentFromGallery, REQUEST_PICTURE);
+    }
 }
