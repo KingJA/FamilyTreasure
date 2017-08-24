@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -15,6 +16,7 @@ import com.amap.api.maps.CameraUpdate;
 import com.amap.api.maps.CameraUpdateFactory;
 import com.amap.api.maps.MapView;
 import com.amap.api.maps.model.BitmapDescriptorFactory;
+import com.amap.api.maps.model.CameraPosition;
 import com.amap.api.maps.model.LatLng;
 import com.amap.api.maps.model.Marker;
 import com.amap.api.maps.model.MarkerOptions;
@@ -34,7 +36,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static android.R.attr.button;
 import static android.R.id.list;
+import static java.util.Collections.addAll;
 
 /**
  * Description:TODO
@@ -71,7 +75,7 @@ public class FootprintActivity extends BackTitleActivity implements AMap.OnMapLo
         mAmap.getUiSettings().setCompassEnabled(true);
         mAmap.getUiSettings().setScaleControlsEnabled(true);
         mAmap.setOnMapLoadedListener(this);
-        mAmap.setOnInfoWindowClickListener(this);// 设置点击infoWindow事件监听器
+        mAmap.setOnInfoWindowClickListener(this);
     }
 
     @Override
@@ -129,8 +133,8 @@ public class FootprintActivity extends BackTitleActivity implements AMap.OnMapLo
         for (GetElderMonitorData.ContentBean.MONITORDATALISTBean footprint : footprints) {
             latLngs.add(new LatLng(Double.valueOf(footprint.getLAT()), Double.valueOf(footprint.getLNG())));
         }
-        mAmap.addPolyline(new PolylineOptions().
-                addAll(latLngs).width(8).color(0xff37af4d));
+        mAmap.addPolyline(new PolylineOptions().setCustomTexture(BitmapDescriptorFactory.fromResource(R.mipmap.arrow_footprint)).
+                addAll(latLngs).width(24).color(0xff37af4d));
     }
 
     private void addPoints(List<GetElderMonitorData.ContentBean.MONITORDATALISTBean> footprints) {
@@ -210,7 +214,16 @@ public class FootprintActivity extends BackTitleActivity implements AMap.OnMapLo
     }
 
     @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        markers.get(position).showInfoWindow();
+    public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
+        GetElderMonitorData.ContentBean.MONITORDATALISTBean footprint = (GetElderMonitorData.ContentBean
+                .MONITORDATALISTBean) parent.getItemAtPosition(position);
+        mAmap.moveCamera(CameraUpdateFactory.changeLatLng(new LatLng(Double.valueOf(footprint.getLAT()),Double.valueOf(footprint.getLNG()))));
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                markers.get(position).showInfoWindow();
+            }
+        },100);
+
     }
 }

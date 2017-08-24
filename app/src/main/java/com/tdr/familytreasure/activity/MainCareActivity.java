@@ -158,7 +158,10 @@ public class MainCareActivity extends Activity implements View.OnClickListener, 
 
     private void initData() {
         getOlderList();
-//        getBannerInfo();
+//        getBanner();
+    }
+
+    private void getBanner() {
         HashMap<String, String> map1 = new HashMap<>();
         map1.put("token", Constants.getToken());
         map1.put("cardType", "1005");
@@ -177,6 +180,7 @@ public class MainCareActivity extends Activity implements View.OnClickListener, 
                                 int resultCode = jsonObject.getInt("ResultCode");
                                 String resultText = MyUtils.initNullStr(jsonObject.getString("ResultText"));
                                 if (resultCode == 0) {
+
                                     String content = jsonObject.getString("Content");
                                     JSONObject json = new JSONObject(content);
                                     String bannerList = json.getString("BANNERLIST");
@@ -232,6 +236,7 @@ public class MainCareActivity extends Activity implements View.OnClickListener, 
                                 int resultCode = jsonObject.getInt("ResultCode");
                                 String resultText = MyUtils.initNullStr(jsonObject.getString("ResultText"));
                                 if (resultCode == 0) {
+                                    getBanner();
                                     listOlder.clear();
                                     data.clear();
                                     data1.clear();

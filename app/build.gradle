@@ -18,10 +18,26 @@ android {
     }
 
 
+    signingConfigs {
+        release {
+            storeFile file("tendency_android.keystore")
+            storePassword "tendency2011,tdr"
+            keyAlias "tendency_android.keystore"
+            keyPassword "tendency2011,tdr"
+            v1SigningEnabled true
+            v2SigningEnabled true
+        }
+    }
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
+            buildApkByType("release")
+
+        }
+        debug {
+            buildApkByType("debug")
         }
     }
     lintOptions{
@@ -52,3 +68,20 @@ dependencies {
     }
     annotationProcessor "com.github.hotchemi:permissionsdispatcher-processor:2.4.0"
 }
+
+def releaseTime() {
+    return new Date().format("yyyy-MM-dd", TimeZone.getTimeZone("UTC"))
+}
+
+def buildApkByType(type) {
+    android.applicationVariants.all { variant ->
+        variant.outputs.each { output ->
+            def outputFile = output.packageApplication.outputFile
+            if (outputFile != null && variant.buildType.name == type) {
+                def fileName = rootProject.ext.appName + "V${android.defaultConfig.versionName}_${releaseTime()}-" + type + ".apk"
+                output.packageApplication.outputFile = new File(outputFile.parent, fileName)
+            }
+        }
+    }
+}
+

@@ -8,6 +8,7 @@ import android.preference.PreferenceManager;
 import com.tdr.familytreasure.dao.DatebaseManager;
 import com.tdr.familytreasure.net.PoolManager;
 import com.tdr.familytreasure.util.Constants;
+import com.tdr.familytreasure.util.CrashHandler;
 
 import org.xutils.x;
 
@@ -21,7 +22,9 @@ public class App extends Application {
     private static SharedPreferences mSharedPreferences;
     @Override
     public void onCreate() {
+
         super.onCreate();
+        CrashHandler.getInstance().init(this);
         context = this;
         mAppContext = getApplicationContext();
         x.Ext.init(this);

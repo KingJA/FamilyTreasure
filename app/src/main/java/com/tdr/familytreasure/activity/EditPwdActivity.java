@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.tdr.familytreasure.R;
 import com.tdr.familytreasure.entiy.CheckElder;
@@ -51,12 +52,14 @@ public class EditPwdActivity extends Activity {
         mEtNewPwd = (MaterialEditText) findViewById(R.id.et_newPwd);
         mEtRepeatPwd = (MaterialEditText) findViewById(R.id.et_repeatPwd);
         mBtnConfirm = (Button) findViewById(R.id.btn_confirm);
+        TextView text_title = (TextView) findViewById(R.id.text_title);
         mBtnConfirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 checkData();
             }
         });
+        text_title.setText("修改密码");
         fl_menu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
