@@ -4,15 +4,15 @@
     <uses-permission android:name="android.permission.BLUETOOTH"/>
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
     <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.CAMERA"/>//
-    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>//
+    <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
 
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>//
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
 
     <!-- GPS定位权限 -->
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>//
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
 
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -40,7 +40,7 @@
         <!--高德地图定位-->
         <meta-data
             android:name="com.amap.api.v2.apikey"
-            android:value="70aa8c6a4d9d08c473cc425b1be1971f" />
+            android:value="760f140763232809bcf53dbb25f18ea5" />
         <!--高德地图定位结束-->
        <!-- 测试 bd26135ac6cb64cb49e70e34b128ec39-->
        <!-- 正式 b8471c856f50ef9594c4e59afaf7d69a--><!--70aa8c6a4d9d08c473cc425b1be1971f-->

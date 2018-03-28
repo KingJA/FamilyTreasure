@@ -10,7 +10,9 @@ import com.tdr.familytreasure.base.App;
  * Created by Linus_Xie on 2016/6/20.
  */
 public class Constants {
-    public static final String CURRENT_CITY="4520";
+//    public static final String CURRENT_CITY="4502";//柳州4502  //天津1201
+//    public static final String CURRENT_CITY="4508";//柳州4502  //天津1201
+    public static final String CURRENT_CITY="4503";//柳州4502  //天津1201
 
     public static final String SAVE_PATH = Environment.getExternalStorageDirectory() + "/Wisdom/com.tdr.wisdome/cardImage/";
 
@@ -29,8 +31,9 @@ public class Constants {
     /**
      * Webservice参数
      */
-    public static final String WEBSERVER_URL = "http://122.228.188.210:20043/WebCardHolder.asmx";// WebServices访问地址，测试
-//    public static final String WEBSERVER_URL = "http://116.255.205.110:1001/WEBCARDHOLDER.asmx";// WebServices访问地址，正式
+//    public static final String WEBSERVER_URL = "http://122.228.188.210:20043/WebCardHolder.asmx";// WebServices访问地址，测试
+    public static final String WEBSERVER_URL = "http://116.255.205.110:1001/WEBCARDHOLDER.asmx";// WebServices访问地址，正式
+//    public static final String WEBSERVER_URL = "http://10.130.0.104:1000/WebCardHolder.asmx";// WebServices访问地址，测试20170130
     public static final String WEBSERVER_NAMESPACE = "http://tempuri.org/";// 命名空间
 
     public static final String WEBSERVER_REREQUEST = "CardHolder";//智慧e点通服务
@@ -61,6 +64,7 @@ public class Constants {
 
     private static final String CARDNAME = "cardMsg";//卡片名字
     private static final String CARDCODE = "cardCode";//卡片编号
+    private static final String CURRENT_CITY_CODE = "3303";//卡片编号
 
     /**********************
      * 老人字段

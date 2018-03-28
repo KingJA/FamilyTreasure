@@ -8,3 +8,6 @@
 * versionCode 20170620  versionName "1.2.0"     20160620
 修改注册和修改密码接口
 
+###
+* versionCode 20170823  versionName "2.1.0"     20170823
+更新接口，添加老人轨迹功能，暂时屏蔽

@@ -54,7 +54,6 @@ dependencies {
     compile files('libs/universal-image-loader-1.9.3.jar')
     compile files('libs/ZBarDecoder.jar')
     compile files('libs/core-2.2.jar')
-    compile files('libs/AMap_3DMap_V2.4.0.jar')
     compile files('libs/AMap_Services_V2.4.0.jar')
     compile files('libs/Android_Location_V1.3.2.jar')
     compile 'com.orhanobut:logger:1.11'
@@ -63,10 +62,13 @@ dependencies {
     compile project(':libk-ui')
     compile 'org.greenrobot:eventbus:3.0.0'
     compile 'org.xutils:xutils:3.3.26'
-    compile("com.github.hotchemi:permissionsdispatcher:2.4.0") {
+    compile('com.github.hotchemi:permissionsdispatcher:2.4.0') {
         exclude module: "support-v13"
     }
     annotationProcessor "com.github.hotchemi:permissionsdispatcher-processor:2.4.0"
+    compile files('libs/AMap2DMap_5.2.0_AMapSearch_5.7.0_20171229.jar')
+    compile files('libs/Android_Map3D_SDK_V5.7.0_20171229.jar')
+    compile files('libs/AMap_3DMap_V2.4.0.jar')
 }
 
 def releaseTime() {

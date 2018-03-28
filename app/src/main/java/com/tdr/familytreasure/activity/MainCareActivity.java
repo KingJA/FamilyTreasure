@@ -396,7 +396,7 @@ public class MainCareActivity extends Activity implements View.OnClickListener, 
                                                     String Id = obj.getString("ID");
                                                     if (QRType.equals("Q1")) {
                                                         mProgressHUD.dismiss();
-                                                        checkDevice(Id);
+                                                        checkDevice(Id,type);
                                                     } else if (QRType.equals("Q2")) {
                                                         mProgressHUD.dismiss();
                                                         MyUtils.myToast(mContext, "此设备为网关设备，请到关爱对象的设备配置页面进行添加");
@@ -453,7 +453,7 @@ public class MainCareActivity extends Activity implements View.OnClickListener, 
                                                     String content = object.getString("Content");
                                                     JSONObject obj = new JSONObject(content);
                                                     String code = obj.getString("StrString");
-                                                    checkDevice(code);
+                                                    checkDevice(code, "8010");
                                                 } else {
                                                     mProgressHUD.dismiss();
                                                     MyUtils.myToast(mContext, resultText);
@@ -484,12 +484,13 @@ public class MainCareActivity extends Activity implements View.OnClickListener, 
      * 检查设备编码
      *
      * @param id
+     * @param type
      */
-    private void checkDevice(final String id) {
+    private void checkDevice(final String id, String type) {
         JSONObject jsonObject = new JSONObject();
         try {
             jsonObject.put("DEVICEID", id);
-            jsonObject.put("devicetype", "8010");
+            jsonObject.put("devicetype", type);
         } catch (JSONException e) {
             e.printStackTrace();
         }

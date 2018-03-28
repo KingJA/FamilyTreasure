@@ -86,7 +86,7 @@ public class LoginFragment extends BaseFragment implements View.OnClickListener 
                     public void onSuccess(Login bean) {
                         save2Local(bean.getContent());
                         setProgressDialog(false);
-                        sendCurrentCityCode("3303");
+                        sendCurrentCityCode(Constants.CURRENT_CITY);
                         GoUtil.goActivityAndFinish(getActivity(), MainCareActivity.class);
                     }
 
