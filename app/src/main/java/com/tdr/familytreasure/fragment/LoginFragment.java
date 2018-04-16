@@ -53,7 +53,7 @@ public class LoginFragment extends BaseFragment implements View.OnClickListener 
                 String userName = material_loginName.getText().toString();
                 String userPwd = material_loginPwd.getText().toString();
                 if (CheckUtil.checkEmpty(userName, "请输入用户名") && CheckUtil.checkEmpty(userName, "请输入密码")) {
-                    LoginFragmentPermissionsDispatcher.doLoginWithCheck(this,userName,userPwd);
+                    LoginFragmentPermissionsDispatcher.doLoginWithCheck(this, userName, userPwd);
                 }
 
                 break;
@@ -62,10 +62,13 @@ public class LoginFragment extends BaseFragment implements View.OnClickListener 
                 Intent intent = new Intent(getActivity(), ForgetActivityPhone.class);
                 startActivity(intent);
                 break;
+            default:
+                break;
         }
 
 
     }
+
     @NeedsPermission(Manifest.permission.READ_PHONE_STATE)
     public void doLogin(String name, String password) {
         setProgressDialog(true);
@@ -170,7 +173,7 @@ public class LoginFragment extends BaseFragment implements View.OnClickListener 
 
     @OnShowRationale(Manifest.permission.READ_PHONE_STATE)
     void showRationaleForCamera(final PermissionRequest request) {
-        PermissionsDialogUtil.showRationaleDialog(getActivity(),"需要打开相机权限", request);
+        PermissionsDialogUtil.showRationaleDialog(getActivity(), "需要打开相机权限", request);
     }
 
     @OnPermissionDenied(Manifest.permission.READ_PHONE_STATE)
@@ -180,7 +183,7 @@ public class LoginFragment extends BaseFragment implements View.OnClickListener 
 
     @OnNeverAskAgain(Manifest.permission.READ_PHONE_STATE)
     void showNeverAskForCamera() {
-        PermissionsDialogUtil.showSettingdDialog(getContext(),"获取手机硬件信息");
+        PermissionsDialogUtil.showSettingdDialog(getContext(), "获取手机硬件信息");
     }
 
     @Override

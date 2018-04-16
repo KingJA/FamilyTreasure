@@ -75,6 +75,11 @@
         <item name="android:textSize">14sp</item>
         <item name="android:textColor">@color/font_blue</item>
     </style>
+
+    <style name="font_blue_12">
+        <item name="android:textSize">12sp</item>
+        <item name="android:textColor">@color/font_blue</item>
+    </style>
     <style name="font_9_14">
         <item name="android:textSize">14sp</item>
         <item name="android:textColor">@color/font_9</item>

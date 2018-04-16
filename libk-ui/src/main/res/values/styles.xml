@@ -27,6 +27,12 @@
         <item name="android:background">@color/gray_divider</item>
     </style>
 
+    <style name="divider_nomal_horizontal_8">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">8dp</item>
+        <item name="android:background">@color/gray_divider_light</item>
+    </style>
+
     <style name="font_blue_16">
         <item name="android:textSize">16sp</item>
         <item name="android:textColor">@color/font_blue</item>

@@ -26,7 +26,8 @@ public abstract class BaseFragment extends Fragment {
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle
+            savedInstanceState) {
         View view = inflater.inflate(getLayoutId(), container, false);
         initFragmentView(view, savedInstanceState);
         return view;
@@ -42,11 +43,16 @@ public abstract class BaseFragment extends Fragment {
         setFragmentData();
     }
 
-    public abstract int getLayoutId();
-    public abstract void initFragmentView(View view, Bundle savedInstanceState);
     public abstract void initFragmentVariables();
+
+    public abstract int getLayoutId();
+
+    public abstract void initFragmentView(View view, Bundle savedInstanceState);
+
     public abstract void initFragmentNet();
+
     public abstract void initFragmentData();
+
     public abstract void setFragmentData();
 
     private void initConmonView() {
